@@ -1,0 +1,33 @@
+@import "tailwindcss";
+
+:root {
+  --color-primary: #2E7D32; /* Forest Green */
+  --color-secondary: #81C784; /* Mint Green */
+  --color-background: #F5F7F2; /* Off-white */
+  --color-highlight: #FFC107; /* Amber */
+  --color-text: #333333; /* Charcoal Grey */
+}
+
+@layer components {
+  /* Links - consolidated definition */
+  .links {
+    @apply text-[#81C784] hover:text-[#2E7D32] border-b-2 shadow-[0px_1px] hover:shadow-[0px] text-sm lg:text-lg pb-2 hover:scale-90 transition duration-300;
+  }
+
+  /* Buttons & Tags */
+  .btn {
+    @apply hover:bg-[#81C784] transition ease-in-out cursor-pointer text-lg py-2 bg-[#2E7D32] rounded-2xl hover:scale-110 text-white w-[100px];
+  }
+
+  .link {
+    @apply py-5 hover:text-[#81C784] text-[#2E7D32] hover:scale-90 text-lg;
+  }
+
+  .btn2 {
+    @apply bg-[#2E7D32] text-sm max-md:w-sm py-3 rounded-2xl text-white hover:bg-[#81C784] transition ease-in-out cursor-pointer;
+  }
+
+  .tag {
+    @apply w-6 h-6 flex items-center text-sm justify-center rounded-full bg-gray-500 text-white hover:bg-[#2E7D32] cursor-pointer;
+  }
+}

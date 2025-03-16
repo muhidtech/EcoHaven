@@ -1,0 +1,355 @@
+[
+    {
+      "id": 1,
+      "name": "Bamboo Toothbrush",
+      "old_price": 10.99,
+      "price": 8.99,
+      "description": "Eco-friendly and biodegradable toothbrush for a plastic-free world.",
+      "sustainability_info": "Made from 100% biodegradable bamboo with compostable bristles.",
+      "category": "Personal Care",
+      "image_url": "https://placehold.co/400",
+      "stock": 50,
+      "rating": 4.7,
+      "discount": true,
+      "popular": true,
+      "hot": false,
+      "sale": true,
+      "materials": "Sustainably harvested bamboo handle with BPA-free nylon bristles",
+      "environmental_impact": "Reduces plastic waste in landfills and oceans. Bamboo is a fast-growing renewable resource that absorbs more CO2 than hardwood trees.",
+      "usage_instructions": "Rinse thoroughly after each use. Store upright in a dry, well-ventilated area. Replace every 2-3 months or when bristles become frayed. Do not leave sitting in water to prevent mold growth.",
+      "customer_reviews": [
+        {
+          "user": "EcoWarrior",
+          "rating": 5,
+          "comment": "Love how this toothbrush feels! It's gentle on my gums and I feel good about not adding more plastic to landfills."
+        },
+        {
+          "user": "GreenMom",
+          "rating": 4,
+          "comment": "Great product! The whole family has switched to these. Only giving 4 stars because the bristles wear a bit faster than plastic ones."
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Reusable Cotton Tote Bag",
+      "price": 12.50,
+      "description": "Say goodbye to plastic bags with this durable, stylish tote.",
+      "sustainability_info": "Made from organic cotton, reusable, and machine washable.",
+      "category": "Bags",
+      "image_url": "https://placehold.co/400",
+      "stock": 35,
+      "rating": 4.5,
+      "discount": false,
+      "popular": true,
+      "hot": true,
+      "sale": false,
+      "materials": "100% GOTS-certified organic cotton canvas, ethically sourced and produced",
+      "environmental_impact": "Eliminates the need for hundreds of single-use plastic bags over its lifetime. When properly cared for, can last for years, reducing overall resource consumption.",
+      "usage_instructions": "Machine wash in cold water with mild detergent. Air dry or line dry to prevent shrinkage. Turn inside out before washing for better cleaning. Wash every 3-4 weeks if used frequently.",
+      "customer_reviews": [
+        {
+          "user": "ShopGreen",
+          "rating": 5,
+          "comment": "This bag is so sturdy! I've been using it for groceries for months and it shows no signs of wear."
+        },
+        {
+          "user": "ZeroWasteJourney",
+          "rating": 4,
+          "comment": "Perfect size for my shopping needs and the organic cotton feels premium. Would love more color options."
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Handmade Wooden Comb",
+      "old_price": 12.00,
+      "price": 10.00,
+      "description": "A natural alternative to plastic combs, gentle on hair and scalp.",
+      "sustainability_info": "Hand-carved from sustainably sourced wood, fully biodegradable.",
+      "category": "Personal Care",
+      "image_url": "https://placehold.co/400",
+      "stock": 40,
+      "rating": 4.8,
+      "discount": true,
+      "popular": true,
+      "hot": false,
+      "sale": true,
+      "materials": "FSC-certified neem wood, known for its natural antibacterial properties",
+      "environmental_impact": "Biodegradable alternative to plastic combs. Reduces static electricity in hair compared to plastic combs. Sustainably harvested wood ensures forest preservation.",
+      "usage_instructions": "Clean with a dry cloth after each use. Occasionally apply a small amount of natural oil (like jojoba or coconut) to maintain the wood. Keep away from excessive moisture and direct sunlight.",
+      "customer_reviews": [
+        {
+          "user": "NaturalBeauty",
+          "rating": 5,
+          "comment": "This comb glides through my hair without causing any static. My scalp feels healthier since switching from plastic!"
+        },
+        {
+          "user": "CurlyHairDon'tCare",
+          "rating": 5,
+          "comment": "Perfect for detangling my curls. The wide teeth are gentle and don't break my hair."
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Organic Beeswax Wraps",
+      "price": 15.99,
+      "description": "Sustainable food wraps that replace single-use plastic.",
+      "sustainability_info": "Made with organic cotton and beeswax, reusable and compostable.",
+      "category": "Kitchen",
+      "image_url": "https://placehold.co/400",
+      "stock": 20,
+      "rating": 4.6,
+      "discount": false,
+      "popular": true,
+      "hot": false,
+      "sale": false,
+      "materials": "GOTS-certified organic cotton, locally sourced beeswax, organic jojoba oil, and tree resin",
+      "environmental_impact": "Each wrap can eliminate hundreds of pieces of plastic wrap over its lifetime. Fully compostable at end of life, leaving no waste. Supports local beekeepers and sustainable agriculture.",
+      "usage_instructions": "Use the warmth of your hands to mold around food or containers. Clean with cold water and mild soap. Air dry completely. Refresh every 6-12 months by reheating in oven at low temperature. Avoid using with raw meat or hot foods.",
+      "customer_reviews": [
+        {
+          "user": "ZeroWasteKitchen",
+          "rating": 5,
+          "comment": "These wraps keep my produce fresher than plastic ever did! Plus they look beautiful in my fridge."
+        },
+        {
+          "user": "EcoChef",
+          "rating": 4,
+          "comment": "Great alternative to plastic wrap. They work well for most foods, though I wish they came in larger sizes for big bread loaves."
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "name": "Stainless Steel Straw Set",
+      "old_price": 12.99,
+      "price": 9.99,
+      "description": "A set of 4 stainless steel straws with a cleaning brush.",
+      "sustainability_info": "Reusable and dishwasher safe, eliminates single-use plastic straws.",
+      "category": "Kitchen",
+      "image_url": "https://placehold.co/400",
+      "stock": 60,
+      "rating": 4.9,
+      "discount": true,
+      "popular": true,
+      "hot": true,
+      "sale": false,
+      "materials": "Food-grade 18/8 stainless steel with silicone tips, includes natural bamboo fiber cleaning brush",
+      "environmental_impact": "Each straw can prevent thousands of plastic straws from entering landfills and oceans. Stainless steel is infinitely recyclable at end of life. Production uses less resources than constant manufacturing of disposables.",
+      "usage_instructions": "Rinse immediately after use. Use included brush with warm soapy water for thorough cleaning. Dishwasher safe. Store in dry place. Silicone tips can be removed for deeper cleaning. Avoid using with extremely hot beverages.",
+      "customer_reviews": [
+        {
+          "user": "OceanAdvocate",
+          "rating": 5,
+          "comment": "These straws are perfect! The silicone tips make them comfortable to use, and I love knowing I'm not contributing to ocean plastic."
+        },
+        {
+          "user": "SustainableSipper",
+          "rating": 5,
+          "comment": "Sturdy, easy to clean, and the carrying case makes it convenient to bring everywhere. No more plastic straws for me!"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "name": "Coconut Shell Bowl Set",
+      "price": 24.99,
+      "description": "A set of 2 coconut shell bowls, perfect for smoothie bowls or snacks.",
+      "sustainability_info": "Handcrafted from discarded coconut shells, zero waste product.",
+      "category": "Kitchen",
+      "image_url": "https://placehold.co/400",
+      "stock": 25,
+      "rating": 4.3,
+      "discount": false,
+      "popular": true,
+      "hot": false,
+      "sale": false,
+      "materials": "100% natural coconut shells, hand-polished and finished with food-safe coconut oil",
+      "environmental_impact": "Upcycles agricultural waste that would otherwise be burned or discarded. Supports artisan communities in developing regions. Fully biodegradable and compostable at end of life.",
+      "usage_instructions": "Hand wash only with mild soap and warm water. Do not soak in water or put in dishwasher. Occasionally reapply coconut oil to maintain finish. Not suitable for hot foods or microwave use. Each bowl has unique variations in size and appearance.",
+      "customer_reviews": [
+        {
+          "user": "TropicalVibes",
+          "rating": 4,
+          "comment": "These bowls make my morning smoothie feel like a tropical getaway! They're beautiful and sustainable."
+        },
+        {
+          "user": "EarthConscious",
+          "rating": 5,
+          "comment": "Love that these are made from waste coconut shells. They're surprisingly durable and add a natural touch to my table."
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "name": "Reusable Glass Water Bottle",
+      "price": 18.50,
+      "description": "Stylish and eco-friendly glass water bottle with a bamboo lid.",
+      "sustainability_info": "Made from borosilicate glass, BPA-free, and reusable.",
+      "category": "Bottles",
+      "image_url": "https://placehold.co/400",
+      "stock": 30,
+      "rating": 4.7,
+      "discount": false,
+      "popular": true,
+      "hot": false,
+      "sale": false,
+      "materials": "Heat-resistant borosilicate glass, sustainable bamboo lid with food-grade silicone seal, protective silicone sleeve",
+      "environmental_impact": "Eliminates the need for single-use plastic water bottles. Glass is infinitely recyclable without quality degradation. No leaching of chemicals into water like plastic bottles. Borosilicate glass production has lower environmental impact than regular glass.",
+      "usage_instructions": "Wash thoroughly before first use. Hand wash recommended - remove bamboo lid before washing. Not suitable for freezing. Bamboo lid should not be soaked. Silicone sleeve can be removed for deeper cleaning. Avoid extreme temperature changes to prevent glass damage.",
+      "customer_reviews": [
+        {
+          "user": "HydrationHero",
+          "rating": 5,
+          "comment": "This bottle is beautiful and functional! I love that I can see exactly how much water I've had, and the bamboo lid adds a nice touch."
+        },
+        {
+          "user": "PlasticFreeLiving",
+          "rating": 4,
+          "comment": "Great bottle that doesn't affect the taste of water like plastic does. The silicone sleeve provides good grip and protection."
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "name": "Compostable Kitchen Sponge",
+      "old_price": 8.99,
+      "price": 6.99,
+      "description": "Biodegradable sponge made from natural plant fibers.",
+      "sustainability_info": "Plastic-free, fully compostable, and gentle on surfaces.",
+      "category": "Cleaning",
+      "image_url": "https://placehold.co/400",
+      "stock": 45,
+      "rating": 4.4,
+      "discount": true,
+      "popular": true,
+      "hot": false,
+      "sale": true,
+      "materials": "Loofah plant fibers and organic cotton, free from synthetic materials and dyes",
+      "environmental_impact": "Breaks down completely in home compost in 4-6 weeks. Replaces petroleum-based plastic sponges that shed microplastics. Loofah is a renewable resource that requires minimal water and no pesticides to grow.",
+      "usage_instructions": "Rinse thoroughly after each use and squeeze out excess water. Allow to dry completely between uses to prevent bacterial growth. Can be sanitized in boiling water or microwave when damp for 30 seconds. Replace every 4-6 weeks or when showing signs of wear. Compost at end of life.",
+      "customer_reviews": [
+        {
+          "user": "CleanGreen",
+          "rating": 4,
+          "comment": "These sponges work surprisingly well! They're slightly less absorbent than synthetic ones but clean dishes effectively."
+        },
+        {
+          "user": "ZeroWasteHome",
+          "rating": 5,
+          "comment": "I love that I can just toss these in my compost bin when they're worn out. No more plastic sponges in my home!"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "name": "Reusable Cotton Tote Bag",
+      "price": 12.50,
+      "description": "Say goodbye to plastic bags with this durable, stylish tote.",
+      "sustainability_info": "Made from organic cotton, reusable, and machine washable.",
+      "category": "Bags",
+      "image_url": "https://placehold.co/400",
+      "stock": 35,
+      "rating": 4.5,
+      "discount": false,
+      "popular": true,
+      "hot": true,
+      "sale": false
+    },
+    {
+      "id": 10,
+      "name": "Handmade Wooden Comb",
+      "old_price": 12.00,
+      "price": 10.00,
+      "description": "A natural alternative to plastic combs, gentle on hair and scalp.",
+      "sustainability_info": "Hand-carved from sustainably sourced wood, fully biodegradable.",
+      "category": "Personal Care",
+      "image_url": "https://placehold.co/400",
+      "stock": 40,
+      "rating": 4.8,
+      "discount": true,
+      "popular": true,
+      "hot": false,
+      "sale": true
+    },
+    {
+      "id": 11,
+      "name": "Organic Beeswax Wraps",
+      "price": 15.99,
+      "description": "Sustainable food wraps that replace single-use plastic.",
+      "sustainability_info": "Made with organic cotton and beeswax, reusable and compostable.",
+      "category": "Kitchen",
+      "image_url": "https://placehold.co/400",
+      "stock": 20,
+      "rating": 4.6,
+      "discount": false,
+      "popular": false,
+      "hot": false,
+      "sale": false
+    },
+    {
+      "id": 12,
+      "name": "Stainless Steel Straw Set",
+      "old_price": 12.99,
+      "price": 9.99,
+      "description": "A set of 4 stainless steel straws with a cleaning brush.",
+      "sustainability_info": "Reusable and dishwasher safe, eliminates single-use plastic straws.",
+      "category": "Kitchen",
+      "image_url": "https://placehold.co/400",
+      "stock": 60,
+      "rating": 4.9,
+      "discount": true,
+      "popular": false,
+      "hot": false,
+      "sale": true
+    },
+    {
+      "id": 13,
+      "name": "Coconut Shell Bowl Set",
+      "price": 24.99,
+      "description": "A set of 2 coconut shell bowls, perfect for smoothie bowls or snacks.",
+      "sustainability_info": "Handcrafted from discarded coconut shells, zero waste product.",
+      "category": "Kitchen",
+      "image_url": "https://placehold.co/400",
+      "stock": 25,
+      "rating": 4.3,
+      "discount": false,
+      "popular": false,
+      "hot": false,
+      "sale": false
+    },
+    {
+      "id": 14,
+      "name": "Reusable Glass Water Bottle",
+      "price": 18.50,
+      "description": "Stylish and eco-friendly glass water bottle with a bamboo lid.",
+      "sustainability_info": "Made from borosilicate glass, BPA-free, and reusable.",
+      "category": "Bottles",
+      "image_url": "https://placehold.co/400",
+      "stock": 30,
+      "rating": 4.7,
+      "discount": false,
+      "popular": false,
+      "hot": false,
+      "sale": false
+    },
+    {
+      "id": 15,
+      "name": "Compostable Kitchen Sponge",
+      "old_price": 8.99,
+      "price": 6.99,
+      "description": "Biodegradable sponge made from natural plant fibers.",
+      "sustainability_info": "Plastic-free, fully compostable, and gentle on surfaces.",
+      "category": "Cleaning",
+      "image_url": "https://placehold.co/400",
+      "stock": 45,
+      "rating": 4.4,
+      "discount": true,
+      "popular": false,
+      "hot": false,
+      "sale": true
+    }
+  ]
+  

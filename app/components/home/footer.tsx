@@ -1,9 +1,30 @@
-import Link from 'next/link'
-import React from 'react'
+"use client"
 
-function footer() {
+import Link from 'next/link'
+import React, { useState, useEffect } from 'react'
+import { BiUpArrowAlt } from 'react-icons/bi';
+
+
+function Footer() {
+
+    const [showButton, setShowButton] = useState(false);
+
+    useEffect(() => {
+        const handleScroll = () => {
+          setShowButton(window.scrollY > 300);
+        };
+    
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+
   return (
-    <footer className="bg-white dark:bg-gray-900">
+    <footer className="bg-white dark:bg-gray-900 ">
         <div className="mx-auto w-full max-w-screen-xl">
         <div className="grid grid-cols-2 gap-8 px-4 py-6 lg:py-8 md:grid-cols-4">
             <div>
@@ -107,6 +128,15 @@ function footer() {
                     <span className="sr-only">Dribbble account</span>
                 </a>
             </div>
+            {showButton && (
+                <button
+                onClick={scrollToTop}
+                className="fixed bottom-10 right-10 bg-green-600 p-3 rounded-full shadow-lg hover:bg-green-700"
+                aria-label="Back to top"
+                >
+                    <BiUpArrowAlt size={30} className="text-white" />
+                </button>
+            )}
         </div>
         </div>
     </footer>
@@ -116,4 +146,4 @@ function footer() {
   )
 }
 
-export default footer
+export default Footer

@@ -89,11 +89,11 @@ function Features() {
           <div 
           className="relative hover:border-green-400 hover:border-1 bg-gray-300 shadow-md h-[220px] rounded-2xl flex flex-col items-start gap-4 p-10 overflow-hidden "
           key={key}>
-            <h1 className="text-2xl text-blue-500">{item.name}</h1>
-            <p>Get Upto <b>{item.dis}</b> Off</p>
+            <h1 className="md:text-2xl text-lg text-blue-500">{item.name}</h1>
+            <p className="max-md:text-md">Get Upto <b>{item.dis}</b> Off</p>
             <button className="btn2 w-30">Shop now</button>
             <img
-            className="absolute right-2 w-70 h-50 top-2 object-contain"
+            className="absolute top-20  right-0 w-40 h-30 sm:w-70 sm:h-50 sm:top-2 object-contain"
             src={item.img}
             alt={item.name}
             />

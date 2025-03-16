@@ -8,7 +8,7 @@ function PopularProducts() {
   return (
     <div className='xl:px-20 px-10 pb-20'>
       <h1 className="text-2xl font-bold mb-5">Popular Products</h1>
-      <div className="grid grid-cols-2 xl:grid-cols-5 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-5">
         {products
           .filter(item => item.popular) // Only keep products where `popular` is true
           .map((item, key) => (

@@ -1,9 +1,16 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
-/* Base styles for consistent typography */
+
 @layer base {
-  html {
-    @apply scroll-smooth;
+    html {
+      @apply scroll-smooth;
+    }
+    
   }
   
+
+html, body {
+    margin: 0;
+    overflow-x: hidden;
+    font-family: 'Nunito', sans-serif;
 }

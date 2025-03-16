@@ -89,7 +89,7 @@ function NavBar({ active }: NavBarProps ) {
             About Us
           </Link>
           <a href="#" className="links">
-            Products
+            Service
           </a>
           <a href="#" className="links">
             Shop Now
@@ -135,7 +135,7 @@ function NavBar({ active }: NavBarProps ) {
           About Us
         </Link>
         <a href="#" className="link" onClick={() => setMenuOpen(false)}>
-          Products
+          Service
         </a>
         <a href="#" className="link" onClick={() => setMenuOpen(false)}>
           Shop Now

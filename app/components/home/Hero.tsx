@@ -18,7 +18,7 @@ function Hero() {
         <p className="text-black/70 max-w-lg py-5 text-lg">
           Eco-friendly, handmade, and crafted with love. Shop consciously for a greener future.
         </p>
-        <div className=" flex gap-2 sm:gap-5 w-md">
+        <div className=" flex gap-2 max-md:flex-col sm:gap-5 w-full justify-center items-center">
           <button
             className="px-5 py-3 text-green-600 font-medium border-green-600 border-2 x w-40  sm:w-50 rounded-2xl mt-5 cursor-pointer hover:text-white hover:bg-green-700 transition"
           >

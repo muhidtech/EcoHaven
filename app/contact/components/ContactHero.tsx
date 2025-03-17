@@ -10,7 +10,7 @@ function ContactHero() {
         <div className='bg-cover bg-center h-[80%] w-full flex md:flex-row flex-col justify-center items-center rounded-2xl shadow-2xl gap-5 ' style={{ backgroundImage: 'linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("/contact.jpg")'}} >
 
             <button className='py-4 px-8 bg-green-500 rounded-2xl cursor-pointer hover:bg-green-500/70  '>
-                <Link href='/'>GET STARTED</Link>
+                <Link href='/signup'>GET STARTED</Link>
             </button>
             <button className='py-4 px-8 border-2 border-green-500 text-white hover:bg-green-500 hover:text-black rounded-2xl'>
                 <Link href='#Contact'>CONTACT</Link>

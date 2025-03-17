@@ -3,6 +3,7 @@ import NavBar from '../components/home/navBar'
 import ContactHero from './components/ContactHero'
 import Contact from './components/Contact'
 import Footer from '../components/home/footer'
+import SocialMedia from './components/SocialMedia'
 
 function page() {
   return (
@@ -10,6 +11,7 @@ function page() {
       < NavBar />
       <ContactHero />
       <Contact />
+      <SocialMedia />
       <Footer />
     </>
   )

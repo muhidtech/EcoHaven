@@ -1,6 +1,7 @@
 "use client"
 
 
+import Link from 'next/link'
 import React from 'react'
 
 function Hero() {
@@ -17,7 +18,7 @@ function Hero() {
       </p>
 
       <button className='border-white border-2  w-xs py-3 rounded-2xl text-white hover:bg-white hover:text-black cursor-pointer mt-5'>
-        Get Started
+        <Link href='/signup'>Get Started</Link>
       </button>
     </div>
   )

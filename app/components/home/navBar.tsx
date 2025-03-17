@@ -48,8 +48,8 @@ function NavBar() {
   const navItems = [
     { name: "HOME", path: "/" },
     { name: "ABOUT US", path: "/about" },
-    { name: "PRODUCT", path: "/product" },
     { name: "SHOP", path: "/shop" },
+    { name: "BLOG", path: "/blog" },
     { name: "CONTACT US", path: "/contact" },
   ];
 

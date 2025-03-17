@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiArrowLeft, FiEye, FiEyeOff } from "react-icons/fi";
+import Link from "next/link";
 
 const Login = () => {
   const router = useRouter();
@@ -42,10 +43,14 @@ const Login = () => {
       <div className="w-full lg:w-1/2 flex flex-col justify-center p-8 relative">
         <button
           onClick={() => router.back()}
-          className="absolute top-20 left-5 text-green-600 hover:text-green-800 text-3xl"
+          className="absolute top-10 left-10 text-green-600 hover:text-green-800 text-3xl cursor-pointer"
         >
           <FiArrowLeft />
         </button>
+
+        <h1 className="cursor-pointer text-center text-3xl md:text-5xl mb-15 text-green-600 font-semibold ">
+          <Link href='/'>EcoHaven</Link>
+        </h1>
 
         <div className="max-w-lg w-full mx-auto bg-white p-8 shadow-2xl rounded-xl relative">
           <h2 className="text-3xl font-bold text-green-600 mb-8">Login</h2>
@@ -109,7 +114,10 @@ const Login = () => {
         </div>
       </div>
 
-      <div className="hidden lg:flex w-1/2 bg-green-600 items-center justify-center">
+      <div className="hidden lg:flex w-1/2 flex-col bg-green-600 items-center justify-center">
+      <h1 className="text-center text-3xl mb-10 text-white font-semibold ">
+          EcoHaven
+        </h1>
         <h1 className="text-white text-5xl font-bold">Welcome Back!</h1>
       </div>
     </div>

@@ -10,7 +10,7 @@ import Footer from './components/home/footer';
 function Home() {
   return (
     <>
-      <NavBar active='Home' />
+      <NavBar />
       <Hero />
       <Features />
       <PopularProducts />

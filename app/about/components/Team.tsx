@@ -42,7 +42,7 @@ function Team() {
                         style={{
                             backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${member.image})`
                         }}
-                        className='relative cursor-pointer group hover:scale-105 transition-transform duration-300 w-full lg:h-80 bg-cover lg:bg-center md:h-150 h-80 bg-no-repeat rounded-3xl lg:rounded-lg flex items-center justify-center'>
+                        className='relative cursor-pointer group hover:scale-105 transition-transform duration-300 w-full lg:h-100 bg-cover lg:bg-top md:h-150 h-80 bg-no-repeat rounded-3xl lg:rounded-lg flex items-center justify-center'>
 
                         <div className='absolute group-hover:scale-105 transition-transform duration-300 text-gray-300 text-center'>
                             <h2 className='text-lg font-semibold'>{member.name}</h2>

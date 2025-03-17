@@ -6,16 +6,18 @@ import StorySection from './components/StorySection'
 import Footer from '../components/home/footer'
 import Team from './components/Team'
 import Commitment from './components/Commitment'
+import CustomerReview from './components/CustomerReview'
 
 
 function page() {
   return (
     <>
-      <NavBar active='About' />
+      <NavBar />
       <Hero />
       <StorySection />
       <Team />
       <Commitment />
+      <CustomerReview />
       <Footer />
     </>
   )

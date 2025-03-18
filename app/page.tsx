@@ -1,22 +1,24 @@
 import React from 'react';
-import NavBar from './components/home/navBar';
-import Hero from './components/home/Hero';
-import Features from './components/home/features';
-import PopularProducts from './components/home/PopularProducts';
-import DailySells from './components/home/DailySells';
-import Footer from './components/home/footer';
+import NavBar from './components/common/NavBar';
+import Hero from './components/landing/Hero';
+import Features from './components/landing/Features';
+import PopularProducts from './components//landing/PopularProducts';
+import DailySells from './components/landing/DailySells';
+import Footer from './components/common/Footer';
+import { CartProvider } from "./contexts/CardContext";
+
 
 
 function Home() {
   return (
-    <>
+    <CartProvider>
       <NavBar />
       <Hero />
       <Features />
       <PopularProducts />
       <DailySells />
       <Footer />
-    </>
+    </CartProvider>
   );
 }
 

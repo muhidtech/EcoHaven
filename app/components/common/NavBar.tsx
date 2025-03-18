@@ -13,8 +13,8 @@ let getCarts: () => number;
 let getIsLoggedIn: () => boolean;
 
 // Functions to update and retrieve global state
-export function updateCarts(newCartCount: number) {
-  setCarts(newCartCount);
+export function updateCarts() {
+  setCarts((c) => c + 1);
 }
 
 export function updateIsLoggedIn(status: boolean) {

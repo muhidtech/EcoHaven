@@ -1,0 +1,226 @@
+/* 
+  EcoHaven Product Features Schema
+  -------------------------------
+  Current Schema:
+  - id: Unique identifier for the product
+  - name: Product name
+  - price: Product price (string with currency symbol)
+  - des: Short product description
+  - img: Product image URL
+  - category: Product category
+  - stock: Available quantity
+  - rating: Customer rating (0-5)
+  - material: Primary material used
+  - weight: Product weight
+  - dimensions: Product dimensions
+  - isNew: Whether the product is newly added
+  - isFeatured: Whether to feature the product prominently
+  
+  Firebase Migration Notes:
+  ------------------------
+  1. When migrating to Firebase Firestore:
+     - Use a flat structure with a top-level "products" collection
+     - Each product should be a separate document with auto-generated IDs
+     - Convert price from string to number and store currency separately
+     - Store categories in a separate collection and reference by ID
+     - Consider adding subcollections for variants, reviews, etc.
+  
+  2. Example Firestore structure:
+     products/
+       ├─ [auto-id]/
+       │   ├─ name: "Bamboo Toothbrush"
+       │   ├─ price: 8.99
+       │   ├─ currency: "USD"
+       │   ├─ description: "Eco-friendly and biodegradable..."
+       │   ├─ imageUrl: "https://..."
+       │   ├─ category: "personal-care"
+       │   ├─ stock: 150
+       │   └─ ...
+  
+  3. For real-time updates:
+     - Use Firestore onSnapshot listeners in React components
+     - Implement proper error handling and loading states
+*/
+
+[
+    {
+        "id": "prod-001",
+        "name": "Bamboo Toothbrush",
+        "price": "$8.99",
+        "des": "Eco-friendly and biodegradable toothbrush for a plastic-free world.",
+        "img": "https://placehold.co/400",
+        "category": "personal-care",
+        "stock": 150,
+        "rating": 4.7,
+        "material": "Sustainable bamboo, BPA-free bristles",
+        "weight": "15g",
+        "dimensions": "7.5 × 0.7 × 0.7 inches",
+        "isNew": false,
+        "isFeatured": true
+    },
+    {
+        "id": "prod-002",
+        "name": "Reusable Cotton Tote Bag",
+        "price": "$12.50",
+        "des": "Say goodbye to plastic bags with this durable, stylish tote.",
+        "img": "https://placehold.co/400",
+        "category": "bags",
+        "stock": 75,
+        "rating": 4.9,
+        "material": "100% organic cotton",
+        "weight": "120g",
+        "dimensions": "15 × 16 × 3 inches",
+        "isNew": false,
+        "isFeatured": true
+    },
+    {
+        "id": "prod-003",
+        "name": "Handmade Wooden Comb",
+        "price": "$10.00",
+        "des": "A natural alternative to plastic combs, gentle on hair and scalp.",
+        "img": "https://placehold.co/400",
+        "category": "personal-care",
+        "stock": 100,
+        "rating": 4.5,
+        "material": "Sustainably harvested neem wood",
+        "weight": "30g",
+        "dimensions": "6 × 2 × 0.2 inches",
+        "isNew": false,
+        "isFeatured": false
+    },
+    {
+        "id": "prod-004",
+        "name": "Organic Beeswax Wraps",
+        "price": "$15.99",
+        "des": "Sustainable food wraps that replace single-use plastic.",
+        "img": "https://placehold.co/400",
+        "category": "kitchen",
+        "stock": 85,
+        "rating": 4.8,
+        "material": "Organic cotton, beeswax, jojoba oil, tree resin",
+        "weight": "50g",
+        "dimensions": "Set of 3: Small (7×7"), Medium (10×10"), Large (13×13")",
+        "isNew": false,
+        "isFeatured": true
+    },
+    {
+        "id": "prod-005",
+        "name": "Stainless Steel Water Bottle",
+        "price": "$24.99",
+        "des": "Double-walled insulated bottle that keeps drinks cold for 24 hours or hot for 12 hours.",
+        "img": "https://placehold.co/400",
+        "category": "drinkware",
+        "stock": 120,
+        "rating": 4.7,
+        "material": "18/8 food-grade stainless steel",
+        "weight": "350g",
+        "dimensions": "10 × 2.8 inches",
+        "isNew": true,
+        "isFeatured": true
+    },
+    {
+        "id": "prod-006",
+        "name": "Recycled Paper Notebook",
+        "price": "$7.50",
+        "des": "Eco-friendly notebook made from 100% post-consumer recycled paper.",
+        "img": "https://placehold.co/400",
+        "category": "stationery",
+        "stock": 200,
+        "rating": 4.3,
+        "material": "Recycled paper, soy-based inks",
+        "weight": "180g",
+        "dimensions": "8.5 × 5.5 × 0.5 inches",
+        "isNew": false,
+        "isFeatured": false
+    },
+    {
+        "id": "prod-007",
+        "name": "Biodegradable Phone Case",
+        "price": "$18.99",
+        "des": "Protective phone case made from plant-based materials that fully decompose.",
+        "img": "https://placehold.co/400",
+        "category": "accessories",
+        "stock": 65,
+        "rating": 4.2,
+        "material": "Plant-based biopolymers",
+        "weight": "25g",
+        "dimensions": "Varies by phone model",
+        "isNew": true,
+        "isFeatured": false
+    },
+    {
+        "id": "prod-008",
+        "name": "Solar-Powered Charger",
+        "price": "$35.00",
+        "des": "Portable charger that harnesses solar energy to power your devices on the go.",
+        "img": "https://placehold.co/400",
+        "category": "electronics",
+        "stock": 40,
+        "rating": 4.6,
+        "material": "Recycled plastic, monocrystalline solar panels",
+        "weight": "200g",
+        "dimensions": "5.5 × 3 × 0.7 inches",
+        "isNew": false,
+        "isFeatured": true
+    },
+    {
+        "id": "prod-009",
+        "name": "Reusable Silicone Food Bags",
+        "price": "$16.50",
+        "des": "Leakproof, airtight bags for storing food without single-use plastics.",
+        "img": "https://placehold.co/400",
+        "category": "kitchen",
+        "stock": 90,
+        "rating": 4.4,
+        "material": "Food-grade silicone",
+        "weight": "100g",
+        "dimensions": "Set of 4: Various sizes",
+        "isNew": false,
+        "isFeatured": false
+    },
+    {
+        "id": "prod-010",
+        "name": "Organic Cotton Bedding",
+        "price": "$89.99",
+        "des": "Luxuriously soft bedding made from GOTS-certified organic cotton.",
+        "img": "https://placehold.co/400",
+        "category": "home",
+        "stock": 30,
+        "rating": 4.9,
+        "material": "100% organic cotton",
+        "weight": "1.2kg",
+        "dimensions": "Queen size set",
+        "isNew": true,
+        "isFeatured": true
+    },
+    {
+        "id": "prod-011",
+        "name": "Bamboo Cutlery Set",
+        "price": "$12.99",
+        "des": "Portable cutlery set for eco-conscious dining on the go.",
+        "img": "https://placehold.co/400",
+        "category": "kitchen",
+        "stock": 110,
+        "rating": 4.5,
+        "material": "Sustainable bamboo",
+        "weight": "60g",
+        "dimensions": "8 × 2 × 1 inches (in carrying case)",
+        "isNew": false,
+        "isFeatured": false
+    },
+    {
+        "id": "prod-012",
+        "name": "Natural Loofah Sponges",
+        "price": "$9.99",
+        "des": "Biodegradable bath and kitchen sponges grown without chemicals.",
+        "img": "https://placehold.co/400",
+        "category": "personal-care",
+        "stock": 75,
+        "rating": 4.3,
+        "material": "100% natural loofah plant",
+        "weight": "30g",
+        "dimensions": "Set of 3: 4-5 inches each",
+        "isNew": false,
+        "isFeatured": false
+    }
+]

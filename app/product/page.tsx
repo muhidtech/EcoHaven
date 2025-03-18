@@ -1,11 +1,12 @@
-import React from 'react'
+// import React from 'react'
+// import ProductPage from './ProductPage'
 
-function page() {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+// function page() {
+//   return (
+//     <>
+//       <ProductPage />
+//     </>
+//   )
+// }
 
-export default page
+// export default page

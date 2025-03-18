@@ -56,6 +56,7 @@ const PopularProducts: React.FC = () => {
       price: item.price,
       image: item.imageUrl,
       stock: item.stock,
+      slug: item.slug
     });
   };
 

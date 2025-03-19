@@ -59,7 +59,7 @@ export const ProductCard = ({ product, onAddToCart }: { product: Product, onAddT
 
    // Navigate to the product page
    const handleViewProduct = () => {
-    router.push(`/product/${product.slug || product.id}`); // If using Next.js
+    router.push(`/product/${product.category}/${product.slug || product.id}`); // If using Next.js
     // navigate(`/product/${product.id}`); // If using React Router
   };
 
@@ -196,6 +196,7 @@ const ProductGrid = ({
             price: product.price,
             image: product.image,
             stock: product.stock, // ✅ Include stock property
+            slug: product.slug
           });
           updateCarts();
         }
@@ -269,10 +270,6 @@ function Shop() {
 
     fetchProducts();
   }, []);
-
-  
-
-  
 
   return (
     <>

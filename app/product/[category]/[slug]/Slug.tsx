@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useParams, notFound } from 'next/navigation';
 import { Star, ShoppingCart, Heart, Share2 } from 'lucide-react';
@@ -262,8 +261,8 @@ export default function ProductPage() {
         {/* Breadcrumb navigation */}
         <div className="text-sm text-gray-500 mb-6">
           <Link href="/" className="hover:text-green-600">Home</Link> &gt; 
-          <Link href="/products" className="hover:text-green-600 mx-2">Products</Link> &gt; 
-          <Link href={`/products/category/${product.category}`} className="hover:text-green-600 mx-2">{product.category}</Link> &gt; 
+          <Link href="/product" className="hover:text-green-600 mx-2">Products</Link> &gt; 
+          <Link href={`/product/${product.category}`} className="hover:text-green-600 mx-2">{product.category}</Link> &gt; 
           <span className="text-gray-700 ml-2">{product.name}</span>
         </div>
 

@@ -290,7 +290,7 @@ export interface CartItem {
      */
     const itemExists = (id: string): boolean => {
       if (!id || !Array.isArray(items)) return false;
-      return items.some(item => item.slug || item.id === id);
+      return items.some(item => item.slug === id || item.id === id);
     };
   
     // Create the context value object with all cart functions

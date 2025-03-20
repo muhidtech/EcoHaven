@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CardContext';
@@ -26,13 +25,13 @@ type PaymentMethod = 'credit_card' | 'paypal' | 'bank_transfer';
 
 export default function CheckoutPage() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, isLoggedIn } = useAuth();
   const { items, clearCart, getCartTotal } = useCart();
 
   // State for form data and validation
   const [shippingInfo, setShippingInfo] = useState<ShippingFormData>({
-    fullName: user?.displayName || '',
-    email: user?.email || '',
+    fullName: isLoggedIn ? `${user?.firstName} ${user?.lastName}` : '',
+    email: isLoggedIn ? user?.email ?? '' : '',
     address: '',
     city: '',
     state: '',

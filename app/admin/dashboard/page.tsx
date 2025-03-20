@@ -282,7 +282,7 @@ const Dashboard = () => {
             <FaUsers className="mr-3 h-5 w-5" />
             <span>Users</span>
           </Link>
-          <Link href="/admin/blog" className="group flex items-center px-4 py-3 text-gray-700 rounded-md hover:bg-green-50 hover:text-green-700 mb-1">
+          <Link href="/admin/blogs" className="group flex items-center px-4 py-3 text-gray-700 rounded-md hover:bg-green-50 hover:text-green-700 mb-1">
             <FaBlog className="mr-3 h-5 w-5" />
             <span>Blog</span>
           </Link>

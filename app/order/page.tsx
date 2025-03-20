@@ -25,7 +25,7 @@ export function formatDate(dateString: string): string {
 }
 
 export default function OrderPage() {
-  const { user } = useAuth();
+  const { user, isAdminLogin } = useAuth();
   const router = useRouter();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -37,7 +37,7 @@ export default function OrderPage() {
         setLoading(true);
         setError(null);
 
-        if (!user) {
+        if (!isAdminLogin) {
           setError("You must be logged in to view orders");
           setLoading(false);
           router.push("/login"); // Redirect to login page if not authenticated
@@ -47,7 +47,7 @@ export default function OrderPage() {
         const allOrders = getOrdersFromStorage();
 
         // Filter orders for the current user
-        const userOrders = allOrders.filter(order => order.userId === user.uid);
+        const userOrders = allOrders.filter(order => user && order.userId === user.uid);
         setOrders(userOrders);
       } catch (err) {
         console.error("Error fetching orders:", err); // Replace with a logging service in production

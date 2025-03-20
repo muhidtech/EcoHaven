@@ -46,10 +46,10 @@ const CartPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className=" flex flex-col">
       <NavBar />
-      <main className="flex-grow container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold text-green-800 mb-6">Your Shopping Cart</h1>
+      <main className="flex-grow min-h-screen container flex flex-col justify-center  mx-auto px-4 py-20">
+        <h1 className="text-3xl text-center font-bold text-green-800 mb-6">Your Shopping Cart</h1>
         
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -123,7 +123,7 @@ const CartPage = () => {
                       <td className="py-4 px-4">
                         <button
                           onClick={() => handleRemoveItem(item.id)}
-                          className="text-red-600 hover:text-red-800"
+                          className="text-red-600 cursor-pointer hover:text-red-800"
                           aria-label="Remove item"
                         >
                           Remove
@@ -138,7 +138,7 @@ const CartPage = () => {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mt-6 space-y-4 md:space-y-0">
               <button
                 onClick={handleClearCart}
-                className="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded transition duration-300"
+                className="bg-red-600 hover:bg-red-700 cursor-pointer text-white font-medium py-2 px-4 rounded-xl transition duration-300"
               >
                 Clear Cart
               </button>
@@ -151,7 +151,7 @@ const CartPage = () => {
                 <p className="text-sm text-gray-500 mt-1">Shipping calculated at checkout</p>
                 <Link
                   href="/product/checkout"
-                  className="mt-3 block w-full bg-green-600 hover:bg-green-700 text-white text-center font-medium py-2 px-4 rounded transition duration-300"
+                  className="mt-3 block w-full cursor-pointer bg-green-600 hover:bg-green-700 text-white text-center font-medium py-2 px-4 rounded-xl transition duration-300"
                 >
                   Proceed to Checkout
                 </Link>

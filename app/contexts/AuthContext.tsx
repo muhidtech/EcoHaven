@@ -354,6 +354,7 @@ export const AuthProvider = ({
         lastName: lastName.trim(),
         username: displayName.trim(),
         email: email.trim(),
+        role: 'user',
         password: password // In a real app, you'd hash this on the server
       };
       

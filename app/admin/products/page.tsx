@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/contexts/AuthContext";
+import AdminHeader from '../../components/admin/AdminHeader';
+
 import { 
   getProducts, 
   saveProducts, 
@@ -194,8 +196,7 @@ export default function ProductManagement() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-center">Product Management</h1>
-      
+      <AdminHeader title="Products Management" />
       <div className="bg-white rounded-lg shadow-md p-6 mb-8">
         <h2 className="text-xl font-semibold mb-4">
           {editingProduct ? "Edit Product" : "Add New Product"}

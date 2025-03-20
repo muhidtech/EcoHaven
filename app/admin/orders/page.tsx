@@ -1,12 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { localDataService } from '@/services/localDataService';
-import { Order } from '@/types';
+import { getOrdersFromStorage, updateOrder } from '../../services/localDataService';
+import { Order } from "../../services/localDataService";
 import Link from 'next/link';
 import { FiEye, FiEdit } from 'react-icons/fi';
-import AdminHeader from '@/components/admin/AdminHeader';
-import { useAuthContext } from '@/context/AuthContext';
+import AdminHeader from '../../components/admin/AdminHeader';
+import { useAuth } from '../../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 
 const OrdersPage = () => {
@@ -14,7 +14,7 @@ const OrdersPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [statusUpdating, setStatusUpdating] = useState<string | null>(null);
-  const { isAdminLogin } = useAuthContext();
+  const { isAdminLogin } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -23,10 +23,10 @@ const OrdersPage = () => {
       return;
     }
 
-    const fetchOrders = async () => {
+    const fetchOrders = () => {
       try {
         setLoading(true);
-        const ordersData = await localDataService.getOrdersFromStorage();
+        const ordersData = getOrdersFromStorage();
         setOrders(ordersData);
         setError(null);
       } catch (err) {
@@ -40,7 +40,7 @@ const OrdersPage = () => {
     fetchOrders();
   }, [isAdminLogin, router]);
 
-  const handleStatusUpdate = async (orderId: string, newStatus: string) => {
+  const handleStatusUpdate = async (orderId: string, newStatus: "pending" | "processing" | "shipped" | "delivered" | "cancelled") => {
     try {
       setStatusUpdating(orderId);
       // Find the order to update
@@ -57,7 +57,7 @@ const OrdersPage = () => {
       };
       
       // Update the order in storage
-      await localDataService.updateOrder(updatedOrder);
+      updateOrder(orderId, updatedOrder);
       
       // Update local state
       setOrders(orders.map(order => 
@@ -181,7 +181,7 @@ const OrdersPage = () => {
                             <select
                               className="bg-white border border-gray-300 rounded-md shadow-sm py-1 px-3 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
                               value={order.status}
-                              onChange={(e) => handleStatusUpdate(order.id, e.target.value)}
+                              onChange={(e) => handleStatusUpdate(order.id, e.target.value as "pending" | "processing" | "shipped" | "delivered" | "cancelled")}
                               disabled={statusUpdating === order.id}
                             >
                               <option value="Pending">Pending</option>

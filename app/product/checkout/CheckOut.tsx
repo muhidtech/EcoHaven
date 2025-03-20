@@ -139,6 +139,7 @@ export default function CheckoutPage() {
       
       setOrderId(newOrder.id);
       setOrderComplete(true);
+      sessionStorage.setItem('recentOrder', JSON.stringify(newOrder));
       clearCart();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
@@ -150,12 +151,12 @@ export default function CheckoutPage() {
   };
 
   // Render order confirmation
+  useEffect(() => {
+    if (orderComplete && orderId) {
+      router.push(`/order-confirmation?orderId=${orderId}`);
+    }
+  }, [orderComplete, orderId, router]);
   if (orderComplete) {
-    useEffect(() => {
-        if (orderComplete && orderId) {
-          router.push(`/order-confirmation?orderId=${orderId}`);
-        }
-      }, [orderComplete, orderId, router]);
 
     return (
       <div className="max-w-4xl mx-auto p-6 my-10">

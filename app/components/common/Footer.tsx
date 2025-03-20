@@ -14,7 +14,7 @@ function Footer() {
   // Navigate to checkout page if cart is not empty
   const handleViewCheck = () => {
     if (getItemCount() > 0) {
-      router.push("/product/checkout");
+      router.push("/cart");
     }
   };
 

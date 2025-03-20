@@ -5,6 +5,7 @@ import NavBar from '../components/common/NavBar';
 import Footer from '../components/common/Footer';
 import { ProductCard } from '../shop/Shop';
 import { getProducts } from '../services/localDataService';
+import { useCart } from '../contexts/CardContext';
 
 interface Product {
     id: string;
@@ -32,6 +33,7 @@ const ProductPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(getItemsPerPage());
+  const { itemExists, updateQuantity, removeItem, addItem } = useCart()
 
   useEffect(() => {
     const handleResize = () => setItemsPerPage(getItemsPerPage());
@@ -56,6 +58,29 @@ const ProductPage = () => {
     }
   };
 
+  const handleAddToCart = (item: Product) => {
+    if (item.stock <= 0) {
+      alert("Item is out of stock");
+      return;
+    }
+  
+    if (itemExists(item.id)) {
+      removeItem(item.id);
+      alert("Item removed from cart");
+      return; // Stop further execution if the item is removed
+    }
+    updateQuantity(item.id, item.stock)
+    addItem({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      image: item.image,
+      stock: item.stock,
+      slug: item.slug,
+    });
+    alert("Item added to cart");
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <NavBar />
@@ -63,7 +88,7 @@ const ProductPage = () => {
         <h1 className="text-3xl font-bold mb-8">Our Products</h1>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {currentProducts.map((product) => (
-            <ProductCard key={product.id} product={product} onAddToCart={() => {}} />
+            <ProductCard key={product.id} product={product} onAddToCart={() => handleAddToCart(product)} />
           ))}
         </div>
         <div className="flex justify-center items-center space-x-2 mt-8">

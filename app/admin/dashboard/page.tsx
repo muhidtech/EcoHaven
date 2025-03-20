@@ -18,6 +18,40 @@ export interface User {
   createdAt: string;
 }
 
+// Activity interfaces
+export interface BaseActivity {
+  id: string;
+  type: 'order' | 'user' | 'product' | 'blog';
+  date: Date;
+  message: string;
+}
+
+export interface OrderActivity extends BaseActivity {
+  type: 'order';
+  orderId: string;
+  customerName: string;
+  productName: string;
+}
+
+export interface UserActivity extends BaseActivity {
+  type: 'user';
+  userName: string;
+}
+
+export interface ProductActivity extends BaseActivity {
+  type: 'product';
+  productName: string;
+  action: 'added' | 'updated' | 'deleted';
+}
+
+export interface BlogActivity extends BaseActivity {
+  type: 'blog';
+  title: string;
+  slug: string;
+}
+
+export type Activity = OrderActivity | UserActivity | ProductActivity | BlogActivity;
+
 
 const Dashboard = () => {
   const router = useRouter();
@@ -28,6 +62,8 @@ const Dashboard = () => {
   const [ordersCount, setOrdersCount] = useState(0);
   const [usersCount, setUsersCount] = useState(0);
   const [revenue, setRevenue] = useState(0);
+  const [activityData, setActivityData] = useState<Activity[]>([]);
+  const [isActivityLoading, setIsActivityLoading] = useState(true);
 
   // Function to get products from JSON file or localStorage
   
@@ -45,6 +81,73 @@ const Dashboard = () => {
       return Array.isArray(users) ? users : [];
     } catch (error) {
       console.error('Error fetching users:', error);
+      return [];
+    }
+  };
+
+  // Function to fetch blog posts
+  const fetchBlogPosts = async (): Promise<BlogActivity[]> => {
+    try {
+      const response = await fetch('/blog.json');
+      if (!response.ok) {
+        throw new Error(`Failed to fetch blog posts: ${response.status} ${response.statusText}`);
+      }
+      const posts = await response.json();
+      
+      return Array.isArray(posts) ? posts.map((post: any, index: number) => ({
+        id: post.id || `blog-${index}`,
+        type: 'blog' as const,
+        date: new Date(post.publishedDate),
+        message: `"${post.title}" published`,
+        title: post.title,
+        slug: post.slug || ''
+      })) : [];
+    } catch (error) {
+      console.error('Error fetching blog posts:', error);
+      return [];
+    }
+  };
+
+  // Function to fetch all activity data
+  const fetchActivityData = async (): Promise<Activity[]> => {
+    try {
+      // Get orders and convert to activities
+      const orders = getOrdersFromStorage();
+      const orderActivities: OrderActivity[] = orders.slice(0, 5).map((order: any) => ({
+        id: `order-${order.id}`,
+        type: 'order',
+        date: new Date(order.createdAt || Date.now()),
+        message: `${order.customerName || 'Customer'} placed an order for ${order.items?.[0]?.productName || 'products'}`,
+        orderId: order.id,
+        customerName: order.customerName || 'Customer',
+        productName: order.items?.[0]?.productName || 'products'
+      }));
+
+      // Get blog posts and convert to activities
+      const blogActivities = await fetchBlogPosts();
+      
+      // Get product updates (simulated for now)
+      const products = await getProducts();
+      const productActivities: ProductActivity[] = products.slice(0, 3).map((product: any, index: number) => ({
+        id: `product-${product.id || index}`,
+        type: 'product',
+        date: new Date(Date.now() - Math.random() * 86400000 * 3), // Random time in the last 3 days
+        message: `${product.name} inventory updated to ${product.stock || 'new'} units`,
+        productName: product.name,
+        action: 'updated'
+      }));
+
+      // Combine all activities
+      const allActivities: Activity[] = [
+        ...orderActivities,
+        ...blogActivities,
+        ...productActivities
+      ];
+
+      // Sort by date (newest first)
+      return allActivities.sort((a, b) => b.date.getTime() - a.date.getTime());
+    } catch (error) {
+      console.error('Error fetching activity data:', error);
       return [];
     }
   };
@@ -114,8 +217,15 @@ const Dashboard = () => {
         // Fetch users
         const users = await getUsers();
         setUsersCount(users.length);
+        
+        // Fetch activity data
+        setIsActivityLoading(true);
+        const activities = await fetchActivityData();
+        setActivityData(activities);
+        setIsActivityLoading(false);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
+        setIsActivityLoading(false);
       }
     };
 
@@ -138,6 +248,11 @@ const Dashboard = () => {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
+  const handleSignOut = () => {
+    signOut()
+    router.push('/')
+  }
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -173,7 +288,7 @@ const Dashboard = () => {
           </Link>
         </nav>
         <div className="absolute bottom-0 w-full border-t p-4">
-          <button onClick={() => signOut()} className="cursor-pointer flex items-center text-gray-700 hover:text-red-600 w-full">
+          <button onClick={() => handleSignOut()} className="cursor-pointer flex items-center text-gray-700 hover:text-red-600 w-full">
             <FaSignOutAlt className="mr-3 h-5 w-5" />
             <span>Logout</span>
           </button>
@@ -306,62 +421,93 @@ const Dashboard = () => {
             {/* Recent Activity */}
             <h2 className="text-xl font-medium text-gray-800 mb-4">Recent Activity</h2>
             <div className="bg-white rounded-lg shadow-sm p-6">
-              <ol className="relative border-l border-gray-200">
-                <li className="mb-6 ml-6">
-                  <span className="absolute flex items-center justify-center w-6 h-6 bg-blue-100 rounded-full -left-3 ring-8 ring-white">
-                    <FaShoppingCart className="w-3 h-3 text-blue-600" />
-                  </span>
-                  <div className="flex justify-between items-center">
-                    <h3 className="flex items-center text-lg font-semibold text-gray-900">New Order #1089</h3>
-                    <time className="text-sm text-gray-500">2 hours ago</time>
-                  </div>
-                  <p className="mb-2 text-base font-normal text-gray-600">
-                    John Doe placed an order for Eco-friendly Water Bottle
-                  </p>
-                  <Link href="/admin/orders" className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700">
-                    View Order
-                  </Link>
-                </li>
-                <li className="mb-6 ml-6">
-                  <span className="absolute flex items-center justify-center w-6 h-6 bg-green-100 rounded-full -left-3 ring-8 ring-white">
-                    <FaUsers className="w-3 h-3 text-green-600" />
-                  </span>
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-semibold text-gray-900">New User Registration</h3>
-                    <time className="text-sm text-gray-500">5 hours ago</time>
-                  </div>
-                  <p className="text-base font-normal text-gray-600">
-                    Jane Smith created a new account
-                  </p>
-                </li>
-                <li className="mb-6 ml-6">
-                  <span className="absolute flex items-center justify-center w-6 h-6 bg-purple-100 rounded-full -left-3 ring-8 ring-white">
-                    <FaBoxOpen className="w-3 h-3 text-purple-600" />
-                  </span>
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-semibold text-gray-900">Product Updated</h3>
-                    <time className="text-sm text-gray-500">1 day ago</time>
-                  </div>
-                  <p className="text-base font-normal text-gray-600">
-                    Bamboo Toothbrush inventory updated to 150 units
-                  </p>
-                </li>
-                <li className="ml-6">
-                  <span className="absolute flex items-center justify-center w-6 h-6 bg-yellow-100 rounded-full -left-3 ring-8 ring-white">
-                    <FaBlog className="w-3 h-3 text-yellow-600" />
-                  </span>
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-lg font-semibold text-gray-900">New Blog Post</h3>
-                    <time className="text-sm text-gray-500">2 days ago</time>
-                  </div>
-                  <p className="text-base font-normal text-gray-600">
-                    "10 Ways to Reduce Your Carbon Footprint" published
-                  </p>
-                  <Link href="/admin/blog" className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 mt-3">
-                    View Post
-                  </Link>
-                </li>
-              </ol>
+              {isActivityLoading ? (
+                <div className="text-center py-4">
+                  <p className="text-gray-600">Loading activity data...</p>
+                </div>
+              ) : activityData.length === 0 ? (
+                <div className="text-center py-4">
+                  <p className="text-gray-600">No recent activity found</p>
+                </div>
+              ) : (
+                <ol className="relative border-l border-gray-200">
+                  {activityData.slice(0, 5).map((activity, index) => {
+                    // Determine icon and styling based on activity type
+                    let icon;
+                    let bgColor;
+                    let textColor;
+                    let title;
+                    let linkHref;
+                    let linkText;
+                    
+                    switch (activity.type) {
+                      case 'order':
+                        icon = <FaShoppingCart className="w-3 h-3 text-blue-600" />;
+                        bgColor = 'bg-blue-100';
+                        textColor = 'text-blue-600';
+                        title = `New Order #${(activity as OrderActivity).orderId}`;
+                        linkHref = '/admin/orders';
+                        linkText = 'View Order';
+                        break;
+                      case 'user':
+                        icon = <FaUsers className="w-3 h-3 text-green-600" />;
+                        bgColor = 'bg-green-100';
+                        textColor = 'text-green-600';
+                        title = 'New User Registration';
+                        break;
+                      case 'product':
+                        icon = <FaBoxOpen className="w-3 h-3 text-purple-600" />;
+                        bgColor = 'bg-purple-100';
+                        textColor = 'text-purple-600';
+                        title = 'Product Updated';
+                        break;
+                      case 'blog':
+                        icon = <FaBlog className="w-3 h-3 text-yellow-600" />;
+                        bgColor = 'bg-yellow-100';
+                        textColor = 'text-yellow-600';
+                        title = 'New Blog Post';
+                        linkHref = '/admin/blog';
+                        linkText = 'View Post';
+                        break;
+                    }
+                    
+                    // Format date
+                    const timeAgo = (date: Date): string => {
+                      const now = new Date();
+                      const diffMs = now.getTime() - date.getTime();
+                      const diffSecs = Math.floor(diffMs / 1000);
+                      const diffMins = Math.floor(diffSecs / 60);
+                      const diffHours = Math.floor(diffMins / 60);
+                      const diffDays = Math.floor(diffHours / 24);
+                      
+                      if (diffDays > 0) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+                      if (diffHours > 0) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+                      if (diffMins > 0) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
+                      return 'just now';
+                    };
+                    
+                    return (
+                      <li key={activity.id} className={`${index < activityData.length - 1 ? 'mb-6' : ''} ml-6`}>
+                        <span className={`absolute flex items-center justify-center w-6 h-6 ${bgColor} rounded-full -left-3 ring-8 ring-white`}>
+                          {icon}
+                        </span>
+                        <div className="flex justify-between items-center">
+                          <h3 className="flex items-center text-lg font-semibold text-gray-900">{title}</h3>
+                          <time className="text-sm text-gray-500">{timeAgo(activity.date)}</time>
+                        </div>
+                        <p className="mb-2 text-base font-normal text-gray-600">
+                          {activity.message}
+                        </p>
+                        {linkHref && (
+                          <Link href={linkHref} className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 hover:text-blue-700 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 mt-1">
+                            {linkText}
+                          </Link>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ol>
+              )}
             </div>
           </div>
         </main>

@@ -78,7 +78,7 @@ const NavBar: React.FC = () => {
         } flex justify-between items-center px-5 lg:px-10 py-4 z-40`}
       >
         <h1 className="text-2xl hover:scale-110 transition text-green-500 duration-300 font-mono">
-          <Link href="/">EcoHaven</Link>
+          <Link href={isLoggedIn ? "/shop" : "/"}>EcoHaven</Link>
         </h1>
 
         {/* Mobile Menu Button */}
@@ -92,6 +92,14 @@ const NavBar: React.FC = () => {
 
         {/* Desktop Links */}
         <div className="hidden lg:flex items-center gap-12">
+          <Link 
+          className={`text-[#81C784] hover:text-[#2E7D32] ${
+            pathname === '/product' ? "text-yellow-900" : ""
+          } ${ isLoggedIn ? "" : "hidden"}`}
+          href='/product'
+          >
+              PRODUCT
+          </Link>
           {navItems.map((item) => (
             <Link
               key={item.path}
@@ -210,8 +218,25 @@ const NavBar: React.FC = () => {
           </div>
         )}
 
+          <Link 
+          className={`text-[#81C784] hover:text-[#2E7D32] ${
+            pathname === '/product' ? "text-yellow-900" : ""
+          } ${ isLoggedIn ? "" : "hidden"}`}
+          href='/product'
+          >
+              PRODUCT
+          </Link>
+
         {navItems.map((item) => (
-          <Link key={item.path} href={item.path} className="text-[#81C784] hover:text-[#2E7D32]">
+          <Link 
+          key={item.path} 
+          href={item.path} 
+          className={`text-[#81C784] hover:text-[#2E7D32] ${
+            ["/", "/about", "/contact"].includes(item.path) && isLoggedIn
+              ? "hidden"
+              : ""
+          }`}
+          >
             {item.name}
           </Link>
         ))}

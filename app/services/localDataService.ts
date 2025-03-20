@@ -9,10 +9,10 @@ export interface Product {
     description: string;
     price: number;
     slug: string;
-    reviewCount: 0;
+    reviewCount?: 0;
     rating: number;
     category: string;
-    imageUrl: string;
+    imageUrl?: string;
     image: string;
     stock: number;
     featured?: boolean;
@@ -20,10 +20,10 @@ export interface Product {
     eco_friendly_rating?: number;
     materials?: string[];
     dimensions?: {
-      width: number;
-      height: number;
-      depth: number;
-      unit: string;
+      width?: number;
+      height?: number;
+      depth?: number;
+      unit?: string;
     };
   }
   
@@ -59,6 +59,53 @@ export interface Product {
     }
   };
   
+  export const updateProduct =async (id: string, updatedProduct: Product) => {
+    try {
+      // Retrieve existing products
+      const products = await getProducts();
+  
+      // Find product index
+      const productIndex = products.findIndex((product) => product.id === id);
+  
+      if (productIndex === -1) {
+        console.warn(`Product with ID ${id} not found.`);
+        return;
+      }
+  
+      // Update the product at the found index
+      products[productIndex] = updatedProduct;
+  
+      // Save the updated product list back to localStorage
+      saveProducts(products);
+  
+      console.log(`Product with ID ${id} updated successfully.`);
+    } catch (error) {
+      console.error('Error updating product:', error);
+    }
+  };
+
+  export const deleteProduct = async (id: string) => {
+    try {
+      // Retrieve existing products
+      const products = await getProducts();
+  
+      // Filter out the product to delete
+      const updatedProducts = products.filter((product) => product.id !== id);
+  
+      // Check if the product was found and removed
+      if (products.length === updatedProducts.length) {
+        console.warn(`Product with ID ${id} not found.`);
+        return;
+      }
+  
+      // Save the updated product list back to localStorage
+      saveProducts(updatedProducts);
+  
+      console.log(`Product with ID ${id} deleted successfully.`);
+    } catch (error) {
+      console.error('Error deleting product:', error);
+    }
+  };
   /**
    * Retrieves all products from localStorage
    * @returns Array of Product objects

@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, notFound, useRouter } from 'next/navigation';
 import { getProducts } from '../../services/localDataService';
-import { updateCarts } from '../../components/common/NavBar';
 import { useCart } from '../../contexts/CardContext';
 import { ProductCard } from '../../shop/Shop';
 import Link from 'next/link';
@@ -36,7 +35,7 @@ function Category() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [itemsPerPage, setItemsPerPage] = useState(8);
-  const { addItem } = useCart();
+  const { addItem, updateQuantity } = useCart();
   const router = useRouter();
 
   if (!category) return notFound();
@@ -94,7 +93,7 @@ function Category() {
         stock: product.stock,
         slug: product.slug,
       });
-      updateCarts();
+      updateQuantity(product.id, product.stock);
     }
   };
 

@@ -272,7 +272,7 @@ export default function ProductPage() {
             : `There was a problem loading this product: ${error || 'Unknown error'}`
           }
         </p>
-        <Link href="/products" className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors">
+        <Link href="/product" className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-colors">
           Browse Products
         </Link>
       </div>

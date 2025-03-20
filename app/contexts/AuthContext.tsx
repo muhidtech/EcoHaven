@@ -138,6 +138,7 @@ export const AuthProvider = ({
           setUser(null);
           userRef.current = null;
           setAuthStatus('idle');
+          setIsLoggedIn(true);
         } else {
           // If session is close to expiring but still valid, refresh it
           if (parsedUser.expiresAt - Date.now() < SESSION_REFRESH_THRESHOLD) {
@@ -148,6 +149,7 @@ export const AuthProvider = ({
           setUser(parsedUser);
           userRef.current = parsedUser;
           setAuthStatus('authenticated');
+          setIsLoggedIn(true);
         }
       } catch (error) {
         console.error('Error parsing user data from localStorage:', error);
@@ -230,6 +232,7 @@ export const AuthProvider = ({
       console.log('Making a get request');
   
       // API call to retrieve user account using a GET request with query params
+      
       const response = await fetch(
         `/api/users?identifier=${encodeURIComponent(identifier)}&password=${encodeURIComponent(password)}`,
         {
@@ -240,7 +243,7 @@ export const AuthProvider = ({
         }
       );
   
-      if (!response.ok) {
+      if (!isAdminLogin && !response.ok) {
         const errorData = await response.json();
         throw new ValidationError(errorData.error || 'Failed to sign in');
       }
@@ -254,7 +257,7 @@ export const AuthProvider = ({
             email: 'admin@ecohaven.com',
             firstName: 'Admin',
             lastName: '',
-            displayName: 'Administrator',
+            displayName: 'admin',
             role: 'admin',
             expiresAt: Date.now() + sessionDuration,
             refreshToken: Math.random().toString(36).substring(2, 15),
@@ -278,6 +281,7 @@ export const AuthProvider = ({
       } catch (storageError) {
         console.error('Error storing user data:', storageError);
         throw new AuthError('Failed to save session data. Please try again.');
+        setIsLoggedIn(false);
       }
   
       setAuthStatus('authenticated');
@@ -290,6 +294,7 @@ export const AuthProvider = ({
       const errorMessage = error instanceof Error ? error.message : 'Failed to sign in';
       setAuthError(errorMessage);
       throw new AuthError(errorMessage);
+      setIsLoggedIn(false);
     }
   };
   

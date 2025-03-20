@@ -176,7 +176,7 @@ export default function CheckoutPage() {
             <p className="text-gray-700">A confirmation email has been sent to <span className="font-medium">{shippingInfo.email}</span></p>
           </div>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link href="/products" className="bg-green-600 text-white py-3 px-6 rounded-md hover:bg-green-700 transition-colors">
+            <Link href="/product" className="bg-green-600 text-white py-3 px-6 rounded-md hover:bg-green-700 transition-colors">
               Continue Shopping
             </Link>
             <Link href="/account/orders" className="bg-white text-green-600 border border-green-600 py-3 px-6 rounded-md hover:bg-green-50 transition-colors">
@@ -490,7 +490,7 @@ export default function CheckoutPage() {
               </div>
             </div>
             <div className="mt-6">
-              <Link href="/shop" className="text-green-600 hover:text-green-800 flex items-center">
+              <Link href="/cart" className="text-green-600 hover:text-green-800 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>

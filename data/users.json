@@ -7,5 +7,16 @@
     "password": "0279955429Aa$",
     "id": "1742460353051",
     "createdAt": "2025-03-20T08:45:53.051Z"
+  },
+
+  {
+    "firstName": "Admin",
+    "lastName": "",
+    "username": "admin",
+    "email": "admin@ecohaven.com",
+    "password": "admin",
+    "role": "admin",
+    "id": "admin",
+    "createdAt": "2025-03-20T06:45:53.051Z"
   }
 ]

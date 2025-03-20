@@ -145,3 +145,108 @@ export interface Product {
     }
   };
   
+  /**
+ * Saves an array of orders to localStorage
+ * @param orders - Array of Order objects to save
+ * @returns boolean indicating success or failure
+ */
+export const saveOrders = (orders: Order[]): boolean => {
+  try {
+    if (!orders || !Array.isArray(orders)) {
+      console.error('Invalid orders data provided to saveOrders');
+      return false;
+    }
+    localStorage.setItem('ecohaven_orders', JSON.stringify(orders));
+    return true;
+  } catch (error) {
+    console.error('Error saving orders to localStorage:', error);
+    return false;
+  }
+};
+
+/**
+ * Retrieves all orders from localStorage
+ * @returns Array of Order objects
+ */
+export const getOrdersFromStorage = (): Order[] => {
+  try {
+    const ordersJson = localStorage.getItem('ecohaven_orders');
+    if (!ordersJson) {
+      return [];
+    }
+    
+    const parsedOrders = JSON.parse(ordersJson);
+    if (!Array.isArray(parsedOrders)) {
+      console.error('Invalid orders data format in localStorage');
+      return [];
+    }
+    
+    return parsedOrders;
+  } catch (error) {
+    console.error('Error retrieving orders from localStorage:', error);
+    return [];
+  }
+};
+
+/**
+ * Generates a unique order ID
+ * @returns A unique string for order identification
+ */
+export const generateOrderId = (): string => {
+  // Use crypto.randomUUID if available (modern browsers)
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+    return `order_${crypto.randomUUID()}`;
+  }
+  // Fallback to timestamp + random string for older browsers
+  return `order_${Date.now()}_${Math.random().toString(36).substring(2, 10)}`;
+};
+
+/**
+ * Creates and saves a new order to localStorage
+ * @param userId - ID of the user placing the order
+ * @param items - Array of items in the order
+ * @param shippingAddress - Shipping details for the order
+ * @param paymentMethod - Payment method used
+ * @returns The created Order object or null if saving failed
+ */
+export const createOrder = (
+  userId: string,
+  items: { productId: string; quantity: number; price: number }[],
+  shippingAddress: Order['shippingAddress'],
+  paymentMethod: string
+): Order | null => {
+  try {
+    if (!userId || !items || !Array.isArray(items) || items.length === 0 || !shippingAddress || !paymentMethod) {
+      console.error('Invalid order data provided');
+      return null;
+    }
+
+    const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+    const newOrder: Order = {
+      id: generateOrderId(),
+      userId,
+      items,
+      totalAmount,
+      shippingAddress,
+      paymentMethod,
+      status: 'pending',
+      createdAt: new Date().toISOString(),
+    };
+
+    const existingOrders = getOrdersFromStorage();
+    const updatedOrders = [...existingOrders, newOrder];
+
+    const saveSuccessful = saveOrders(updatedOrders);
+    
+    if (!saveSuccessful) {
+      console.error('Failed to save the new order');
+      return null;
+    }
+
+    return newOrder;
+  } catch (error) {
+    console.error('Error creating order:', error);
+    return null;
+  }
+};

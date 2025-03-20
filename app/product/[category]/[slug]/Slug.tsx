@@ -6,6 +6,7 @@ import { useParams, notFound } from 'next/navigation';
 import { Star, ShoppingCart, Heart, Share2 } from 'lucide-react';
 import { getProducts } from '@/app/services/localDataService';
 import { useCart } from '@/app/contexts/CardContext';
+import { useAuth } from '@/app/contexts/AuthContext';
 
 /**
  * Helper function to generate a URL-friendly slug from a product name
@@ -42,7 +43,7 @@ const getValidImageUrl = (imageUrl?: string, fallbackUrl?: string): string => {
 interface Product {
   id: string;
   name: string;
-  slug?: string;           // URL-friendly identifier
+  slug: string;           // URL-friendly identifier
   price: number;
   salePrice?: number;      // Discounted price if on sale
   description: string;
@@ -87,7 +88,8 @@ export default function ProductPage() {
   const [quantity, setQuantity] = useState(1);
   const [isAddWatchList, setIsAddWatchList] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { itemExists } = useCart()
+  const { itemExists, updateQuantity, addItem, removeItem } = useCart()
+  const { isLoggedIn } = useAuth()
 
   // Fetch product data from local JSON file when component mounts or slug changes
   useEffect(() => {
@@ -219,6 +221,29 @@ export default function ProductPage() {
     if (quantity > 1) {
       setQuantity(quantity - 1);
     }
+  };
+
+  const handleAddToCart = (item: Product) => {
+    if (item.stock <= 0) {
+      alert("Item is out of stock");
+      return;
+    }
+  
+    if (itemExists(item.id)) {
+      removeItem(item.id);
+      alert("Item removed from cart");
+      return;
+    }
+    updateQuantity(item.id, item.stock)
+    addItem({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      image: item.image,
+      stock: item.stock,
+      slug: item.slug,
+    });
+    alert("Item added to cart");
   };
 
   // Render loading state
@@ -428,9 +453,11 @@ export default function ProductPage() {
                     </button>
                   </div>
                   
-                  <button className="flex-1 bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition-colors flex items-center justify-center space-x-2">
+                  <button 
+                  onClick={() => handleAddToCart(product)}
+                  className="flex-1 cursor-pointer bg-green-600 text-white px-6 py-3 rounded-md hover:bg-green-700 transition-colors flex items-center justify-center space-x-2">
                     <ShoppingCart className="h-5 w-5" />
-                    <span>{itemExists(product.slug || product.id) ? `${<Link href='/products/checkout'>CheckOut</Link>}`: "Add To Cart"}</span>
+                    <span>{itemExists(product.id) ? `Remove from Cart`: "Add To Cart"}</span>
                   </button>
                 </div>
                 

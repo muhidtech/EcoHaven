@@ -8,10 +8,13 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 - [Application Architecture](#application-architecture)
 - [Component Overview](#component-overview)
 - [Getting Started](#getting-started)
+- [Testing Guide](#testing-guide)
+- [Admin Access](#admin-access)
 - [Dependencies](#dependencies)
 - [Styling](#styling)
 - [Development Guidelines](#development-guidelines)
 - [Deployment](#deployment)
+- [Troubleshooting](#troubleshooting)
 
 ## 🌿 Overview
 
@@ -26,18 +29,30 @@ ecohaven/
 ├── app/                  # Main application directory
 │   ├── layout.tsx        # Root layout component
 │   ├── page.tsx          # Home page component
-│   └── globals.css       # Global styles
+│   ├── globals.css       # Global styles
+│   ├── shop/             # Shop page
+│   ├── product/[id]/     # Product details page
+│   ├── cart/             # Shopping cart page
+│   ├── checkout/         # Checkout process pages
+│   ├── auth/             # Authentication pages
+│   └── admin/            # Admin dashboard pages
 ├── components/           # Reusable UI components
 │   ├── NavBar/           # Navigation components
+│   ├── Footer/           # Footer components
 │   ├── Hero/             # Hero section components
 │   ├── Features/         # Features section components
 │   ├── PopularProducts/  # Popular products components
 │   ├── DailySells/       # Daily sales components
-│   └── Rating/           # Rating components
+│   ├── Rating/           # Rating components
+│   ├── Cart/             # Cart-related components
+│   ├── Checkout/         # Checkout-related components
+│   └── Auth/             # Authentication components
 ├── public/               # Static assets
 │   └── images/           # Image assets
 ├── styles/               # Additional styles
 │   └── homes.css         # Custom CSS for home page
+├── lib/                  # Utility functions and helpers
+├── context/              # React context providers
 └── ...                   # Configuration files
 ```
 
@@ -124,6 +139,81 @@ The rating component provides:
 
 4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+## 🧪 Testing Guide
+
+### Core Functionality Testing
+
+Follow these steps to thoroughly test all major functionalities of the EcoHaven platform:
+
+#### 1. Home Page
+- Verify all sections load correctly (Hero, Features, Popular Products, Daily Sells)
+- Check that all navigation links work properly
+- Ensure responsive design works on different screen sizes
+- Verify that product images and information display correctly
+
+#### 2. Shop Page
+- Navigate to the shop page via the navigation bar
+- Test filtering and sorting functionality
+- Verify that product cards display correct information (image, title, price, rating)
+- Test pagination if implemented
+- Ensure responsive layout on different screen sizes
+
+#### 3. Product Details
+- Click on any product to view its details page
+- Verify all product information is displayed correctly (images, description, price, ratings)
+- Test the quantity selector
+- Test the "Add to Cart" button functionality
+- Verify related products section if available
+
+#### 4. Cart Operations
+- Add multiple products to the cart
+- Navigate to the cart page
+- Test increasing/decreasing product quantities
+- Test removing items from the cart
+- Verify that cart totals update correctly
+- Test the "Continue Shopping" button
+- Test the "Proceed to Checkout" button
+
+#### 5. Checkout Process
+- Proceed from cart to checkout
+- Test the shipping information form (validation, error messages)
+- Test the billing information form
+- Verify shipping method selection if available
+- Test payment method selection
+- Verify order summary displays correct items and totals
+- Test the "Place Order" functionality
+- Verify order confirmation page displays after successful checkout
+
+#### 6. User Authentication
+- Test user registration with valid and invalid inputs
+- Test login functionality with correct and incorrect credentials
+- Test password reset functionality if available
+- Verify that user profile information can be viewed and edited
+- Test logout functionality
+- Verify that authenticated areas are properly secured
+
+#### 7. Cross-Browser and Responsive Testing
+- Test all functionalities across different browsers (Chrome, Firefox, Safari, Edge)
+- Test on different devices (desktop, tablet, mobile)
+- Verify that responsive design adapts correctly to different screen sizes
+
+## 👑 Admin Access
+
+To access the admin dashboard and test administrative functions:
+
+1. Navigate to the login page
+2. Enter the following credentials:
+   - Username: `admin`
+   - Password: `admin`
+3. After successful login, you will be redirected to the admin dashboard
+
+### Admin Dashboard Testing
+- Verify product management (add, edit, delete products)
+- Test order management (view, update status, cancel orders)
+- Verify user management if available
+- Test inventory management functionality
+- Verify that admin-only actions are properly secured
+
 ## 📦 Dependencies
 
 The EcoHaven project relies on the following key dependencies:
@@ -174,15 +264,96 @@ To modify the styling:
 
 ## 🌐 Deployment
 
+### Deployment Options
+
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 For alternative deployment options, check out the [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying).
+
+### Production Deployment Checklist
+
+Before deploying to production, ensure the following:
+
+1. **Environment Variables**
+   - Set up all necessary environment variables for production
+   - Ensure API keys and secrets are properly secured
+   - Configure payment gateway credentials for production
+
+2. **Build Optimization**
+   - Run `npm run build` to verify the build process completes successfully
+   - Check for any build warnings or errors
+   - Optimize images and assets for production
+
+3. **Performance Considerations**
+   - Enable caching strategies
+   - Implement CDN for static assets
+   - Configure proper HTTP headers
+
+4. **Security Measures**
+   - Ensure HTTPS is enabled
+   - Set up proper CSP (Content Security Policy)
+   - Implement rate limiting for API routes
+   - Verify authentication mechanisms are secure
+
+5. **SEO Optimization**
+   - Verify meta tags are properly set
+   - Ensure robots.txt is configured correctly
+   - Check that sitemap.xml is generated and accessible
+
+6. **Monitoring and Analytics**
+   - Set up error tracking (e.g., Sentry)
+   - Configure analytics (e.g., Google Analytics)
+   - Set up performance monitoring
+
+### Deployment Steps with Vercel
+
+1. Push your code to a Git repository (GitHub, GitLab, or Bitbucket)
+2. Connect your repository to Vercel
+3. Configure your project settings
+4. Deploy your application
+5. Set up a custom domain if needed
+6. Configure environment variables in the Vercel dashboard
 
 ---
 
 ## 🤝 Contributing
 
 Contributions to EcoHaven are welcome! Please feel free to submit a Pull Request.
+
+## 🔧 Troubleshooting
+
+### Common Issues and Solutions
+
+#### Page Not Found Errors
+- Verify that all route paths in navigation links are correct
+- Check for typos in URL paths
+- Ensure that dynamic routes are properly configured
+
+#### Component Rendering Issues
+- Check browser console for JavaScript errors
+- Verify that all required props are being passed to components
+- Check for null or undefined values in component data
+
+#### Checkout Process Problems
+- Verify that form validation is working correctly
+- Check that payment processing is properly configured
+- Ensure order data is being correctly submitted
+
+#### Authentication Issues
+- Clear browser cookies and try again
+- Verify that authentication tokens are being properly stored
+- Check server-side authentication validation
+
+#### Styling Inconsistencies
+- Verify that TailwindCSS classes are applied correctly
+- Check for responsive design breakpoints
+- Ensure custom CSS is not conflicting with Tailwind utilities
+
+### Getting Help
+If you encounter issues not covered in this troubleshooting guide, please:
+- Check the issue tracker on GitHub
+- Join our community Discord for real-time support
+- Contact the development team via email at support@ecohaven.example.com
 
 ## 📄 License
 

@@ -60,6 +60,7 @@ interface AuthContextType {
     authStatus: AuthStatus;
     authError: string | null;
     isLoggedIn: boolean,
+    isAdminLogin: () => boolean,
     signIn: (email: string, password: string) => Promise<User>;
     signUp: (email: string, password: string, firstName: string, lastName: string, displayName: string) => Promise<void>;
     signOut: () => Promise<void>;
@@ -138,7 +139,7 @@ export const AuthProvider = ({
           setUser(null);
           userRef.current = null;
           setAuthStatus('idle');
-          setIsLoggedIn(true);
+          setIsLoggedIn(false);
         } else {
           // If session is close to expiring but still valid, refresh it
           if (parsedUser.expiresAt - Date.now() < SESSION_REFRESH_THRESHOLD) {
@@ -193,10 +194,10 @@ export const AuthProvider = ({
       setAuthError(null);
   
       // Check for admin credentials
-      const isAdminLogin = identifier === 'admin' && password === 'admin';
+      const isAdminCredentials = identifier === 'admin' && password === 'admin';
   
       // Input validation (for non-admin users)
-      if (!isAdminLogin) {
+      if (!isAdminCredentials) {
         if (!identifier || !identifier.trim()) {
           throw new ValidationError('Username or email is required');
         }
@@ -232,7 +233,7 @@ export const AuthProvider = ({
       console.log('Making a get request');
   
       // API call to retrieve user account using a GET request with query params
-      
+      // For admin login, we'll still make the request but ignore the response
       const response = await fetch(
         `/api/users?identifier=${encodeURIComponent(identifier)}&password=${encodeURIComponent(password)}`,
         {
@@ -243,7 +244,7 @@ export const AuthProvider = ({
         }
       );
   
-      if (!isAdminLogin && !response.ok) {
+      if (!isAdminCredentials && !response.ok) {
         const errorData = await response.json();
         throw new ValidationError(errorData.error || 'Failed to sign in');
       }
@@ -251,7 +252,8 @@ export const AuthProvider = ({
       const data = await response.json();
   
       // If admin credentials, override with admin info
-      const loggedUser: User = isAdminLogin
+      // This creates a hardcoded admin user with full admin privileges
+      const loggedUser: User = isAdminCredentials
         ? {
             uid: 'admin',
             email: 'admin@ecohaven.com',
@@ -280,8 +282,8 @@ export const AuthProvider = ({
         userRef.current = loggedUser;
       } catch (storageError) {
         console.error('Error storing user data:', storageError);
-        throw new AuthError('Failed to save session data. Please try again.');
         setIsLoggedIn(false);
+        throw new AuthError('Failed to save session data. Please try again.');
       }
   
       setAuthStatus('authenticated');
@@ -293,8 +295,8 @@ export const AuthProvider = ({
       setAuthStatus('error');
       const errorMessage = error instanceof Error ? error.message : 'Failed to sign in';
       setAuthError(errorMessage);
-      throw new AuthError(errorMessage);
       setIsLoggedIn(false);
+      throw new AuthError(errorMessage);
     }
   };
   
@@ -528,8 +530,17 @@ export const AuthProvider = ({
    */
   const isAdmin = useCallback((): boolean => {
     // Check if user exists, has a role property, and the role is 'admin'
+    // This function is used to verify admin privileges throughout the application
     return Boolean(user?.role === 'admin');
   }, [user]);
+
+  /**
+   * Alias for isAdmin function
+   * @returns boolean indicating whether the user is an admin
+   */
+  const isAdminLogin = useCallback((): boolean => {
+    return isAdmin();
+  }, [isAdmin]);
 
   
   /**
@@ -540,7 +551,7 @@ export const AuthProvider = ({
   const hasPermission = useCallback((requiredRole: UserRole): boolean => {
     if (!user) return requiredRole === 'guest'; // Only allow guest access if no user
     
-    // Admin has access to everything
+    // Admin has access to everything - this ensures admin can access all protected routes
     if (user.role === 'admin') return true;
     
     // For regular users, check if they have the specific required role
@@ -555,6 +566,7 @@ export const AuthProvider = ({
     authStatus,
     authError,
     isLoggedIn,
+    isAdminLogin,
     signIn,
     signUp,
     signOut,
@@ -569,6 +581,7 @@ export const AuthProvider = ({
     authStatus, 
     authError, 
     isLoggedIn,
+    isAdminLogin,
     signIn, 
     signUp, 
     signOut, 

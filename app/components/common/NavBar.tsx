@@ -48,7 +48,8 @@ const NavBar: React.FC = () => {
   const handleSignOut = () => {
     if (isLoggedIn) {
       signOut();
-      setDropdownOpen(false); // Close dropdown on logout
+      setDropdownOpen(false); // Close desktop dropdown on logout
+      setMobileDropdownOpen(false); // Close mobile dropdown on logout
       router.push("/");
     }
   };
@@ -65,6 +66,25 @@ const NavBar: React.FC = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      // Close desktop dropdown when clicking outside
+      if (dropdownOpen && !(event.target as Element).closest('.user-dropdown-container')) {
+        setDropdownOpen(false);
+      }
+      
+      // Close mobile dropdown when clicking outside
+      if (mobileDropdownOpen && !(event.target as Element).closest('.mobile-dropdown-container')) {
+        setMobileDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [dropdownOpen, mobileDropdownOpen]);
+
+  // Prevent body scroll when mobile menu is open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "auto";
   }, [menuOpen]);
@@ -136,16 +156,23 @@ const NavBar: React.FC = () => {
           </Link>
 
           {/* User Icon & Dropdown */}
-          <div className="relative">
+          <div className="relative user-dropdown-container">
             {isLoggedIn ? (
               <>
-                {/* Logged In - Dropdown */}
+                {/* Logged In - Desktop Dropdown */}
                 <FiUser
                   className="text-2xl text-green-500 hover:text-green-600 cursor-pointer"
                   onClick={() => setDropdownOpen((prev) => !prev)}
                   role="button"
                   aria-expanded={dropdownOpen}
                   aria-label="User Menu"
+                  tabIndex={0} /* Add keyboard accessibility */
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setDropdownOpen((prev) => !prev);
+                    }
+                  }}
                 />
 
                 {dropdownOpen && (
@@ -162,6 +189,14 @@ const NavBar: React.FC = () => {
                     <button
                       onClick={handleSignOut}
                       className="block w-full text-left px-4 py-2 hover:bg-green-100"
+                      aria-label="Logout from account"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          handleSignOut();
+                        }
+                      }}
                     >
                       Logout
                     </button>
@@ -191,18 +226,25 @@ const NavBar: React.FC = () => {
           <FiX />
         </button>
         {isLoggedIn && (
-          <div className="relative">
+          <div className="relative mobile-dropdown-container">
             <h1
-              onClick={() => setDropdownOpen((prev) => !prev)}
+              onClick={() => setMobileDropdownOpen((prev) => !prev)} /* Use mobile-specific state */
               role="button"
-              aria-expanded={dropdownOpen}
+              aria-expanded={mobileDropdownOpen}
               aria-label="User Menu"
               className="cursor-pointer text-[#81C784] hover:text-[#2E7D32]"
+              tabIndex={0} /* Add keyboard accessibility */
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setMobileDropdownOpen((prev) => !prev);
+                }
+              }}
             >
               Profile
             </h1>
 
-            {dropdownOpen && (
+            {mobileDropdownOpen && ( /* Use mobile-specific state */
               <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2 z-50">
                 <Link href="/profile" className="block px-4 py-2 hover:bg-green-100">
                   Profile
@@ -245,6 +287,8 @@ const NavBar: React.FC = () => {
           <button
             onClick={handleSignOut}
             className="w-full text-center bg-green-300 py-5 cursor-pointer"
+            aria-label="Sign out from account"
+            tabIndex={0}
           >
             SIGN OUT
           </button>
@@ -262,6 +306,7 @@ const NavBar: React.FC = () => {
                 placeholder="Search products..."
                 className="w-full pl-10 pr-12 py-3 rounded-lg border border-secondary focus:outline-none focus:border-primary"
                 autoFocus
+                aria-label="Search products"
               />
               <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary" />
               <button

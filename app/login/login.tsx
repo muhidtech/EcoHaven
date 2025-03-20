@@ -8,7 +8,7 @@ import Link from "next/link";
 
 
 const Login = () => {
-  const { signIn } = useAuth()
+  const { signIn, isAdmin } = useAuth()
   const router = useRouter();
   const [formData, setFormData] = useState({
     identifier: "",
@@ -48,8 +48,12 @@ const Login = () => {
     try {
       setError('');
       setLoading(true);
-      await signIn(formData.identifier, formData.password);
-      router.push('/'); // Redirect to home page after successful login
+      const loggedUser = await signIn(formData.identifier, formData.password);
+      if (loggedUser.role === 'admin') {
+        router.push('/admin/dashboard'); // Redirect admin users to admin dashboard
+      } else {
+        router.push('/'); // Redirect regular users to home page
+      }
     } catch (err) {
       setError('Failed to sign in. Please check your credentials.');
       console.error('Sign in error:', err);

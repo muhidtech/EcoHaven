@@ -297,3 +297,44 @@ export const createOrder = (
     return null;
   }
 };
+
+/**
+ * Updates an existing order in localStorage
+ * @param id - ID of the order to update
+ * @param updatedOrder - Partial Order object containing the properties to update
+ * @returns boolean indicating success or failure
+ */
+export const updateOrder = async (id: string, updatedOrder: Partial<Order>): Promise<boolean> => {
+  try {
+    // Retrieve existing orders
+    const orders = getOrdersFromStorage();
+
+    // Find order index
+    const orderIndex = orders.findIndex((order) => order.id === id);
+
+    if (orderIndex === -1) {
+      console.warn(`Order with ID ${id} not found.`);
+      return false;
+    }
+
+    // Update the order at the found index (merge existing with updates)
+    orders[orderIndex] = {
+      ...orders[orderIndex],
+      ...updatedOrder,
+    };
+
+    // Save the updated orders list back to localStorage
+    const saveSuccessful = saveOrders(orders);
+    
+    if (saveSuccessful) {
+      console.log(`Order with ID ${id} updated successfully.`);
+      return true;
+    } else {
+      console.error(`Failed to save updated order with ID ${id}`);
+      return false;
+    }
+  } catch (error) {
+    console.error('Error updating order:', error);
+    return false;
+  }
+};

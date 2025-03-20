@@ -16,6 +16,7 @@ export interface Product {
     image: string;
     stock: number;
     featured?: boolean;
+    popular?: boolean;
     eco_friendly_rating?: number;
     materials?: string[];
     dimensions?: {

@@ -1,11 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
+import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from "next/navigation";
 import { FiArrowLeft, FiEye, FiEyeOff } from "react-icons/fi";
 import Link from "next/link";
 
+
 const Login = () => {
+  const { signIn } = useAuth()
   const router = useRouter();
   const [formData, setFormData] = useState({
     identifier: "",
@@ -13,14 +16,19 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
+  // Handle form input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
     setErrors((prevErrors) => ({ ...prevErrors, [e.target.name]: "" }));
   };
 
+  // Toggle password visibility
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
+  // Validate form input
   const validateForm = () => {
     let newErrors: Record<string, string> = {};
 
@@ -32,14 +40,27 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      alert("Form Submitted!" + JSON.stringify(formData));
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    try {
+      setError('');
+      setLoading(true);
+      await signIn(formData.identifier, formData.password);
+      router.push('/'); // Redirect to home page after successful login
+    } catch (err) {
+      setError('Failed to sign in. Please check your credentials.');
+      console.error('Sign in error:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
+      {/* Left Section (Form) */}
       <div className="w-full lg:w-1/2 flex flex-col justify-center p-8 relative">
         <button
           onClick={() => router.back()}
@@ -48,14 +69,16 @@ const Login = () => {
           <FiArrowLeft />
         </button>
 
-        <h1 className="cursor-pointer text-center text-3xl md:text-5xl mb-15 text-green-600 font-semibold ">
-          <Link href='/'>EcoHaven</Link>
+        <h1 className="cursor-pointer text-center text-3xl md:text-5xl mb-15 text-green-600 font-semibold">
+          <Link href="/">EcoHaven</Link>
         </h1>
 
         <div className="max-w-lg w-full mx-auto bg-white p-8 shadow-2xl rounded-xl relative">
           <h2 className="text-3xl font-bold text-green-600 mb-8">Login</h2>
 
-          <div className="space-y-6">
+          {/* Form starts here for Enter key submission */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Identifier Input (Username or Email) */}
             <div className="relative">
               <input
                 type="text"
@@ -70,6 +93,7 @@ const Login = () => {
               )}
             </div>
 
+            {/* Password Input */}
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
@@ -82,7 +106,7 @@ const Login = () => {
               <button
                 type="button"
                 onClick={togglePasswordVisibility}
-                className="absolute right-3 top-3 text-green-600"
+                className="absolute right-3 top-3 text-green-600 cursor-pointer"
               >
                 {showPassword ? <FiEyeOff /> : <FiEye />}
               </button>
@@ -91,18 +115,26 @@ const Login = () => {
               )}
             </div>
 
+            {/* Submit and Forgot Password Links */}
             <div className="flex justify-between items-center">
-              <p className="text-sm text-green-600 cursor-pointer" onClick={() => router.push("/forgot-password")}>Forgot password?</p>
-              <button
-                onClick={handleSubmit}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300 text-sm"
+              <p
+                className="text-sm text-green-600 cursor-pointer"
+                onClick={() => router.push("/forgot-password")}
               >
-                Submit
+                Forgot password?
+              </p>
+              <button
+                type="submit"
+                className="cursor-pointer px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300 text-sm"
+                disabled={loading}
+              >
+                {loading ? "Submitting..." : "Submit"}
               </button>
             </div>
 
+            {/* Sign Up Link */}
             <p className="text-sm mt-4">
-              Don't have an account?{' '}
+              Don't have an account?{" "}
               <span
                 className="text-green-600 cursor-pointer"
                 onClick={() => router.push("/signup")}
@@ -110,14 +142,17 @@ const Login = () => {
                 Create one
               </span>
             </p>
-          </div>
+
+            {/* Error Message */}
+            {error && <p className="text-red-500 text-sm mt-4">{error}</p>}
+          </form>
+          {/* Form ends here */}
         </div>
       </div>
 
+      {/* Right Section (Welcome Message) */}
       <div className="hidden lg:flex w-1/2 flex-col bg-green-600 items-center justify-center">
-      <h1 className="text-center text-3xl mb-10 text-white font-semibold ">
-          EcoHaven
-        </h1>
+        <h1 className="text-center text-3xl mb-10 text-white font-semibold">EcoHaven</h1>
         <h1 className="text-white text-5xl font-bold">Welcome Back!</h1>
       </div>
     </div>

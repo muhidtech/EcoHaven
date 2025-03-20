@@ -1,49 +1,32 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { usePathname } from "next/navigation";
+import React, { useState, useEffect, KeyboardEvent } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import { FiMenu, FiX, FiSearch, FiShoppingCart, FiUser } from "react-icons/fi";
 import Link from "next/link";
+import { useCart } from "../../contexts/CardContext";
+import { useAuth } from "../../contexts/AuthContext";
 
-
-// Global state access
-let setCarts: React.Dispatch<React.SetStateAction<number>>;
-let setIsLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-let getCarts: () => number;
-let getIsLoggedIn: () => boolean;
-
-// Functions to update and retrieve global state
-export function updateCarts() {
-  setCarts((c) => c + 1);
-}
-
-export function updateIsLoggedIn(status: boolean) {
-  setIsLoggedIn(status);
-}
-
-export function getCartCount() {
-  return getCarts();
-}
-
-export function checkIsLoggedIn() {
-  return getIsLoggedIn();
-}
-
-
-function NavBar() {
+const NavBar: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showSearch, setShowSearch] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [isLoggedIn, _setIsLoggedIn] = useState(false);
-  const [carts, _setCarts] = useState(5);
-  const pathname = usePathname();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [mobileDropdownOpen, setMobileDropdownOpen] = useState(false);
 
-  // Link internal state to external setters and getters
-  setCarts = _setCarts;
-  setIsLoggedIn = _setIsLoggedIn;
-  getCarts = () => carts;
-  getIsLoggedIn = () => isLoggedIn;
+  const pathname = usePathname();
+  const router = useRouter();
+  const { getItemCount } = useCart();
+  const { signOut, isLoggedIn } = useAuth();
+
+  const handleShowSearch = () => {
+    if(showSearch) {
+      setShowSearch(false);
+    } else {
+      setShowSearch(true)
+    }
+  }
 
   const navItems = [
     { name: "HOME", path: "/" },
@@ -53,6 +36,24 @@ function NavBar() {
     { name: "CONTACT US", path: "/contact" },
   ];
 
+  // Handle keyboard navigation (for accessibility)
+  const handleKeyDown = (e: KeyboardEvent<SVGElement>, href: string) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      router.push(href);
+    }
+  };
+
+  // Handle logout and redirect to home
+  const handleSignOut = () => {
+    if (isLoggedIn) {
+      signOut();
+      setDropdownOpen(false); // Close dropdown on logout
+      router.push("/");
+    }
+  };
+
+  // Navbar visibility on scroll
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
@@ -64,8 +65,13 @@ function NavBar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
 
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "auto";
+  }, [menuOpen]);
+
   return (
     <>
+      {/* Desktop Navbar */}
       <div
         className={`fixed top-0 left-0 w-full bg-white shadow-md transition-transform duration-300 ${
           isVisible ? "translate-y-0" : "-translate-y-full"
@@ -75,13 +81,16 @@ function NavBar() {
           <Link href="/">EcoHaven</Link>
         </h1>
 
+        {/* Mobile Menu Button */}
         <button
-          className={`lg:hidden text-3xl text-green-500 hover:scale-110 transition duration-300 ${menuOpen ? "hidden" : ""}`}
+          className="lg:hidden cursor-pointer text-3xl text-green-500 hover:scale-110 transition duration-300"
           onClick={() => setMenuOpen(true)}
+          aria-label="Open menu"
         >
           <FiMenu />
         </button>
 
+        {/* Desktop Links */}
         <div className="hidden lg:flex items-center gap-12">
           {navItems.map((item) => (
             <Link
@@ -89,7 +98,7 @@ function NavBar() {
               href={item.path}
               className={`text-[#81C784] hover:text-[#2E7D32] ${
                 pathname === item.path ? "text-yellow-900" : ""
-              } ${
+              }  ${
                 ["/", "/about", "/contact"].includes(item.path) && isLoggedIn
                   ? "hidden"
                   : ""
@@ -99,77 +108,149 @@ function NavBar() {
             </Link>
           ))}
 
-          <Link href="/login">
-            <FiUser
-              className={`text-3xl text-green-500 hover:text-green-600 cursor-pointer ${
-                ["/login", "/signup"].includes(pathname)
-                  ? "text-yellow-900"
-                  : ""
-              }`}
-            />
-          </Link>
+          {/* Search Icon */}
           <FiSearch
-            className="text-3xl text-green-500 hover:text-green-600 cursor-pointer"
-            onClick={() => setShowSearch(!showSearch)}
+            className="text-2xl text-green-500 hover:text-green-600 cursor-pointer"
+            onClick={() => handleShowSearch()}
           />
+
+          {/* Cart Icon */}
+          <Link href="/cart" aria-label="Shopping cart" className="relative">
+            <FiShoppingCart
+              className="text-2xl text-green-500 hover:text-green-600 cursor-pointer"
+              onKeyDown={(e) => handleKeyDown(e, "/cart")}
+            />
+            {getItemCount() > 0 && (
+              <span className="absolute -top-2 -right-2 bg-[#FFC107] text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                {getItemCount()}
+              </span>
+            )}
+          </Link>
+
+          {/* User Icon & Dropdown */}
           <div className="relative">
-            <FiShoppingCart className="text-3xl text-green-500 hover:text-green-600 cursor-pointer" />
-            <span className="absolute -top-2 -right-2 bg-[#FFC107] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-              {carts}
-            </span>
+            {isLoggedIn ? (
+              <>
+                {/* Logged In - Dropdown */}
+                <FiUser
+                  className="text-2xl text-green-500 hover:text-green-600 cursor-pointer"
+                  onClick={() => setDropdownOpen((prev) => !prev)}
+                  role="button"
+                  aria-expanded={dropdownOpen}
+                  aria-label="User Menu"
+                />
+
+                {dropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2 z-50">
+                    <Link href="/profile" className="block px-4 py-2 hover:bg-green-100">
+                      Profile
+                    </Link>
+                    <Link href="/profile/edit" className="block px-4 py-2 hover:bg-green-100">
+                      Edit Profile
+                    </Link>
+                    <Link href="/settings" className="block px-4 py-2 hover:bg-green-100">
+                      Settings
+                    </Link>
+                    <button
+                      onClick={handleSignOut}
+                      className="block w-full text-left px-4 py-2 hover:bg-green-100"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </>
+            ) : (
+              <Link href="/login" aria-label="Login">
+                <FiUser className="text-3xl text-green-500 hover:text-green-600 cursor-pointer" />
+              </Link>
+            )}
           </div>
         </div>
       </div>
 
+      {/* Mobile Sidebar */}
       <div
-        className={`fixed inset-y-0 right-0 pt-20 h-full w-[70%] sm:w-[50%] bg-white transition-transform duration-500 ease-in-out z-50 ${menuOpen ? "translate-x-0" : "translate-x-full"} flex flex-col items-center gap-10`}
+        className={`fixed inset-y-0 right-0 pt-20 h-full w-[70%] sm:w-[50%] bg-white transition-transform duration-500 ease-in-out z-50 ${
+          menuOpen ? "translate-x-0" : "translate-x-full"
+        } flex flex-col items-center gap-10`}
       >
         <button
-          className="absolute cursor-pointer top-5 right-5 text-4xl text-black"
+          className="absolute top-5 right-5 text-4xl cursor-pointer"
           onClick={() => setMenuOpen(false)}
+          aria-label="Close menu"
         >
           <FiX />
         </button>
+        {isLoggedIn && (
+          <div className="relative">
+            <h1
+              onClick={() => setDropdownOpen((prev) => !prev)}
+              role="button"
+              aria-expanded={dropdownOpen}
+              aria-label="User Menu"
+              className="cursor-pointer text-[#81C784] hover:text-[#2E7D32]"
+            >
+              Profile
+            </h1>
+
+            {dropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2 z-50">
+                <Link href="/profile" className="block px-4 py-2 hover:bg-green-100">
+                  Profile
+                </Link>
+                <Link href="/profile/edit" className="block px-4 py-2 hover:bg-green-100">
+                  Edit Profile
+                </Link>
+                <Link href="/settings" className="block px-4 py-2 hover:bg-green-100">
+                  Settings
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
 
         {navItems.map((item) => (
-          <Link
-            key={item.path}
-            href={item.path}
-            className={`text-[#81C784] hover:text-[#2E7D32] ${
-              pathname === item.path ? "text-yellow-900" : ""
-            }`}
-            onClick={() => setMenuOpen(false)}
-          >
+          <Link key={item.path} href={item.path} className="text-[#81C784] hover:text-[#2E7D32]">
             {item.name}
           </Link>
         ))}
 
-        <button className="w-full bg-green-500 py-4 text-white cursor-pointer transition duration-300 ease-in-out focus:bg-green-300 focus:text-black">
-          SIGN IN
-        </button>
+        {isLoggedIn ? (
+          <button
+            onClick={handleSignOut}
+            className="w-full text-center bg-green-300 py-5 cursor-pointer"
+          >
+            SIGN OUT
+          </button>
+        ) : (
+          <Link href="/login" className="w-full text-center bg-green-300 py-5 cursor-pointer">
+            SIGN IN
+          </Link>
+        )}
       </div>
-
       {showSearch && (
-        <div className="fixed top-16 left-0 w-full bg-white shadow-md py-3 px-5 z-30 transition-all duration-300">
-          <div className="relative max-w-4xl mx-auto">
-            <input
-              type="text"
-              placeholder="Search products..."
-              className="w-full pl-10 pr-12 py-3 rounded-lg border border-secondary focus:outline-none focus:border-primary"
-              autoFocus
-            />
-            <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary" />
-            <button
-              className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary hover:text-secondary"
-              onClick={() => setShowSearch(false)}
-            >
-              <FiX className="text-xl" />
-            </button>
+          <div className="fixed top-16 left-0 w-full bg-white shadow-md py-3 px-5 z-30 transition-all duration-300">
+            <div className="relative max-w-4xl mx-auto">
+              <input
+                type="text"
+                placeholder="Search products..."
+                className="w-full pl-10 pr-12 py-3 rounded-lg border border-secondary focus:outline-none focus:border-primary"
+                autoFocus
+              />
+              <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary" />
+              <button
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary hover:text-secondary"
+                onClick={() => handleShowSearch()}
+                aria-label="Close search"
+              >
+                <FiX className="text-xl" role="img" />
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        )}
     </>
   );
-}
+};
 
 export default NavBar;

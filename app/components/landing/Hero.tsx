@@ -20,12 +20,13 @@ function Hero() {
         </p>
         <div className=" flex gap-2 max-md:flex-col sm:gap-5 w-full justify-center items-center">
           <button
+            onClick={() => router.push('../shop')}
             className="px-5 py-3 text-green-600 font-medium border-green-600 border-2 x w-40  sm:w-50 rounded-2xl mt-5 cursor-pointer hover:text-white hover:bg-green-700 transition"
           >
             Shop Now
           </button>
           <button
-            onClick={() => router.push('../../about')}
+            onClick={() => router.push('/about')}
             className="px-5 py-3 text-white font-medium border-green-600 border-2 w-40  sm:w-50 rounded-2xl mt-5 cursor-pointer hover:text-green-500 bg-green-700 hover:bg-transparent transition"
           >
             Learn More

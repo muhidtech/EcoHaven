@@ -6,14 +6,13 @@ import { useCart } from '../contexts/CardContext';
 import { FiShoppingCart } from 'react-icons/fi';
 import { getProducts } from '../services/localDataService';
 import Rating from '../components/common/Rating';
-import { updateCarts } from '../components/common/NavBar';
 
 interface Product {
   id: string;
   name: string;
   category: string;
   slug: string;
-  description: string;
+  description?: string;
   price: number;
   rating: number;
   stock: number;
@@ -42,17 +41,16 @@ const Rate = ({ value }: { value: number }) => {
 
 
   
-export const ProductCard = ({ product, onAddToCart }: { product: Product, onAddToCart: () => void }) =>  {
+export const ProductCard = ({ product, onAddToCart }: { product: Product, onAddToCart: (product : Product) => void }) =>  {
   const [isAdding, setIsAdding] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const { itemExists } = useCart();
   const router = useRouter()
 
   const handleAddToCart = () => {
-    if (product.stock <= 0 || itemExists(product.id)) return;
 
     setIsAdding(true);
-    onAddToCart();
+    onAddToCart(product);
 
     setTimeout(() => setIsAdding(false), 500);
   };
@@ -137,16 +135,15 @@ export const ProductCard = ({ product, onAddToCart }: { product: Product, onAddT
           <span className="text-xl font-bold text-gray-900">${product.price.toFixed(2)}</span>
           <button
             onClick={handleAddToCart}
-            disabled={product.stock <= 0 || itemExists(product.slug || product.id)}
             aria-label={`Add ${product.name} to cart`}
             className={`cursor-pointer flex items-center justify-center px-3 py-2 rounded-lg text-white ${
               product.stock > 0
-                ? `bg-green-500 hover:bg-green-600 ${isAdding ? 'animate-pulse' : ''}`
+                ? `bg-green-500 max-md:text-xs lg:text-xs hover:bg-green-600 ${isAdding ? 'animate-pulse' : ''}`
                 : 'bg-gray-400 cursor-not-allowed'
             } transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 shadow-sm hover:shadow`}
           >
             <FiShoppingCart className={`mr-1 ${isAdding ? 'animate-bounce' : ''}`} />
-            {isAdding ? 'Adding...' : ''} {itemExists(product.id) ? "In Cart": "Add"}
+            {isAdding ? itemExists(product.id) ? 'Adding...' : 'Remove...' : itemExists(product.id) ? "Remove from Cart" : "Add to Cart" }
           </button>
         </div>
       </div>
@@ -163,7 +160,7 @@ const ProductGrid = ({
   }: ProductGridProps) => {
     const [page, setPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(8);
-    const { addItem } = useCart();
+    const { addItem, updateQuantity, itemExists, removeItem } = useCart();
   
     useEffect(() => {
       const handleResize = () => {
@@ -188,19 +185,28 @@ const ProductGrid = ({
     const start = (page - 1) * itemsPerPage;
     const paginatedProducts = filteredProducts.slice(start, start + itemsPerPage);
 
-    const handleAddToCart = (product: Product) => {
-        if (product.stock > 0) {
-          addItem({
-            id: product.id,
-            name: product.name,
-            price: product.price,
-            image: product.image,
-            stock: product.stock, // ✅ Include stock property
-            slug: product.slug
-          });
-          updateCarts();
-        }
-        };
+    const handleAddToCart = (item: Product) => {
+      if (item.stock <= 0) {
+        alert("Item is out of stock");
+        return;
+      }
+    
+      if (itemExists(item.id)) {
+        removeItem(item.id);
+        alert("Item removed from cart");
+        return; // Stop further execution if the item is removed
+      }
+      updateQuantity(item.id, item.stock)
+      addItem({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        image: item.image,
+        stock: item.stock,
+        slug: item.slug,
+      });
+      alert("Item added to cart");
+    };
   
     return (
       <div>

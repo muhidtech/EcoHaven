@@ -164,18 +164,19 @@ export interface CartItem {
         console.error('Attempted to remove item with invalid id');
         return;
       }
-      
+    
       setItems(prevItems => {
-        // Ensure prevItems is an array
-        const safeItems = Array.isArray(prevItems) ? prevItems : [];
-        
-        // Check if item exists before attempting removal
-        const itemExists = safeItems.some(item => item.id === id);
-        if (!itemExists) {
-          console.warn(`Attempted to remove non-existent item with id: ${id}`);
+        if (!Array.isArray(prevItems)) {
+          console.error('Invalid cart state');
+          return [];
         }
+    
+        const updatedItems = prevItems.filter(item => item.id !== id);
         
-        return safeItems.filter(item => item.id !== id);
+        // Log for debugging
+        console.log("Item removed from cart. Updated cart:", updatedItems);
+    
+        return updatedItems;
       });
     };
   
@@ -289,8 +290,15 @@ export interface CartItem {
      * @returns True if the item exists in the cart, false otherwise
      */
     const itemExists = (id: string): boolean => {
-      if (!id || !Array.isArray(items)) return false;
-      return items.some(item => item.slug === id || item.id === id);
+      if (!id) {
+        console.log("Invalid id provided.");
+        return false;
+      }
+    
+      const exists = items.some((item) => item.id === id);
+      console.log(exists ? "Item exists" : "Item does not exist");
+      
+      return exists;
     };
   
     // Create the context value object with all cart functions

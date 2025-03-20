@@ -4,18 +4,23 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiArrowLeft, FiEye, FiEyeOff } from "react-icons/fi";
 import Link from "next/link";
+import { useAuth } from '../contexts/AuthContext';
+
 
 const SignUp = () => {
   const router = useRouter();
+  const { signUp } = useAuth() || { signUp: async () => { console.warn('Auth context not found! Check if AuthProvider is properly configured.') } };
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
     email: "",
+    username: "",
     password: "",
     confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -30,6 +35,7 @@ const SignUp = () => {
     if (!formData.firstName) newErrors.firstName = "First name is required";
     if (!formData.lastName) newErrors.lastName = "Last name is required";
     if (!formData.email) newErrors.email = "Email is required";
+    if (!formData.username) newErrors.usernamme = "Username is required";
     if (!formData.password) newErrors.password = "Password is required";
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
@@ -40,9 +46,33 @@ const SignUp = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = () => {
-    if (validateForm()) {
-      alert("Form Submitted!" + JSON.stringify(formData));
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+    setIsLoading(true);
+    setErrors((prevErrors) => ({ ...prevErrors, general: "" }));
+
+    try {
+      await signUp(
+        formData.email,
+        formData.password,
+        formData.firstName,
+        formData.lastName,
+        formData.username
+      );
+
+      // Redirect to login page after successful signup
+      router.push('/login');
+    } catch (error) {
+      console.error('Signup error:', error);
+      setErrors((prevErrors) => ({
+        ...prevErrors,
+        general: error instanceof Error ? error.message : 'Failed to create account. Please try again.'
+      }));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -54,7 +84,7 @@ const SignUp = () => {
         </h1>
         <h1 className="text-white text-5xl font-bold">Welcome Aboard!</h1>
       </div>
-
+  
       <div className="w-full lg:w-1/2 flex flex-col justify-center lg:p-8 pt-30 relative">
         <button
           onClick={() => router.back()}
@@ -62,14 +92,14 @@ const SignUp = () => {
         >
           <FiArrowLeft />
         </button>
-
+  
         <h1 className="text-center text-3xl md:text-5xl mb-15 text-green-600 font-semibold ">
           EcoHaven
         </h1>
-
+  
         <div className="max-w-lg w-full mx-auto bg-white p-8 shadow-2xl rounded-xl relative">
           <h2 className="text-3xl font-bold text-green-600 mb-8">Sign Up</h2>
-
+  
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="relative">
               <input
@@ -84,7 +114,7 @@ const SignUp = () => {
                 <div className="absolute text-xs text-red-500 mt-1">{errors.firstName}</div>
               )}
             </div>
-
+  
             <div className="relative">
               <input
                 type="text"
@@ -98,7 +128,7 @@ const SignUp = () => {
                 <div className="absolute text-xs text-red-500 mt-1">{errors.lastName}</div>
               )}
             </div>
-
+  
             <div className="col-span-1 md:col-span-2 relative">
               <input
                 type="email"
@@ -112,7 +142,22 @@ const SignUp = () => {
                 <div className="absolute text-xs text-red-500 mt-1">{errors.email}</div>
               )}
             </div>
-
+  
+            {/* Added Username Input */}
+            <div className="col-span-1 md:col-span-2 relative">
+              <input
+                type="text"
+                name="username"
+                placeholder="Username"
+                value={formData.username}
+                onChange={handleChange}
+                className="p-3 border rounded-lg focus:outline-none focus:border-green-600 w-full"
+              />
+              {errors.username && (
+                <div className="absolute text-xs text-red-500 mt-1">{errors.username}</div>
+              )}
+            </div>
+  
             <div className="relative">
               <input
                 type={showPassword ? "text" : "password"}
@@ -133,7 +178,7 @@ const SignUp = () => {
                 <div className="absolute text-xs text-red-500 mt-1">{errors.password}</div>
               )}
             </div>
-
+  
             <div className="relative">
               <input
                 type="password"
@@ -148,7 +193,7 @@ const SignUp = () => {
               )}
             </div>
           </div>
-
+  
           <div className="flex justify-between items-center mt-8">
             <p className="text-sm">
               Already have an account?{' '}
@@ -159,7 +204,7 @@ const SignUp = () => {
                 Login
               </span>
             </p>
-
+  
             <button
               onClick={handleSubmit}
               className="px-4 py-2 cursor-pointer bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300 text-sm"
@@ -171,6 +216,7 @@ const SignUp = () => {
       </div>
     </div>
   );
+  
 };
 
 export default SignUp;

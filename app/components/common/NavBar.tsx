@@ -177,18 +177,18 @@ const NavBar: React.FC = () => {
 
                 {dropdownOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2 z-50">
-                    <Link href="/profile" className="block px-4 py-2 hover:bg-green-100">
+                    <Link href="/profile" className="cursor-pointer block px-4 py-2 hover:bg-green-100">
                       Profile
                     </Link>
-                    <Link href="/profile/edit" className="block px-4 py-2 hover:bg-green-100">
+                    <Link href="/profile/edit" className="cursor-pointer block px-4 py-2 hover:bg-green-100">
                       Edit Profile
                     </Link>
-                    <Link href="/settings" className="block px-4 py-2 hover:bg-green-100">
+                    <Link href="/settings" className="cursor-pointer block px-4 py-2 hover:bg-green-100">
                       Settings
                     </Link>
                     <button
                       onClick={handleSignOut}
-                      className="block w-full text-left px-4 py-2 hover:bg-green-100"
+                      className="cursor-pointer block w-full text-left px-4 py-2 hover:bg-green-100"
                       aria-label="Logout from account"
                       tabIndex={0}
                       onKeyDown={(e) => {

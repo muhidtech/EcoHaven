@@ -553,9 +553,5 @@ const MainContent = () => {
     </div>
   );
 };
-      </div>
-    </div>
-  );
-};
 
 export default Dashboard;

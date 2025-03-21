@@ -15,7 +15,7 @@ interface User {
 const usersFilePath = path.join(process.cwd(), 'public', 'data', 'users.json');
 
 // Utility to omit specific keys from an object
-function omit<T extends Record<string, any>, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
+function omit<T extends Record<string, unknown>, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
   const result = { ...obj };
   for (const key of keys) {
     delete result[key];

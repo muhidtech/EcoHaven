@@ -138,10 +138,9 @@ export interface Product {
   };
   /**
    * Retrieves all products from localStorage
-   * @param checkTimestamp - Whether to include timestamp validation
    * @returns Object containing products array and optional timestamp
    */
-  export const getProductsFromStorage = (checkTimestamp = false): { products: Product[], timestamp?: number } => {
+  export const getProductsFromStorage = (): { products: Product[], timestamp?: number } => {
     try {
       if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
         const cachedData = localStorage.getItem('ecohaven_products');
@@ -181,7 +180,7 @@ export interface Product {
   export const getProducts = async (cacheMaxAge = 3600000): Promise<Product[]> => {
     try {
       // Check if we have fresh cached data
-      const { products: cachedProducts, timestamp } = getProductsFromStorage(true);
+      const { products: cachedProducts, timestamp } = getProductsFromStorage();
       
       // If we have cached products with a timestamp
       if (cachedProducts.length > 0 && timestamp) {

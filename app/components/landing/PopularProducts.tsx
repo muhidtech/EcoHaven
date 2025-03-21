@@ -62,9 +62,9 @@ const PopularProducts: React.FC = () => {
   const popularProducts = useMemo(() => products, [products]);
 
   // Debounce function
-  const debounce = (func: Function, wait: number) => {
+  const debounce = (func: (...args: unknown[]) => void, wait: number) => {
     let timeout: NodeJS.Timeout;
-    return (...args: any[]) => {
+    return (...args: unknown[]) => {
       clearTimeout(timeout);
       timeout = setTimeout(() => func(...args), wait);
     };

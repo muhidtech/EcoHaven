@@ -28,9 +28,9 @@ const SkeletonLoader: React.FC<{ itemsPerView: number }> = ({ itemsPerView }) =>
 };
 
 // Debounce function
-const debounce = (fn: Function, ms = 300) => {
+const debounce = (fn: (...args: unknown[]) => void, ms = 300) => {
   let timeoutId: ReturnType<typeof setTimeout>;
-  return function(...args: any[]) {
+  return function(...args: unknown[]) {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => fn(...args), ms);
   };

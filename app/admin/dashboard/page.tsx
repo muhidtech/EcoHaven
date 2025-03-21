@@ -211,6 +211,7 @@ const Dashboard = () => {
         const activities = await fetchActivityData();
         setActivityData(activities);
         setIsActivityLoading(false);
+        setIsLoading(false)
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
         setIsActivityLoading(false);
@@ -269,7 +270,7 @@ const Dashboard = () => {
     if (!isLoading) {
       fetchAllData();
     }
-  }, [isLoading, isAdminLogin(), fetchActivityData]);
+  }, [isLoading, isAdminLogin, fetchActivityData]);
 
   if (isLoading) {
     return (

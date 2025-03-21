@@ -41,9 +41,9 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const identifier = searchParams.get('identifier');
-    const password = searchParams.get('password');
+    const inputPassword = searchParams.get('password'); // Renamed to avoid conflict
 
-    if (!identifier || !password) {
+    if (!identifier || !inputPassword) {
       return NextResponse.json(
         { error: 'Both identifier and password are required.' },
         { status: 400 }
@@ -54,15 +54,15 @@ export async function GET(request: NextRequest) {
     const isEmail = identifier.includes('@');
     const matchedUser = users.find((user: User) =>
       isEmail
-        ? user.email === identifier && user.password === password
-        : user.username === identifier && user.password === password
+        ? user.email === identifier && user.password === inputPassword
+        : user.username === identifier && user.password === inputPassword
     );
 
     if (!matchedUser) {
       return NextResponse.json({ error: 'Invalid credentials.' }, { status: 401 });
     }
 
-    const { password: _, ...userWithoutPassword } = matchedUser; // Omit password
+    const { password, ...userWithoutPassword } = matchedUser; // Omit password
     return NextResponse.json({ user: userWithoutPassword }, { status: 200 });
   } catch (error) {
     console.error('Error retrieving user accounts:', error);
@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
     users.push(userToAdd);
     await saveUsers(users);
 
-    const { password: _, ...userWithoutPassword } = userToAdd; // Omit password
+    const { password, ...userWithoutPassword } = userToAdd; // Omit password
     return NextResponse.json(
       { message: 'User account created successfully.', user: userWithoutPassword },
       { status: 201 }
@@ -136,7 +136,7 @@ export async function PATCH(request: NextRequest) {
     users[userIndex] = { ...users[userIndex], ...updates };
     await saveUsers(users);
 
-    const { password: _, ...updatedUser } = users[userIndex]; // Omit password
+    const { password, ...updatedUser } = users[userIndex]; // Omit password
     return NextResponse.json(
       { message: 'User updated successfully.', user: updatedUser },
       { status: 200 }

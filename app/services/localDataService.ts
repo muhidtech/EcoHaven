@@ -259,7 +259,7 @@ export const generateOrderId = (): string => {
  */
 export const createOrder = (
   userId: string,
-  items: { productId: string; quantity: number; price: number }[],
+  items: { productName: string; productId: string; quantity: number; price: number }[],
   shippingAddress: Order['shippingAddress'],
   paymentMethod: string
 ): Order | null => {
@@ -270,6 +270,12 @@ export const createOrder = (
     }
 
     const totalAmount = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+
+    // Ensure each item includes productName
+    items = items.map(item => ({
+      ...item,
+      productName: item.productName, // Replace with actual product name if available
+    }));
 
     const newOrder: Order = {
       id: generateOrderId(),

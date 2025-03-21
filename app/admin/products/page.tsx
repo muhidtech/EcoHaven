@@ -36,6 +36,10 @@ export default function ProductManagement() {
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [imageLoading, setImageLoading] = useState(false);
+  const [toastMessage, setToastMessage] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showPopup, setShowPopup] = useState(false);
   const [formData, setFormData] = useState({
     id: "",
     name: "",
@@ -51,25 +55,39 @@ export default function ProductManagement() {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const loadProducts = async () => {
+    try {
+      const productData = await getProducts();
+      setProducts(productData);
+    } catch (error) {
+      console.error("Failed to load products:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     if (!user || user.role !== "admin") {
       router.push("/");
       return;
     }
 
-    const loadProducts = async () => {
-      try {
-        const productData = await getProducts();
-        setProducts(productData);
-      } catch (error) {
-        console.error("Failed to load products:", error);
-      } finally {
-        setIsLoading(false);
+    loadProducts();
+  }, [user, router]);
+
+  // Listen for changes in localStorage from other tabs/windows
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'ecohaven_products') {
+        loadProducts();
       }
     };
 
-    loadProducts();
-  }, [user, router]);
+    window.addEventListener('storage', handleStorageChange);
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -92,9 +110,9 @@ export default function ProductManagement() {
     }
     
     if (!formData.imageUrl.trim()) {
-      newErrors.imageUrl = "Image URL is required";
-    } else if (!/^https?:\/\/.+/.test(formData.imageUrl)) {
-      newErrors.imageUrl = "Please enter a valid URL";
+      newErrors.imageUrl = "Image is required";
+    } else if (!/^(https?:\/\/|data:)/.test(formData.imageUrl)) {
+      newErrors.imageUrl = "Please enter a valid URL or upload an image";
     }
 
     setErrors(newErrors);
@@ -110,6 +128,27 @@ export default function ProductManagement() {
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setImageLoading(true);
+    const reader = new FileReader();
+    
+    reader.onload = (event) => {
+      const base64String = event.target?.result as string;
+      setFormData(prev => ({ ...prev, imageUrl: base64String }));
+      setImageLoading(false);
+    };
+    
+    reader.onerror = () => {
+      console.error('Error reading file');
+      setImageLoading(false);
+    };
+    
+    reader.readAsDataURL(file);
   };
 
   const resetForm = () => {
@@ -128,6 +167,7 @@ export default function ProductManagement() {
         });
     setEditingProduct(null);
     setErrors({});
+    setShowPopup(false);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -157,6 +197,8 @@ export default function ProductManagement() {
       }
       
       resetForm();
+      setToastMessage(editingProduct ? "Product updated successfully" : "Product added successfully");
+      setTimeout(() => setToastMessage(""), 3000);
     } catch (error) {
       console.error("Failed to save product:", error);
     } finally {
@@ -175,6 +217,7 @@ export default function ProductManagement() {
       isNew: product.isNew || false,
       isFeatured: product.featured || false
     });
+    setShowPopup(true);
   };
 
   const handleDelete = async (id: string) => {
@@ -183,6 +226,8 @@ export default function ProductManagement() {
         setIsLoading(true);
         await deleteProduct(id);
         setProducts(prev => prev.filter(p => p.id !== id));
+        setToastMessage("Product deleted successfully");
+        setTimeout(() => setToastMessage(""), 3000);
       } catch (error) {
         console.error("Failed to delete product:", error);
       } finally {
@@ -195,13 +240,40 @@ export default function ProductManagement() {
     return null;
   }
 
+  // Filter products based on search term
+  const filteredProducts = products.filter(product => 
+    product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.description.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="container mx-auto px-4 py-8">
       <AdminHeader title="Products Management" />
-      <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-        <h2 className="text-xl font-semibold mb-4">
-          {editingProduct ? "Edit Product" : "Add New Product"}
-        </h2>
+      {toastMessage && (
+        <div className="fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-md z-50">
+          {toastMessage}
+        </div>
+      )}
+      
+      {/* Modal Backdrop */}
+      {showPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40" onClick={() => resetForm()}>
+          {/* Modal Content */}
+          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-semibold">
+                {editingProduct ? "Edit Product" : "Add New Product"}
+              </h2>
+              <button 
+                onClick={resetForm}
+                className="text-gray-500 hover:text-gray-700"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -280,8 +352,28 @@ export default function ProductManagement() {
                 value={formData.imageUrl}
                 onChange={handleInputChange}
                 className={`w-full p-2 border rounded-md ${errors.imageUrl ? 'border-red-500' : 'border-gray-300'}`}
+                placeholder="Enter image URL or upload below"
               />
+              <div className="mt-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Or Upload Image
+                </label>
+                <input
+                  type="file"
+                  name="imageUpload"
+                  onChange={handleImageUpload}
+                  accept="image/*"
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                />
+                {imageLoading && <p className="text-xs text-gray-500 mt-1">Loading image...</p>}
+              </div>
               {errors.imageUrl && <p className="text-red-500 text-xs mt-1">{errors.imageUrl}</p>}
+              {formData.imageUrl && formData.imageUrl.startsWith('data:') && (
+                <div className="mt-2">
+                  <p className="text-xs text-gray-500">Image preview:</p>
+                  <img src={formData.imageUrl} alt="Preview" className="h-16 w-16 object-cover mt-1 rounded" />
+                </div>
+              )}
             </div>
             
             <div>
@@ -362,14 +454,49 @@ export default function ProductManagement() {
             </button>
           </div>
         </form>
+          </div>
+        </div>
+      )}
+      
+      <div className="flex justify-end mb-4">
+        <button
+          onClick={() => setShowPopup(true)}
+          className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+            <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
+          </svg>
+          Add New Product
+        </button>
       </div>
       
       <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-semibold mb-4">Product List</h2>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+          <h2 className="text-xl font-semibold">Product List</h2>
+          <div className="flex flex-col md:flex-row md:items-center mt-2 md:mt-0 space-y-2 md:space-y-0 md:space-x-4">
+            <div className="text-sm text-gray-600">
+              Total Products: <span className="font-semibold">{filteredProducts.length}</span>
+            </div>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+              />
+              <div className="absolute left-3 top-2.5 text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
         
         {isLoading ? (
           <p className="text-center py-4">Loading products...</p>
-        ) : products.length === 0 ? (
+        ) : filteredProducts.length === 0 ? (
           <p className="text-center py-4">No products found.</p>
         ) : (
           <div className="overflow-x-auto">
@@ -400,12 +527,14 @@ export default function ProductManagement() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {products.map((product) => (
+                {filteredProducts.map((product) => (
                   <tr key={product.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <Image 
                         src={product.image} 
                         alt={product.name} 
+                        width={64}
+                        height={64}
                         className="h-16 w-16 object-cover rounded"
                       />
                     </td>

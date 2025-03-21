@@ -7,6 +7,7 @@ import { getFeaturedProducts } from "../../services/localDataService";
 interface Product {
   name: string;
   imageUrl?: string;
+  image?: string;  // new optional property
 }
 
 const Features: React.FC = () => {
@@ -78,7 +79,7 @@ const Features: React.FC = () => {
 
   return (
     <div className="relative flex flex-col px-10 md:pl-20 md:pr-15 mt-20 pb-20">
-      <h1 className="text-3xl pb-5 font-semibold text-text">Featured Categories</h1>
+      <h1 className="text-3xl pb-5 font-semibold text-text">Featured Products</h1>
 
       {/* Navigation Arrows */}
       <div className="absolute top-0 lg:right-20 md:right-15 right-5 max-md:top-2 flex gap-2">
@@ -101,11 +102,10 @@ const Features: React.FC = () => {
               className="w-[calc(100%/2)] md:w-[calc(100%/4)] lg:w-[calc(100%/6)] min-w-[150px] max-w-[300px] border transition-transform duration-500 ease-in-out p-5 shadow-lg rounded-lg bg-white"
             >
               <Image
-                src={item.imageUrl || "/placeholder.png"}
+                src={item.imageUrl || item.image || "/placeholder.png"}
                 alt={item.name}
                 width={300}
                 height={300}
-                fill
                 className="w-full h-auto object-contain"
               />
               <p className="text-center mt-2">{item.name}</p>

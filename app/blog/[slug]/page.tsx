@@ -1,3 +1,5 @@
+"use client"
+
 import React from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -19,14 +21,13 @@ interface BlogPost {
 
 // Use correct PageProps interface for Next.js
 interface PageProps {
-  params: {
-    slug: string;
-  };
+  params: Promise<{ slug: string }>;
 }
 
 // Ensure metadata generation uses correct type
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const post = await getBlogPost(params.slug);
+  const { slug } = await params;
+  const post = await getBlogPost(slug);
 
   if (!post) {
     return {
@@ -66,7 +67,8 @@ async function getBlogPost(slug: string): Promise<BlogPost | undefined> {
 
 // Main blog post page component
 export default async function BlogPostPage({ params }: PageProps) {
-  const post = await getBlogPost(params.slug);
+  const { slug } = await params;
+  const post = await getBlogPost(slug);
 
   if (!post) {
     notFound();

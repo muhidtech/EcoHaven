@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/contexts/AuthContext";
 import AdminHeader from "@/app/components/admin/AdminHeader";
+import { useScrollAnimation } from "@/app/hooks/useScrollAnimation";
 import {
   Table,
   TableHeader,
@@ -266,11 +267,14 @@ export default function UsersPage() {
     return null;
   }
 
+  // Animation hooks
+  const [tableRef, tableVisible] = useScrollAnimation(0.1);
+  
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <AdminHeader title="User Management" />
       
-      <main className="flex-1 p-6">
+      <main className="flex-1 p-6 scroll-smooth">
         <div className="max-w-7xl mx-auto">
           {notification && (
             <Alert 
@@ -300,13 +304,18 @@ export default function UsersPage() {
             </Alert>
           )}
           
-          <div className="bg-white shadow-md rounded-lg overflow-hidden">
+          <div 
+            ref={tableRef} 
+            className={`bg-white shadow-md rounded-lg overflow-hidden transition-all duration-700 ${
+              tableVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+            }`}
+          >
             <div className="p-6">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-semibold text-gray-800">Users</h2>
                 <Button 
                   onClick={handleAddUser}
-                  className="bg-green-600 hover:bg-green-700"
+                  className="bg-green-600 hover:bg-green-700 transition-all duration-300 hover:scale-105"
                 >
                   Add New User
                 </Button>
@@ -326,8 +335,8 @@ export default function UsersPage() {
                   <p className="text-gray-600">No users found.</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <Table>
+                <div className="overflow-x-auto transition-all duration-500 ease-in-out">
+                  <Table className="animate-fadeIn">
                     <TableHeader>
                       <TableRow>
                         <TableHead>ID</TableHead>
@@ -362,7 +371,7 @@ export default function UsersPage() {
                                 onClick={() => handleViewUser(user.id)}
                                 variant="outline"
                                 size="sm"
-                                className="text-blue-600 border-blue-600 hover:bg-blue-50"
+                                className="text-blue-600 border-blue-600 hover:bg-blue-50 transition-all duration-300 hover:scale-105"
                               >
                                 View
                               </Button>
@@ -370,7 +379,7 @@ export default function UsersPage() {
                                 onClick={() => handleEditUser(user.id)}
                                 variant="outline"
                                 size="sm"
-                                className="text-amber-600 border-amber-600 hover:bg-amber-50"
+                                className="text-amber-600 border-amber-600 hover:bg-amber-50 transition-all duration-300 hover:scale-105"
                               >
                                 Edit
                               </Button>
@@ -378,7 +387,7 @@ export default function UsersPage() {
                                 onClick={() => handleDeleteUser(user.id)}
                                 variant="outline"
                                 size="sm"
-                                className="text-red-600 border-red-600 hover:bg-red-50"
+                                className="text-red-600 border-red-600 hover:bg-red-50 transition-all duration-300 hover:scale-105"
                               >
                                 Delete
                               </Button>
@@ -397,7 +406,7 @@ export default function UsersPage() {
 
       {/* View User Modal */}
       <Dialog open={viewModalOpen} onOpenChange={setViewModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md animate-fadeIn">
           <DialogHeader>
             <DialogTitle>User Details</DialogTitle>
             <DialogDescription>
@@ -450,7 +459,7 @@ export default function UsersPage() {
 
       {/* Edit User Modal */}
       <Dialog open={editModalOpen} onOpenChange={setEditModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md animate-slideIn">
           <DialogHeader>
             <DialogTitle>Edit User</DialogTitle>
             <DialogDescription>
@@ -544,7 +553,7 @@ export default function UsersPage() {
 
       {/* Delete User Modal */}
       <Dialog open={deleteModalOpen} onOpenChange={setDeleteModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md animate-fadeIn">
           <DialogHeader>
             <DialogTitle>Confirm Deletion</DialogTitle>
             <DialogDescription>
@@ -577,7 +586,7 @@ export default function UsersPage() {
 
       {/* Add User Modal */}
       <Dialog open={addModalOpen} onOpenChange={setAddModalOpen}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md animate-slideIn">
           <DialogHeader>
             <DialogTitle>Add New User</DialogTitle>
             <DialogDescription>

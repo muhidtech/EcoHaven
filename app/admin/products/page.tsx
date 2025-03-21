@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/contexts/AuthContext";
 import AdminHeader from '../../components/admin/AdminHeader';
+import { useScrollAnimation } from "@/app/hooks/useScrollAnimation";
 
 import { 
   getProducts, 
@@ -40,6 +41,7 @@ export default function ProductManagement() {
   const [toastMessage, setToastMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [showPopup, setShowPopup] = useState(false);
+  const [productListRef, isProductListVisible] = useScrollAnimation();
   const [formData, setFormData] = useState({
     id: "",
     name: "",
@@ -258,9 +260,9 @@ export default function ProductManagement() {
       
       {/* Modal Backdrop */}
       {showPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 transition-opacity duration-300 animate-fadeIn" onClick={() => resetForm()}>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 transition-opacity duration-500 animate-fadeIn" onClick={() => resetForm()}>
           {/* Modal Content */}
-          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto animate-slideInRight duration-300" onClick={e => e.stopPropagation()}>
+          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto animate-slideInRight duration-500 transform transition-all" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">
                 {editingProduct ? "Edit Product" : "Add New Product"}
@@ -461,7 +463,7 @@ export default function ProductManagement() {
       <div className="flex justify-end mb-4">
         <button
           onClick={() => setShowPopup(true)}
-          className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 hover:scale-105 transition-transform duration-200 flex items-center"
+          className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 hover:scale-105 transition-all duration-300 transform flex items-center shadow-md hover:shadow-lg"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
@@ -470,7 +472,8 @@ export default function ProductManagement() {
         </button>
       </div>
       
-      <div className="bg-white rounded-lg shadow-md p-6">
+      {/* Product List Container with scroll animation */}
+      <div ref={productListRef} className={`bg-white rounded-lg shadow-md p-6 transition-all duration-500 ${isProductListVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
           <h2 className="text-xl font-semibold">Product List</h2>
           <div className="flex flex-col md:flex-row md:items-center mt-2 md:mt-0 space-y-2 md:space-y-0 md:space-x-4">
@@ -534,7 +537,7 @@ export default function ProductManagement() {
                     : 'delay-500';
                   
                   return (
-                    <tr key={product.id} className={`animate-fadeIn duration-300 ${delayClass} hover:bg-gray-50 transition-colors`}>
+                    <tr key={product.id} className={`animate-fadeIn duration-300 ${delayClass} hover:bg-gray-50 transition-all transform hover:scale-[1.01]`}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <Image 
                         src={product.image} 

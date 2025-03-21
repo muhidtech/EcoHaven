@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, FormEvent, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
 import Link from "next/link";
 import Image from "next/image";
+import { useScrollAnimation } from "../../hooks/useScrollAnimation";
 import {
   Dialog,
   DialogContent,
@@ -148,11 +149,11 @@ export default function AdminBlogManagement() {
         <div className="flex space-x-4">
           <button
             onClick={() => setAddModalOpen(true)}
-            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition flex items-center"
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-all duration-300 hover:scale-105 flex items-center"
           >
             <span className="mr-1">+</span> Add New Blog
           </button>
-          <Link href="/admin/dashboard" className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition">
+          <Link href="/admin/dashboard" className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition-all duration-300 hover:scale-105">
             Back to Dashboard
           </Link>
         </div>
@@ -173,7 +174,7 @@ export default function AdminBlogManagement() {
 
       {/* Add Blog Modal */}
       <Dialog open={addModalOpen} onOpenChange={setAddModalOpen}>
-        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto animate-slideInRight">
           <DialogHeader>
             <DialogTitle className="text-2xl font-semibold text-green-700">Add New Blog Post</DialogTitle>
             <DialogDescription>
@@ -285,13 +286,13 @@ export default function AdminBlogManagement() {
               <button
                 type="button"
                 onClick={() => setAddModalOpen(false)}
-                className="bg-gray-300 text-gray-800 px-6 py-2 rounded-md hover:bg-gray-400 transition focus:outline-none focus:ring-2 focus:ring-gray-500 mr-2"
+                className="bg-gray-300 text-gray-800 px-6 py-2 rounded-md hover:bg-gray-400 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-gray-500 mr-2"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500"
               >
                 Add Blog Post
               </button>
@@ -301,7 +302,7 @@ export default function AdminBlogManagement() {
       </Dialog>
 
       {/* Blog List */}
-      <div className="bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
+      <div ref={useScrollAnimation()} className="bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg animate-fadeInUp">
         <h2 className="text-2xl font-semibold mb-4 text-green-700">Blog Posts</h2>
         
         {loading ? (
@@ -310,8 +311,12 @@ export default function AdminBlogManagement() {
           <p className="text-center py-4">No blog posts found.</p>
         ) : (
           <div className="space-y-6">
-            {blogs.map((blog) => (
-              <div key={blog.id} className="border-b pb-6 last:border-b-0">
+            {blogs.map((blog, index) => (
+              <div 
+                key={blog.id} 
+                className="border-b pb-6 last:border-b-0 transition-all duration-500 hover:bg-green-50 hover:scale-[1.01] rounded-md p-3"
+                ref={useScrollAnimation(0.1, index * 0.1)} // Adding staggered animation with delay
+              >
                 <div className="flex flex-col md:flex-row gap-4">
                   {blog.imageUrl && (
                     <div className="w-full md:w-1/4">
@@ -326,7 +331,7 @@ export default function AdminBlogManagement() {
                   )}
                   
                   <div className="w-full md:w-3/4">
-                    <h3 className="text-xl font-semibold text-green-800 mb-2">{blog.title}</h3>
+                    <h3 className="text-xl font-semibold text-green-800 mb-2 transition-all duration-300 hover:text-green-600">{blog.title}</h3>
                     <p className="text-sm text-gray-500 mb-2">
                       By {blog.author} • Published on {new Date(blog.publishedDate).toLocaleDateString()}
                     </p>
@@ -335,7 +340,7 @@ export default function AdminBlogManagement() {
                     <div className="flex space-x-2">
                       <button
                         onClick={() => handleDeleteBlog(blog.id)}
-                        className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700 transition text-sm"
+                        className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700 transition-all duration-300 hover:scale-105 text-sm"
                       >
                         Delete
                       </button>

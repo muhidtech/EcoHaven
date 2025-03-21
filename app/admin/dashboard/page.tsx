@@ -1,11 +1,43 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "../../contexts/AuthContext";
 import { FaBoxOpen, FaBlog, FaShoppingCart, FaUsers, FaBars, FaTimes, FaHome, FaChartLine, FaSignOutAlt, FaUserCircle } from "react-icons/fa";
 import { getProducts, getOrdersFromStorage } from "@/app/services/localDataService";
+
+// Custom hook for scroll animations
+const useScrollAnimation = (threshold = 0.1) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      {
+        threshold: threshold
+      }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      if (ref.current) {
+        observer.unobserve(ref.current);
+      }
+    };
+  }, [threshold]);
+
+  return [ref, isVisible];
+};
 
 export interface User {
   id: string;
@@ -299,7 +331,25 @@ const Dashboard = () => {
 
         {/* Main Content Area */}
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">
-          <div className="container mx-auto animate-fadeIn">
+          <MainContent />
+        </main>
+      </div>
+    </div>
+  );
+};
+
+// Main content component with animations
+const MainContent = () => {
+  const [mainRef, mainVisible] = useScrollAnimation(0.1);
+  const [statsRef, statsVisible] = useScrollAnimation(0.2);
+  const [quickAccessRef, quickAccessVisible] = useScrollAnimation(0.2);
+  const [activityRef, activityVisible] = useScrollAnimation(0.2);
+
+  return (
+    <div 
+      ref={mainRef} 
+      className={`container mx-auto transition-all duration-700 ${mainVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+    >
             <h1 className="text-2xl font-semibold text-gray-800 mb-6">Admin Dashboard</h1>
             
             {/* Welcome Message */}
@@ -311,8 +361,11 @@ const Dashboard = () => {
             </div>
             
             {/* Stats Overview */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+            <div 
+              ref={statsRef} 
+              className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6 transition-all duration-700 ${statsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+            >
+              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 animate-delay-100">
                 <div className="flex items-center">
                   <div className="p-3 rounded-full bg-green-100 text-green-600 mr-4">
                     <FaBoxOpen className="h-6 w-6" />
@@ -324,7 +377,7 @@ const Dashboard = () => {
                 </div>
               </div>
               
-              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 animate-delay-200">
                 <div className="flex items-center">
                   <div className="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
                     <FaShoppingCart className="h-6 w-6" />
@@ -336,7 +389,7 @@ const Dashboard = () => {
                 </div>
               </div>
               
-              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 animate-delay-300">
                 <div className="flex items-center">
                   <div className="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
                     <FaUsers className="h-6 w-6" />
@@ -348,7 +401,7 @@ const Dashboard = () => {
                 </div>
               </div>
               
-              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
+              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 animate-delay-400">
                 <div className="flex items-center">
                   <div className="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4">
                     <FaChartLine className="h-6 w-6" />
@@ -363,9 +416,12 @@ const Dashboard = () => {
             
             {/* Management Cards */}
             <h2 className="text-xl font-medium text-gray-800 mb-4">Quick Access</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6">
+            <div 
+              ref={quickAccessRef} 
+              className={`grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-6 transition-all duration-700 ${quickAccessVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+            >
               <Link href="/admin/products" className="block">
-                <div className="bg-white rounded-lg shadow-sm p-6 text-center hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 h-full">
+                <div className="bg-white rounded-lg shadow-sm p-6 text-center hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 h-full animate-delay-100">
                   <FaBoxOpen className="h-12 w-12 mx-auto mb-4 text-green-600" />
                   <h3 className="text-lg font-medium text-gray-800 mb-2">Product Management</h3>
                   <p className="text-gray-600">
@@ -375,7 +431,7 @@ const Dashboard = () => {
               </Link>
               
               <Link href="/admin/blog" className="block">
-                <div className="bg-white rounded-lg shadow-sm p-6 text-center hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 h-full">
+                <div className="bg-white rounded-lg shadow-sm p-6 text-center hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 h-full animate-delay-200">
                   <FaBlog className="h-12 w-12 mx-auto mb-4 text-blue-600" />
                   <h3 className="text-lg font-medium text-gray-800 mb-2">Blog Management</h3>
                   <p className="text-gray-600">
@@ -385,7 +441,7 @@ const Dashboard = () => {
               </Link>
               
               <Link href="/admin/orders" className="block">
-                <div className="bg-white rounded-lg shadow-sm p-6 text-center hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 h-full">
+                <div className="bg-white rounded-lg shadow-sm p-6 text-center hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 h-full animate-delay-300">
                   <FaShoppingCart className="h-12 w-12 mx-auto mb-4 text-purple-600" />
                   <h3 className="text-lg font-medium text-gray-800 mb-2">Order Management</h3>
                   <p className="text-gray-600">
@@ -395,7 +451,7 @@ const Dashboard = () => {
               </Link>
               
               <Link href="/admin/users" className="block">
-                <div className="bg-white rounded-lg shadow-sm p-6 text-center hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 h-full">
+                <div className="bg-white rounded-lg shadow-sm p-6 text-center hover:shadow-md transition-all duration-300 transform hover:-translate-y-1 h-full animate-delay-400">
                   <FaUsers className="h-12 w-12 mx-auto mb-4 text-yellow-600" />
                   <h3 className="text-lg font-medium text-gray-800 mb-2">User Management</h3>
                   <p className="text-gray-600">
@@ -407,7 +463,10 @@ const Dashboard = () => {
             
             {/* Recent Activity */}
             <h2 className="text-xl font-medium text-gray-800 mb-4">Recent Activity</h2>
-            <div className="bg-white rounded-lg shadow-sm p-6">
+            <div 
+              ref={activityRef} 
+              className={`bg-white rounded-lg shadow-sm p-6 transition-all duration-700 ${activityVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+            >
               {isActivityLoading ? (
                 <div className="text-center py-4">
                   <p className="text-gray-600">Loading activity data...</p>
@@ -491,8 +550,9 @@ const Dashboard = () => {
                 </ol>
               )}
             </div>
-          </div>
-        </main>
+    </div>
+  );
+};
       </div>
     </div>
   );

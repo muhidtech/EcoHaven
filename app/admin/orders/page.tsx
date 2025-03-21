@@ -1,12 +1,46 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { getOrdersFromStorage, updateOrder } from '../../services/localDataService';
 import { Order } from "../../services/localDataService";
 import { FiEye } from 'react-icons/fi';
 import AdminHeader from '../../components/admin/AdminHeader';
 import { useAuth } from '../../contexts/AuthContext';
 import { useRouter } from 'next/navigation';
+
+// Custom hook for scroll animations
+const useScrollAnimation = (threshold = 0.1) => {
+  const [isVisible, setIsVisible] = useState(false);
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          // Once visible, no need to observe anymore
+          if (ref.current) observer.unobserve(ref.current);
+        }
+      },
+      {
+        threshold,
+      }
+    );
+
+    const currentRef = ref.current;
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef);
+      }
+    };
+  }, [threshold]);
+
+  return { ref, isVisible };
+};
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -104,7 +138,15 @@ const OrdersPage = () => {
       <AdminHeader title="Orders Management" />
       
       <div className="container mx-auto px-4 py-8">
-        <div className="bg-white rounded-lg shadow-md p-6">
+        {(() => {
+          const { ref, isVisible } = useScrollAnimation(0.1);
+          return (
+            <div 
+              ref={ref} 
+              className={`bg-white rounded-lg shadow-md p-6 transition-all duration-700 ${
+                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+              }`}
+            >
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-semibold text-gray-800">All Orders</h2>
           </div>
@@ -149,7 +191,10 @@ const OrdersPage = () => {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {orders.map((order) => (
-                    <tr key={order.id} className="hover:bg-gray-50">
+                    <tr 
+                      key={order.id} 
+                      className="hover:bg-gray-50 transition-all duration-200 ease-in-out hover:shadow-sm"
+                    >
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {order.id}
                       </td>
@@ -170,7 +215,7 @@ const OrdersPage = () => {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
                           <button
-                            className="text-indigo-600 hover:text-indigo-900 flex items-center"
+                            className="text-indigo-600 hover:text-indigo-900 flex items-center transition-colors duration-200 ease-in-out"
                             title="View Details"
                           >
                             <FiEye className="mr-1" /> View
@@ -178,7 +223,7 @@ const OrdersPage = () => {
                           
                           <div className="relative inline-block text-left">
                             <select
-                              className="bg-white border border-gray-300 rounded-md shadow-sm py-1 px-3 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                              className="bg-white border border-gray-300 rounded-md shadow-sm py-1 px-3 text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 ease-in-out"
                               value={order.status}
                               onChange={(e) => handleStatusUpdate(order.id, e.target.value as "pending" | "processing" | "shipped" | "delivered" | "cancelled")}
                               disabled={statusUpdating === order.id}
@@ -203,7 +248,9 @@ const OrdersPage = () => {
               </table>
             </div>
           )}
-        </div>
+            </div>
+          );
+        })()}
       </div>
     </div>
   );

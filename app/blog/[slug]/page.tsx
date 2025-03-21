@@ -17,12 +17,11 @@ interface BlogPost {
 }
 
 interface PageProps {
-  params: Promise<{ slug: string; }> | { slug: string; };
+  params: { slug: string; };
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const resolvedParams = await params;
-  const post = await getBlogPost(resolvedParams.slug);
+  const post = await getBlogPost(params.slug);
 
   if (!post) {
     return {
@@ -59,8 +58,7 @@ async function getBlogPost(slug: string): Promise<BlogPost | undefined> {
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
-  const resolvedParams = await params;
-  const post = await getBlogPost(resolvedParams.slug);
+  const post = await getBlogPost(params.slug);
 
   if (!post) {
     notFound();

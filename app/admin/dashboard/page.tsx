@@ -178,60 +178,14 @@ const Dashboard = () => {
     }
   }, []);
 
-  // Fetch data for dashboard
+  // Revised useEffect
   useEffect(() => {
-    const fetchAllData = async () => {
-      try {
-        // Fetch products
-        const products = await getProducts();
-        setProductsCount(products.length);
-  
-        // Fetch orders and calculate revenue
-        const orders = getOrdersFromStorage();
-        setOrdersCount(orders.length);
-  
-        // Calculate total revenue from orders
-        const totalRevenue = orders.reduce((sum: number, order: { totalAmount: string | number }) => {
-          const amount =
-            typeof order.totalAmount === 'string'
-              ? parseFloat(order.totalAmount)
-              : typeof order.totalAmount === 'number'
-              ? order.totalAmount
-              : 0;
-          return sum + (amount || 0);
-        }, 0);
-        setRevenue(totalRevenue);
-  
-        // Fetch users
-        const users = await getUsers();
-        setUsersCount(users.length);
-  
-        // Fetch activity data
-        setIsActivityLoading(true);
-        const activities = await fetchActivityData();
-        setActivityData(activities);
-        setIsActivityLoading(false);
-        setIsLoading(false)
-      } catch (error) {
-        console.error('Error fetching dashboard data:', error);
-        setIsActivityLoading(false);
-      }
-    };
-  
-    if (!isLoading) {
-      fetchAllData();
-    }
-  }, [isLoading, isAdminLogin, fetchActivityData]);
-
-  useEffect(() => {
-    const checkAdminLogin = isAdminLogin(); // Extract the function call to a variable
-    if (checkAdminLogin) {
+    // Check admin status; redirect if user is not admin
+    if (!isAdminLogin()) {
       router.push('/');
+      return; // exit early if not admin
     }
-  }, [isAdminLogin, router]);
 
-  // Consolidated data fetching for dashboard
-  useEffect(() => {
     const fetchAllData = async () => {
       try {
         // Fetch products
@@ -241,13 +195,8 @@ const Dashboard = () => {
         // Fetch orders and calculate revenue
         const orders = getOrdersFromStorage();
         setOrdersCount(orders.length);
-        
-        // Calculate total revenue from orders
-        const totalRevenue = orders.reduce((sum: number, order: { totalAmount: string | number }) => {
-          // Ensure proper numeric conversion with fallback to 0
-          const amount = typeof order.totalAmount === 'string' 
-            ? parseFloat(order.totalAmount) 
-            : (typeof order.totalAmount === 'number' ? order.totalAmount : 0);
+        const totalRevenue = orders.reduce((sum, order) => {
+          const amount = typeof order.totalAmount === 'string' ? parseFloat(order.totalAmount) : order.totalAmount;
           return sum + (amount || 0);
         }, 0);
         setRevenue(totalRevenue);
@@ -255,22 +204,22 @@ const Dashboard = () => {
         // Fetch users
         const users = await getUsers();
         setUsersCount(users.length);
-        
+
         // Fetch activity data
         setIsActivityLoading(true);
         const activities = await fetchActivityData();
         setActivityData(activities);
         setIsActivityLoading(false);
+
+        setIsLoading(false);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
         setIsActivityLoading(false);
       }
     };
 
-    if (!isLoading) {
-      fetchAllData();
-    }
-  }, [isLoading, isAdminLogin, fetchActivityData]);
+    fetchAllData();
+  }, [isAdminLogin, router, fetchActivityData]);
 
   if (isLoading) {
     return (

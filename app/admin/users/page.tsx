@@ -165,28 +165,19 @@ export default function UsersPage() {
     if (!selectedUser) return;
     
     try {
-      // In a real app, this would be an API call
-      // const response = await fetch(`/api/users/${selectedUser.id}`, {
-      //   method: 'PATCH',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData)
-      // });
+      const response = await fetch(`/api/users`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...formData, id: selectedUser.id })
+      });
       
-      // if (!response.ok) throw new Error('Failed to update user');
+      if (!response.ok) throw new Error('Failed to update user');
       
-      // Simulate successful update
-      const updatedUsers = users.map(user => 
-        user.id === selectedUser.id 
-          ? { ...user, ...formData } 
-          : user
-      );
-      
-      setUsers(updatedUsers);
       setEditModalOpen(false);
       showNotification('success', 'User updated successfully');
       
-      // In a real app, you would fetch the updated data
-      // await fetchUsers();
+      // Refresh the users data to ensure UI is in sync with backend
+      await fetchUsers();
     } catch (err) {
       console.error('Error updating user:', err);
       showNotification('error', 'Failed to update user. Please try again.');
@@ -207,21 +198,19 @@ export default function UsersPage() {
     if (!selectedUser) return;
     
     try {
-      // In a real app, this would be an API call
-      // const response = await fetch(`/api/users/${selectedUser.id}`, {
-      //   method: 'DELETE'
-      // });
+      const response = await fetch(`/api/users`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: selectedUser.id })
+      });
       
-      // if (!response.ok) throw new Error('Failed to delete user');
+      if (!response.ok) throw new Error('Failed to delete user');
       
-      // Simulate successful deletion
-      const updatedUsers = users.filter(user => user.id !== selectedUser.id);
-      setUsers(updatedUsers);
       setDeleteModalOpen(false);
       showNotification('success', 'User deleted successfully');
       
-      // In a real app, you would fetch the updated data
-      // await fetchUsers();
+      // Refresh the users data to ensure UI is in sync with backend
+      await fetchUsers();
     } catch (err) {
       console.error('Error deleting user:', err);
       showNotification('error', 'Failed to delete user. Please try again.');
@@ -246,33 +235,19 @@ export default function UsersPage() {
     e.preventDefault();
     
     try {
-      // In a real app, this would be an API call
-      // const response = await fetch('/api/users', {
-      //   method: 'POST',
-      //   headers: { 'Content-Type': 'application/json' },
-      //   body: JSON.stringify(formData)
-      // });
+      const response = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData)
+      });
       
-      // if (!response.ok) throw new Error('Failed to add user');
-      // const newUser = await response.json();
+      if (!response.ok) throw new Error('Failed to add user');
       
-      // Simulate successful addition
-      const newUser: User = {
-        id: `user-${Date.now()}`,
-        username: formData.username,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        email: formData.email,
-        role: formData.role,
-        createdAt: new Date().toISOString(),
-      };
-      
-      setUsers([...users, newUser]);
       setAddModalOpen(false);
       showNotification('success', 'User added successfully');
       
-      // In a real app, you would fetch the updated data
-      // await fetchUsers();
+      // Refresh the users data to ensure UI is in sync with backend
+      await fetchUsers();
     } catch (err) {
       console.error('Error adding user:', err);
       showNotification('error', 'Failed to add user. Please try again.');

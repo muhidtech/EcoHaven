@@ -288,7 +288,7 @@ export const AuthProvider = ({
   
       setAuthStatus('authenticated');
       setIsLoggedIn(true);
-      console.log(user?.role)
+      console.log(user?.role === 'admin')
   
       return loggedUser;
     } catch (error) {
@@ -525,19 +525,22 @@ export const AuthProvider = ({
    * @returns boolean indicating whether the user is an admin
    */
   const isAdmin = useCallback((): boolean => {
-    // Check if user exists, has a role property, and the role is 'admin'
-    // This function is used to verify admin privileges throughout the application
-    return Boolean(user?.role === 'admin');
-  }, [user]);
-
-  /**
-   * Alias for isAdmin function
-   * @returns boolean indicating whether the user is an admin
-   */
+    // Check if user exists and has the role 'admin' using the ref for up-to-date value
+    return userRef.current?.role === 'admin';
+  }, []);
+  
   const isAdminLogin = useCallback((): boolean => {
+    // Alias for isAdmin function
     return isAdmin();
   }, [isAdmin]);
 
+
+  useEffect(() => {
+    console.log('Current user:', user);
+  }, [user]);
+  
+  console.log('Is Admin:', isAdmin());
+  console.log('Is Admin Login:', isAdminLogin());
   
   /**
    * Check if the current user has the required role

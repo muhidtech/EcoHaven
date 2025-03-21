@@ -36,13 +36,6 @@ const NavBar: React.FC = () => {
     { name: "CONTACT US", path: "/contact" },
   ];
 
-  // Handle keyboard navigation (for accessibility)
-  const handleKeyDown = (e: KeyboardEvent<SVGElement>, href: string) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
-      router.push(href);
-    }
-  };
 
   // Handle logout and redirect to home
   const handleSignOut = () => {

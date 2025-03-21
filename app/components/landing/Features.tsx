@@ -6,7 +6,7 @@ import { getFeaturedProducts } from "../../services/localDataService";
 
 interface Product {
   name: string;
-  imageUrl: string;
+  imageUrl?: string;
 }
 
 const Features: React.FC = () => {
@@ -45,6 +45,10 @@ const Features: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const nextSlide = () => {
+    setIndex((prev) => (prev + 1) % totalItems);
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       const featuredProducts = await getFeaturedProducts();
@@ -59,11 +63,7 @@ const Features: React.FC = () => {
     }, 5000);
 
     return () => clearInterval(interval);
-  }, [totalItems, itemsPerView]);
-
-  const nextSlide = () => {
-    setIndex((prev) => (prev + 1) % totalItems);
-  };
+  }, [totalItems, itemsPerView, nextSlide]);
 
   const prevSlide = () => {
     setIndex((prev) => (prev - 1 + totalItems) % totalItems);

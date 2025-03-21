@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CardContext';
-import { createOrder, generateOrderId, Order } from '../../services/localDataService';
+import { createOrder } from '../../services/localDataService';
 import { toast } from 'react-hot-toast';
 
 // Define shipping form field types

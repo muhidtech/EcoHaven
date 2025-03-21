@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from "next/navigation";
 import { FiArrowLeft, FiEye, FiEyeOff } from "react-icons/fi";
@@ -8,7 +8,7 @@ import Link from "next/link";
 
 
 const Login = () => {
-  const { signIn, isAdmin } = useAuth()
+  const { signIn, isAdminLogin } = useAuth()
   const router = useRouter();
   const [formData, setFormData] = useState({
     identifier: "",
@@ -30,7 +30,7 @@ const Login = () => {
 
   // Validate form input
   const validateForm = () => {
-    let newErrors: Record<string, string> = {};
+    const newErrors: Record<string, string> = {};
 
     if (!formData.identifier) newErrors.identifier = "Username or email is required";
     if (!formData.password) newErrors.password = "Password is required";
@@ -40,6 +40,11 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  useEffect( () => {
+    if(isAdminLogin()) {
+      router.push('/')
+    }
+  }, [isAdminLogin])
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

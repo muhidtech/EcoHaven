@@ -96,7 +96,7 @@ const SESSION_REFRESH_THRESHOLD = 30 * 60 * 1000; // 30 minutes in milliseconds
 // AuthProvider component that wraps the application
 export const AuthProvider = ({ 
   children, 
-  sessionDuration = DEFAULT_SESSION_DURATION 
+  sessionDuration: customSessionDuration = DEFAULT_SESSION_DURATION 
 }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -109,9 +109,9 @@ export const AuthProvider = ({
 
   
   // Clear authentication errors
-  const clearAuthError = () => {
+  const clearAuthError = useCallback(() => {
     setAuthError(null);
-  };
+  }, []);
 
   // Load user data from localStorage on initial render and check for expiration
   useEffect(() => {
@@ -144,7 +144,7 @@ export const AuthProvider = ({
           // If session is close to expiring but still valid, refresh it
           if (parsedUser.expiresAt - Date.now() < SESSION_REFRESH_THRESHOLD) {
             console.log('Session close to expiry, refreshing');
-            parsedUser.expiresAt = Date.now() + sessionDuration;
+            parsedUser.expiresAt = Date.now() + customSessionDuration;
             localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(parsedUser));
           }
           setUser(parsedUser);
@@ -175,7 +175,7 @@ export const AuthProvider = ({
     }, 60000); // Check every minute
 
     return () => clearInterval(intervalId);
-  }, [sessionDuration]);
+  }, [customSessionDuration]);
 
   /**
    * Sign in a user with email and password
@@ -188,7 +188,7 @@ export const AuthProvider = ({
    * and some basic validation.
    */
 
-  const signIn = async (identifier: string, password: string): Promise<User> => {
+  const signIn = useCallback( async (identifier: string, password: string): Promise<User> => {
     try {
       setAuthStatus('authenticating');
       setAuthError(null);
@@ -261,7 +261,7 @@ export const AuthProvider = ({
             lastName: '',
             displayName: 'admin',
             role: 'admin',
-            expiresAt: Date.now() + sessionDuration,
+            expiresAt: Date.now() + customSessionDuration,
             refreshToken: Math.random().toString(36).substring(2, 15),
           }
         : {
@@ -271,7 +271,7 @@ export const AuthProvider = ({
             lastName: data.user.lastName,
             displayName: data.user.username,
             role: 'user',
-            expiresAt: Date.now() + sessionDuration,
+            expiresAt: Date.now() + customSessionDuration,
             refreshToken: Math.random().toString(36).substring(2, 15),
           };
   
@@ -298,7 +298,7 @@ export const AuthProvider = ({
       setIsLoggedIn(false);
       throw new AuthError(errorMessage);
     }
-  };
+  }, [customSessionDuration]);
   
   
 
@@ -312,7 +312,7 @@ export const AuthProvider = ({
    * This sends a POST request to the API endpoint to store the user
    * and also maintains the session in localStorage.
    */
-  const signUp = async (email: string, password: string, firstName: string, lastName: string, displayName: string): Promise<void> => {
+  const signUp = useCallback( async (email: string, password: string, firstName: string, lastName: string, displayName: string): Promise<void> => {
     try {
       setAuthStatus('authenticating');
       setAuthError(null);
@@ -394,7 +394,7 @@ export const AuthProvider = ({
             firstName,
             lastName,
             role: 'user',
-            expiresAt: Date.now() + sessionDuration,
+            expiresAt: Date.now() + customSessionDuration,
             refreshToken
           };
     
@@ -433,7 +433,7 @@ export const AuthProvider = ({
       throw new AuthError(errorMessage);
     }
     
-  };
+  }, [customSessionDuration]);
 
   /**
    * Sign out the current user
@@ -441,7 +441,7 @@ export const AuthProvider = ({
    * 
    * Removes the user data from localStorage and updates state.
    */
-  const signOut = async (): Promise<void> => {
+  const signOut = useCallback( async (): Promise<void> => {
     try {
       setAuthStatus('authenticating');
       setAuthError(null);
@@ -466,7 +466,7 @@ export const AuthProvider = ({
       
       throw new AuthError('Failed to sign out. Please try again.');
     }
-  };
+  }, [customSessionDuration]);
 
   /**
    * Refresh the user session by extending the expiration time
@@ -488,7 +488,7 @@ export const AuthProvider = ({
       // Extend the session
       const updatedUser: User = {
         ...user,
-        expiresAt: Date.now() + sessionDuration
+        expiresAt: Date.now() + customSessionDuration
       };
       
       try {
@@ -562,6 +562,21 @@ export const AuthProvider = ({
   // Value object to be provided to consumers of the context
   const value: AuthContextType = useMemo(() => {
     return {
+      user,
+      loading,
+      authStatus,
+      authError,
+      isLoggedIn,
+      isAdminLogin,
+      signIn,
+      signUp,
+      signOut,
+      isAdmin,
+      refreshSession,
+      hasPermission,
+      clearAuthError,
+    };
+  }, [
     user,
     loading,
     authStatus,
@@ -574,22 +589,7 @@ export const AuthProvider = ({
     isAdmin,
     refreshSession,
     hasPermission,
-    clearAuthError
-  };
-  }, [
-    user, 
-    loading, 
-    authStatus, 
-    authError, 
-    isLoggedIn,
-    isAdminLogin,
-    signIn, 
-    signUp, 
-    signOut, 
-    isAdmin, 
-    refreshSession, 
-    hasPermission, 
-    clearAuthError
+    clearAuthError,
   ]);
   return (
     <AuthContext.Provider value={value}>

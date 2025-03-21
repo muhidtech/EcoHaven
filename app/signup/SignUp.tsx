@@ -209,7 +209,7 @@ const SignUp = () => {
               onClick={handleSubmit}
               className="px-4 py-2 cursor-pointer bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300 text-sm"
             >
-              Submit
+              {isLoading ? "Submiting..." : "Submit"}
             </button>
           </div>
         </div>

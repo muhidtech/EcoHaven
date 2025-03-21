@@ -76,10 +76,7 @@ export default function ProductPage() {
   const params = useParams();
   const slug = params?.slug as string;
 
-  if (!slug) {
-    return notFound();
-  }
-
+  
   // State variables to store product data, loading state, and related products
   const [product, setProduct] = useState<NormalizedProduct | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<NormalizedProduct[]>([]);
@@ -89,9 +86,11 @@ export default function ProductPage() {
   const [isAddWatchList, setIsAddWatchList] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { itemExists, updateQuantity, addItem, removeItem } = useCart()
-  const { isLoggedIn } = useAuth()
-
+  
   // Fetch product data from local JSON file when component mounts or slug changes
+  if (!slug) {
+    return notFound();
+  }
   useEffect(() => {
     /**
      * Fetches product data from the static JSON file in the public directory

@@ -78,7 +78,7 @@ export default function BlogSearch({ blogPosts }: BlogSearchProps) {
   // Calculate pagination
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
+  // const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);

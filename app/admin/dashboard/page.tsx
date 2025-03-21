@@ -246,8 +246,8 @@ const Dashboard = () => {
       {/* Sidebar */}
       <aside 
         className={`${
-          sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out md:relative md:translate-x-0`}
+          sidebarOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
+        } fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-all transition-transform transition-opacity duration-300 ease-in-out md:relative md:translate-x-0 md:opacity-100`}
       >
         <div className="flex items-center justify-center h-16 border-b">
           <h2 className="text-xl font-bold text-green-600">EcoHaven Admin</h2>
@@ -299,7 +299,7 @@ const Dashboard = () => {
 
         {/* Main Content Area */}
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">
-          <div className="container mx-auto">
+          <div className="container mx-auto animate-fadeIn">
             <h1 className="text-2xl font-semibold text-gray-800 mb-6">Admin Dashboard</h1>
             
             {/* Welcome Message */}
@@ -312,7 +312,7 @@ const Dashboard = () => {
             
             {/* Stats Overview */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
                 <div className="flex items-center">
                   <div className="p-3 rounded-full bg-green-100 text-green-600 mr-4">
                     <FaBoxOpen className="h-6 w-6" />
@@ -324,7 +324,7 @@ const Dashboard = () => {
                 </div>
               </div>
               
-              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
                 <div className="flex items-center">
                   <div className="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
                     <FaShoppingCart className="h-6 w-6" />
@@ -336,7 +336,7 @@ const Dashboard = () => {
                 </div>
               </div>
               
-              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
                 <div className="flex items-center">
                   <div className="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
                     <FaUsers className="h-6 w-6" />
@@ -348,7 +348,7 @@ const Dashboard = () => {
                 </div>
               </div>
               
-              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+              <div className="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-all duration-300 transform hover:-translate-y-1">
                 <div className="flex items-center">
                   <div className="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4">
                     <FaChartLine className="h-6 w-6" />

@@ -248,7 +248,7 @@ export default function ProductManagement() {
   );
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="animate-fadeIn container mx-auto px-4 py-8">
       <AdminHeader title="Products Management" />
       {toastMessage && (
         <div className="fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-md z-50">
@@ -258,9 +258,9 @@ export default function ProductManagement() {
       
       {/* Modal Backdrop */}
       {showPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40" onClick={() => resetForm()}>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-40 transition-opacity duration-300 animate-fadeIn" onClick={() => resetForm()}>
           {/* Modal Content */}
-          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto" onClick={e => e.stopPropagation()}>
+          <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto animate-slideInRight duration-300" onClick={e => e.stopPropagation()}>
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">
                 {editingProduct ? "Edit Product" : "Add New Product"}
@@ -461,7 +461,7 @@ export default function ProductManagement() {
       <div className="flex justify-end mb-4">
         <button
           onClick={() => setShowPopup(true)}
-          className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 flex items-center"
+          className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 hover:scale-105 transition-transform duration-200 flex items-center"
         >
           <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
             <path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd" />
@@ -527,8 +527,14 @@ export default function ProductManagement() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {filteredProducts.map((product) => (
-                  <tr key={product.id}>
+                {filteredProducts.map((product, index) => {
+                  // Calculate delay class based on index (using only valid Tailwind delay values)
+                  const delayClass = index < 5 
+                    ? `delay-${[0, 100, 200, 300, 400, 500][index] || 0}` 
+                    : 'delay-500';
+                  
+                  return (
+                    <tr key={product.id} className={`animate-fadeIn duration-300 ${delayClass} hover:bg-gray-50 transition-colors`}>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <Image 
                         src={product.image} 
@@ -578,8 +584,9 @@ export default function ProductManagement() {
                         Delete
                       </button>
                     </td>
-                  </tr>
-                ))}
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

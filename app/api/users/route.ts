@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('Error creating user:', error, error.stack);
+    console.error('Error creating user:', error instanceof Error ? error.message : error, error instanceof Error ? error.stack : '');
     return NextResponse.json({ error: 'Failed to create user account.' }, { status: 500 });
   }
 }

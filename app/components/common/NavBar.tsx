@@ -116,7 +116,7 @@ const NavBar: React.FC = () => {
         {/* Desktop Links */}
         <div className="hidden lg:flex items-center gap-12">
           <Link 
-          className={`text-[#81C784] hover:text-[#2E7D32] ${
+          className={`text-[#81C784] hover:text-[#2E7D32] transition-colors duration-300 ease-in-out ${
             pathname === '/product' ? "text-yellow-900" : ""
           } ${ isLoggedIn ? "" : "hidden"}`}
           href='/product'
@@ -127,7 +127,7 @@ const NavBar: React.FC = () => {
             <Link
               key={item.path}
               href={item.path}
-              className={`text-[#81C784] hover:text-[#2E7D32] ${
+              className={`text-[#81C784] hover:text-[#2E7D32] transition-colors duration-300 ease-in-out ${
                 pathname === item.path ? "text-yellow-900" : ""
               }  ${
                 ["/", "/about", "/contact"].includes(item.path) && isLoggedIn
@@ -141,7 +141,7 @@ const NavBar: React.FC = () => {
 
           {/* Search Icon */}
           <FiSearch
-            className="text-2xl text-green-500 hover:text-green-600 cursor-pointer"
+            className="text-2xl text-green-500 hover:text-green-600 cursor-pointer transition-colors duration-300 ease-in-out"
             onClick={() => handleShowSearch()}
           />
 
@@ -154,7 +154,7 @@ const NavBar: React.FC = () => {
             }`}
           >
             <FiShoppingCart
-              className="text-2xl text-green-500 hover:text-green-600 cursor-pointer"
+              className="text-2xl text-green-500 hover:text-green-600 cursor-pointer transition-colors duration-300 ease-in-out"
             />
             {getItemCount() > 0 && (
               <span className="absolute -top-2 -right-2 bg-[#FFC107] text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
@@ -169,7 +169,7 @@ const NavBar: React.FC = () => {
               <>
                 {/* Logged In - Desktop Dropdown */}
                 <FiUser
-                  className="text-2xl text-green-500 hover:text-green-600 cursor-pointer"
+                  className="text-2xl text-green-500 hover:text-green-600 cursor-pointer transition-colors duration-300 ease-in-out"
                   onClick={() => setDropdownOpen((prev) => !prev)}
                   role="button"
                   aria-expanded={dropdownOpen}
@@ -184,19 +184,19 @@ const NavBar: React.FC = () => {
                 />
 
                 {dropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2 z-50">
-                    <Link href="/profile" className="cursor-pointer block px-4 py-2 hover:bg-green-100">
+                  <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2 z-50 animate-fadeIn transition-all duration-300 ease-in-out">
+                    <Link href="/profile" className="cursor-pointer block px-4 py-2 hover:bg-green-100 transition-colors duration-200 ease-in-out">
                       Profile
                     </Link>
-                    <Link href="/profile/edit" className="cursor-pointer block px-4 py-2 hover:bg-green-100">
+                    <Link href="/profile/edit" className="cursor-pointer block px-4 py-2 hover:bg-green-100 transition-colors duration-200 ease-in-out">
                       Edit Profile
                     </Link>
-                    <Link href="/settings" className="cursor-pointer block px-4 py-2 hover:bg-green-100">
+                    <Link href="/settings" className="cursor-pointer block px-4 py-2 hover:bg-green-100 transition-colors duration-200 ease-in-out">
                       Settings
                     </Link>
                     <button
                       onClick={handleSignOut}
-                      className="cursor-pointer block w-full text-left px-4 py-2 hover:bg-green-100"
+                      className="cursor-pointer block w-full text-left px-4 py-2 hover:bg-green-100 transition-colors duration-200 ease-in-out"
                       aria-label="Logout from account"
                       tabIndex={0}
                       onKeyDown={(e) => {
@@ -213,7 +213,7 @@ const NavBar: React.FC = () => {
               </>
             ) : (
               <Link href="/login" aria-label="Login">
-                <FiUser className="text-3xl text-green-500 hover:text-green-600 cursor-pointer" />
+                <FiUser className="text-3xl text-green-500 hover:text-green-600 cursor-pointer transition-colors duration-300 ease-in-out" />
               </Link>
             )}
           </div>
@@ -240,7 +240,7 @@ const NavBar: React.FC = () => {
               role="button"
               aria-expanded={mobileDropdownOpen}
               aria-label="User Menu"
-              className="cursor-pointer text-[#81C784] hover:text-[#2E7D32]"
+              className="cursor-pointer text-[#81C784] hover:text-[#2E7D32] transition-colors duration-300 ease-in-out"
               tabIndex={0} /* Add keyboard accessibility */
               onKeyDown={(e) => {
                 if (e.key === "Enter" || e.key === " ") {
@@ -253,14 +253,14 @@ const NavBar: React.FC = () => {
             </h1>
 
             {mobileDropdownOpen && ( /* Use mobile-specific state */
-              <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2 z-50">
-                <Link href="/profile" className="block px-4 py-2 hover:bg-green-100">
+              <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg py-2 z-50 animate-fadeIn transition-all duration-300 ease-in-out">
+                <Link href="/profile" className="block px-4 py-2 hover:bg-green-100 transition-colors duration-200 ease-in-out">
                   Profile
                 </Link>
-                <Link href="/profile/edit" className="block px-4 py-2 hover:bg-green-100">
+                <Link href="/profile/edit" className="block px-4 py-2 hover:bg-green-100 transition-colors duration-200 ease-in-out">
                   Edit Profile
                 </Link>
-                <Link href="/settings" className="block px-4 py-2 hover:bg-green-100">
+                <Link href="/settings" className="block px-4 py-2 hover:bg-green-100 transition-colors duration-200 ease-in-out">
                   Settings
                 </Link>
               </div>
@@ -281,7 +281,7 @@ const NavBar: React.FC = () => {
           <Link 
           key={item.path} 
           href={item.path} 
-          className={`text-[#81C784] hover:text-[#2E7D32] ${
+          className={`text-[#81C784] hover:text-[#2E7D32] transition-colors duration-300 ease-in-out ${
             ["/", "/about", "/contact"].includes(item.path) && isLoggedIn
               ? "hidden"
               : ""
@@ -294,14 +294,14 @@ const NavBar: React.FC = () => {
         {isLoggedIn ? (
           <button
             onClick={handleSignOut}
-            className="w-full text-center bg-green-300 py-5 cursor-pointer"
+            className="w-full text-center bg-green-300 hover:bg-green-400 py-5 cursor-pointer transition-colors duration-300 ease-in-out"
             aria-label="Sign out from account"
             tabIndex={0}
           >
             SIGN OUT
           </button>
         ) : (
-          <Link href="/login" className="w-full text-center bg-green-300 py-5 cursor-pointer">
+          <Link href="/login" className="w-full text-center bg-green-300 hover:bg-green-400 py-5 cursor-pointer transition-colors duration-300 ease-in-out">
             SIGN IN
           </Link>
         )}
@@ -318,7 +318,7 @@ const NavBar: React.FC = () => {
               />
               <FiSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary" />
               <button
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary hover:text-secondary"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-primary hover:text-secondary transition-colors duration-300 ease-in-out"
                 onClick={() => handleShowSearch()}
                 aria-label="Close search"
               >

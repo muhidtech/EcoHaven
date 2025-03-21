@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useCart } from "../../contexts/CardContext";
 import { ProductCard } from "@/app/shop/Shop";
 import { getProducts } from "@/app/services/localDataService";
@@ -21,48 +21,87 @@ interface Product {
   popular?: boolean;
 }
 
+// Skeleton loader component for product cards
+const ProductCardSkeleton: React.FC = () => {
+  return (
+    <div className="bg-white rounded-lg shadow-md p-4 animate-pulse">
+      <div className="w-full h-48 bg-gray-300 rounded-md mb-4"></div>
+      <div className="h-6 bg-gray-300 rounded w-3/4 mb-2"></div>
+      <div className="h-4 bg-gray-300 rounded w-1/2 mb-4"></div>
+      <div className="h-8 bg-gray-300 rounded w-full"></div>
+    </div>
+  );
+};
+
 const PopularProducts: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [visibleProducts, setVisibleProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const { addItem, itemExists, updateQuantity, removeItem } = useCart();
 
+  // Fetch products with caching
   useEffect(() => {
     const fetchPopularProducts = async () => {
       try {
+        setIsLoading(true);
+        // getProducts already handles caching internally
         const data = await getProducts();
         const popularItems = data.filter((product) => product.popular);
         setProducts(popularItems);
       } catch (error) {
         console.error("Error fetching popular products:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
     fetchPopularProducts();
   }, []);
 
-  useEffect(() => {
-    const updateVisibleProducts = () => {
-      if (typeof window !== 'undefined') {
-        if (window.innerWidth < 640) {
-          setVisibleProducts(products.slice(0, 10));
-        } else if (window.innerWidth >= 640 && window.innerWidth < 1280) {
-          setVisibleProducts(products.slice(0, 16));
-        } else {
-          setVisibleProducts(products);
-        }
-      } else {
-        // Default for server-side rendering
-        setVisibleProducts(products.slice(0, 16));
-      }
-    };
+  // Memoize the filtering of popular products
+  const popularProducts = useMemo(() => products, [products]);
 
+  // Debounce function
+  const debounce = (func: Function, wait: number) => {
+    let timeout: NodeJS.Timeout;
+    return (...args: any[]) => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => func(...args), wait);
+    };
+  };
+
+  // Update visible products based on screen size
+  const updateVisibleProducts = useCallback(() => {
+    if (typeof window !== 'undefined') {
+      if (window.innerWidth < 640) {
+        setVisibleProducts(popularProducts.slice(0, 10));
+      } else if (window.innerWidth >= 640 && window.innerWidth < 1280) {
+        setVisibleProducts(popularProducts.slice(0, 16));
+      } else {
+        setVisibleProducts(popularProducts);
+      }
+    } else {
+      // Default for server-side rendering
+      setVisibleProducts(popularProducts.slice(0, 16));
+    }
+  }, [popularProducts]);
+
+  // Debounced resize handler
+  const debouncedUpdateVisibleProducts = useCallback(
+    debounce(updateVisibleProducts, 250),
+    [updateVisibleProducts]
+  );
+
+  useEffect(() => {
+    // Initial update
     updateVisibleProducts();
     
     if (typeof window !== 'undefined') {
-      window.addEventListener("resize", updateVisibleProducts);
-      return () => window.removeEventListener("resize", updateVisibleProducts);
+      // Add debounced event listener
+      window.addEventListener("resize", debouncedUpdateVisibleProducts);
+      return () => window.removeEventListener("resize", debouncedUpdateVisibleProducts);
     }
-  }, [products]);
+  }, [updateVisibleProducts, debouncedUpdateVisibleProducts]);
 
   const handleAddToCart = (item: Product) => {
     if (item.stock <= 0) {
@@ -87,17 +126,33 @@ const PopularProducts: React.FC = () => {
     alert("Item added to cart");
   };
 
+  // Create skeleton array for loading state
+  const skeletonArray = Array(10).fill(0);
+
   return (
     <div className="xl:px-20 px-10 max-md:px-5 pb-20">
       <h1 className="text-2xl font-bold mb-5">Popular Products</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-5">
-        {visibleProducts.map((product) => (
-          <ProductCard
-            key={product.slug || product.id}
-            product={product}
-            onAddToCart={() => handleAddToCart(product)}
-          />
-        ))}
+        {isLoading ? (
+          // Show skeleton loaders while loading
+          skeletonArray.map((_, index) => (
+            <ProductCardSkeleton key={`skeleton-${index}`} />
+          ))
+        ) : visibleProducts.length > 0 ? (
+          // Show products when loaded
+          visibleProducts.map((product) => (
+            <ProductCard
+              key={product.slug || product.id}
+              product={product}
+              onAddToCart={() => handleAddToCart(product)}
+            />
+          ))
+        ) : (
+          // Show message when no products found
+          <div className="col-span-full text-center py-10">
+            <p className="text-gray-500">No popular products found</p>
+          </div>
+        )}
       </div>
     </div>
   );

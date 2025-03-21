@@ -54,9 +54,13 @@ export interface Product {
   
   export const saveProducts = async (products: Product[]): Promise<void> => {
     try {
-      // Save to localStorage
+      // Save to localStorage with timestamp
       if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-        localStorage.setItem('ecohaven_products', JSON.stringify(products));
+        const dataToSave = {
+          products,
+          timestamp: Date.now()
+        };
+        localStorage.setItem('ecohaven_products', JSON.stringify(dataToSave));
       }
     
       // Save to products.json file via API
@@ -134,29 +138,64 @@ export interface Product {
   };
   /**
    * Retrieves all products from localStorage
-   * @returns Array of Product objects
+   * @param checkTimestamp - Whether to include timestamp validation
+   * @returns Object containing products array and optional timestamp
    */
-  export const getProductsFromStorage = (): Product[] => {
+  export const getProductsFromStorage = (checkTimestamp = false): { products: Product[], timestamp?: number } => {
     try {
       if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
-        const productsJson = localStorage.getItem('ecohaven_products');
-        return productsJson ? JSON.parse(productsJson) : [];
+        const cachedData = localStorage.getItem('ecohaven_products');
+        
+        if (!cachedData) {
+          return { products: [] };
+        }
+        
+        const parsedData = JSON.parse(cachedData);
+        
+        // Handle both new format (with timestamp) and old format (just array)
+        if (Array.isArray(parsedData)) {
+          return { products: parsedData };
+        } else if (parsedData.products && Array.isArray(parsedData.products)) {
+          return {
+            products: parsedData.products,
+            timestamp: parsedData.timestamp
+          };
+        }
+        
+        return { products: [] };
       }
-      return [];
+      return { products: [] };
     } catch (error) {
       console.error('Error retrieving products from localStorage:', error);
-      return [];
+      return { products: [] };
     }
   };
 
   
   
   /**
-   * Fetches all products from the static JSON file and stores them in localStorage
+   * Fetches all products from the static JSON file or returns cached data if fresh
+   * @param cacheMaxAge - Maximum age of cache in milliseconds (default: 1 hour)
    * @returns Promise that resolves to an array of Product objects
    */
-  export const getProducts = async (): Promise<Product[]> => {
+  export const getProducts = async (cacheMaxAge = 3600000): Promise<Product[]> => {
     try {
+      // Check if we have fresh cached data
+      const { products: cachedProducts, timestamp } = getProductsFromStorage(true);
+      
+      // If we have cached products with a timestamp
+      if (cachedProducts.length > 0 && timestamp) {
+        const currentTime = Date.now();
+        const cacheAge = currentTime - timestamp;
+        
+        // If cache is fresh (less than cacheMaxAge old), return cached data
+        if (cacheAge < cacheMaxAge) {
+          console.log('Using cached products data');
+          return cachedProducts;
+        }
+      }
+      
+      // Cache is stale or doesn't exist, fetch fresh data
       const response = await fetch('/products.json');
   
       if (!response.ok) {
@@ -165,15 +204,16 @@ export interface Product {
   
       const products: Product[] = await response.json();
   
-      // Save products to localStorage
+      // Save products to localStorage with timestamp
       await saveProducts(products);
   
       return products;
     } catch (error) {
       console.error('Error fetching products:', error);
   
-      // Fallback to localStorage if fetch fails
-      return getProductsFromStorage();
+      // Fallback to localStorage if fetch fails, even if cache is stale
+      const { products } = getProductsFromStorage();
+      return products;
     }
   };
   

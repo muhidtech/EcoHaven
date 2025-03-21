@@ -523,6 +523,7 @@ export const AuthProvider = ({
    * Check if the current user has admin role
    * @returns boolean indicating whether the user is an admin
    */
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const isAdmin = useCallback((): boolean => {
     // Check if user exists and has the role 'admin' using the ref for up-to-date value
     return userRef.current?.role === 'admin';

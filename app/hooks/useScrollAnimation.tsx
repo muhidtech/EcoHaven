@@ -38,7 +38,7 @@ export function useScrollAnimation<T extends HTMLElement = HTMLDivElement>({
   rootMargin = '0px',
   animationDelay = 0,
   once = true,
-}: UseScrollAnimationOptions = {}): [RefObject<T>, boolean] {
+}: UseScrollAnimationOptions = {}): [RefObject<T | null>, boolean] {
   const ref = useRef<T>(null);
   const [isVisible, setIsVisible] = useState(false);
 

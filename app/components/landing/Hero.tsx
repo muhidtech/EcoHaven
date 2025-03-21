@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Image from "next/image";
+import NextImage from "next/image";
 import "./homes.css";
 import { useRouter } from 'next/navigation'
 
@@ -15,7 +15,7 @@ function Hero() {
     setIsVisible(true);
     
     // Preload the background image
-    const img = new Image();
+    const img = new window.Image();
     img.src = '/bg.webp';
     img.onload = () => setBgLoaded(true);
   }, []);

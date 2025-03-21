@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Metadata } from 'next';
 import Image from 'next/image';
+import { formatDate } from '@/lib/utils';
 
 interface BlogPost {
   id: number;
@@ -56,14 +57,6 @@ async function getBlogPost(slug: string): Promise<BlogPost | undefined> {
   return posts.find((post) => post.slug === slug);
 }
 
-function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  });
-}
 
 export default async function BlogPostPage({
   params,

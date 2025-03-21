@@ -35,30 +35,35 @@ ecohaven/
 │   ├── cart/             # Shopping cart page
 │   ├── checkout/         # Checkout process pages
 │   ├── auth/             # Authentication pages
-│   └── admin/            # Admin dashboard pages
-├── components/           # Reusable UI components
-│   ├── NavBar/           # Navigation components
-│   ├── Footer/           # Footer components
-│   ├── Hero/             # Hero section components
-│   ├── Features/         # Features section components
-│   ├── PopularProducts/  # Popular products components
-│   ├── DailySells/       # Daily sales components
-│   ├── Rating/           # Rating components
-│   ├── Cart/             # Cart-related components
-│   ├── Checkout/         # Checkout-related components
-│   └── Auth/             # Authentication components
+│   ├── admin/            # Admin dashboard pages
+│   ├── components/       # Reusable UI components
+│   │   ├── common/       # Common components
+│   │   │   ├── NavBar/   # Navigation components
+│   │   │   ├── Footer/   # Footer components
+│   │   │   └── Rating/   # Rating components
+│   │   ├── landing/      # Landing page components
+│   │   │   ├── Hero/     # Hero section components
+│   │   │   ├── Features/ # Features section components
+│   │   │   ├── PopularProducts/ # Popular products components
+│   │   │   └── DailySells/ # Daily sales components
+│   │   ├── admin/        # Admin-related components
+│   │   ├── blog/         # Blog-related components
+│   │   ├── Cart/         # Cart-related components
+│   │   └── Checkout/     # Checkout-related components
+│   └── contexts/         # React context providers
+├── components/           # UI primitives and shared components
+│   └── ui/               # shadcn/ui components
 ├── public/               # Static assets
 │   └── images/           # Image assets
-├── styles/               # Additional styles
-│   └── homes.css         # Custom CSS for home page
 ├── lib/                  # Utility functions and helpers
-├── context/              # React context providers
 └── ...                   # Configuration files
 ```
 
 ## 🧩 Component Overview
 
-### NavBar
+### Common Components (`app/components/common`)
+
+#### NavBar
 The navigation bar provides easy access to different sections of the application, including:
 - Logo and brand identity
 - Main navigation links
@@ -66,21 +71,38 @@ The navigation bar provides easy access to different sections of the application
 - User account access
 - Shopping cart
 
-### Hero
+#### Footer
+The footer component includes:
+- Site navigation links
+- Contact information
+- Social media links
+- Newsletter subscription
+- Copyright information
+
+#### Rating
+The rating component provides:
+- Star-based rating system
+- Customer review snippets
+- Overall product satisfaction metrics
+- Social proof elements
+
+### Landing Page Components (`app/components/landing`)
+
+#### Hero
 The hero section is the main banner area that:
 - Showcases featured products or promotions
 - Includes compelling call-to-action buttons
 - Sets the visual tone for the brand
 - Provides immediate engagement for visitors
 
-### Features
+#### Features
 The features section highlights:
 - Key benefits of shopping at EcoHaven
 - Sustainable practices
 - Eco-friendly product guarantees
 - Special services offered
 
-### PopularProducts
+#### PopularProducts
 This section displays:
 - Best-selling products
 - Product images and brief descriptions
@@ -88,19 +110,21 @@ This section displays:
 - Rating indicators
 - Quick "Add to Cart" functionality
 
-### DailySells
+#### DailySells
 The daily sells component includes:
 - Limited-time offers
 - Special discounts
 - Countdown timers for flash sales
 - Featured promotional products
 
-### Rating
-The rating component provides:
-- Star-based rating system
-- Customer review snippets
-- Overall product satisfaction metrics
-- Social proof elements
+### UI Components (`components/ui`)
+The project uses shadcn/ui for UI primitives and components:
+- Form elements (inputs, buttons, selectors)
+- Dialog and modal components
+- Dropdown menus
+- Toast notifications
+- Accordion components
+- And other reusable UI elements
 
 ## 🚀 Getting Started
 
@@ -199,6 +223,8 @@ Follow these steps to thoroughly test all major functionalities of the EcoHaven 
 
 ## 👑 Admin Access
 
+**Note:** While admin components exist in `app/components/admin/` (such as AdminHeader.tsx), there is currently no dedicated admin route implemented in the `app/` directory. The following instructions are for future implementation:
+
 To access the admin dashboard and test administrative functions:
 
 1. Navigate to the login page
@@ -214,15 +240,21 @@ To access the admin dashboard and test administrative functions:
 - Test inventory management functionality
 - Verify that admin-only actions are properly secured
 
+**Development Note:** When implementing the admin route, create it under `app/admin/` and utilize the existing admin components.
+
 ## 📦 Dependencies
 
 The EcoHaven project relies on the following key dependencies:
 
-- **Next.js**: React framework for production
-- **React**: JavaScript library for building user interfaces
+- **Next.js 15.2.1**: React framework for production
+- **React 19.0.0**: JavaScript library for building user interfaces
 - **TailwindCSS**: Utility-first CSS framework
+- **shadcn/ui**: Reusable UI components built with Radix UI and Tailwind
+- **@radix-ui**: Unstyled, accessible UI component primitives
+- **@mui/material**: Material UI component library
 - **next/font**: For optimized font loading (Geist)
 - **TypeScript**: For type safety and better developer experience
+- **Lucide React**: Icon library
 
 For a complete list of dependencies, refer to the `package.json` file.
 
@@ -236,13 +268,13 @@ EcoHaven uses a combination of:
 - Custom theme configuration in `tailwind.config.js`
 
 ### Custom CSS
-- Additional custom styles in `styles/homes.css`
+- Additional custom styles in `app/components/landing/homes.css`
 - Component-specific styling
 - Custom animations and transitions
 
 To modify the styling:
 1. For TailwindCSS customizations, edit the `tailwind.config.js` file
-2. For custom styles, modify the `styles/homes.css` file
+2. For custom styles, modify the `app/components/landing/homes.css` file
 3. Use Tailwind's `@apply` directive to create reusable custom classes
 
 ## 💻 Development Guidelines
@@ -252,12 +284,17 @@ To modify the styling:
 - Use TypeScript for type safety
 - Follow the file naming conventions established in the project
 
+### Development Environment
+- The project uses Next.js development server with the `--turbopack` flag for faster builds
+- Run the development server using the scripts defined in `package.json`
+
 ### State Management
 - Use React hooks for local state management
-- For more complex state, consider context API or state management libraries
+- For more complex state, use context providers located in `app/contexts`
+- The project includes a CartContext (in `app/contexts/CardContext.tsx`) for managing shopping cart state
 
 ### Adding New Features
-1. Create new components in the appropriate directory
+1. Create new components in the appropriate directory under `app/components`
 2. Update the relevant parent components to include your new feature
 3. Add any necessary styles using TailwindCSS or custom CSS
 4. Test thoroughly across different screen sizes

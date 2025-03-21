@@ -49,6 +49,7 @@ const OrdersPage = () => {
   const [statusUpdating, setStatusUpdating] = useState<string | null>(null);
   const { isAdminLogin } = useAuth();
   const router = useRouter();
+  const { ref: ordersAnimRef, isVisible: ordersAnimVisible } = useScrollAnimation(0.1);
 
   useEffect(() => {
     if (!isAdminLogin()) {
@@ -138,15 +139,12 @@ const OrdersPage = () => {
       <AdminHeader title="Orders Management" />
       
       <div className="container mx-auto px-4 py-8">
-        {(() => {
-          const { ref, isVisible } = useScrollAnimation(0.1);
-          return (
-            <div 
-              ref={ref} 
-              className={`bg-white rounded-lg shadow-md p-6 transition-all duration-700 ${
-                isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-              }`}
-            >
+        <div 
+          ref={ordersAnimRef} 
+          className={`bg-white rounded-lg shadow-md p-6 transition-all duration-700 ${
+            ordersAnimVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+          }`}
+        >
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-semibold text-gray-800">All Orders</h2>
           </div>
@@ -249,8 +247,6 @@ const OrdersPage = () => {
             </div>
           )}
             </div>
-          );
-        })()}
       </div>
     </div>
   );

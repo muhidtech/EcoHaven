@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, FormEvent, useRef } from "react";
+import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
 import Link from "next/link";
@@ -44,6 +44,9 @@ export default function AdminBlogManagement() {
   const [formError, setFormError] = useState<string | null>(null);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
   const [addModalOpen, setAddModalOpen] = useState(false);
+  
+  // Scroll animation refs
+  const [mainScrollRef, mainIsVisible] = useScrollAnimation();
 
   // Check if user is admin
   useEffect(() => {
@@ -302,7 +305,7 @@ export default function AdminBlogManagement() {
       </Dialog>
 
       {/* Blog List */}
-      <div ref={useScrollAnimation()} className="bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg animate-fadeInUp">
+      <div ref={mainScrollRef} className="bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg animate-fadeInUp">
         <h2 className="text-2xl font-semibold mb-4 text-green-700">Blog Posts</h2>
         
         {loading ? (
@@ -311,11 +314,15 @@ export default function AdminBlogManagement() {
           <p className="text-center py-4">No blog posts found.</p>
         ) : (
           <div className="space-y-6">
-            {blogs.map((blog, index) => (
+            {blogs.map((blog, index) => {
+              // Create ref for each blog item
+              const [blogItemRef, blogItemIsVisible] = useScrollAnimation(0.1, index * 0.1);
+              
+              return (
               <div 
                 key={blog.id} 
                 className="border-b pb-6 last:border-b-0 transition-all duration-500 hover:bg-green-50 hover:scale-[1.01] rounded-md p-3"
-                ref={useScrollAnimation(0.1, index * 0.1)} // Adding staggered animation with delay
+                ref={blogItemRef}
               >
                 <div className="flex flex-col md:flex-row gap-4">
                   {blog.imageUrl && (
@@ -348,7 +355,7 @@ export default function AdminBlogManagement() {
                   </div>
                 </div>
               </div>
-            ))}
+            )})}
           </div>
         )}
       </div>

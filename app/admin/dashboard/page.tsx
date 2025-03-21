@@ -13,6 +13,7 @@ const useScrollAnimation = (threshold = 0.1) => {
   const ref = useRef(null);
 
   useEffect(() => {
+    const currentRef = ref.current; // Capture the current value of ref
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
@@ -25,13 +26,14 @@ const useScrollAnimation = (threshold = 0.1) => {
       }
     );
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+      // Use the captured ref value in cleanup
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, [threshold]);

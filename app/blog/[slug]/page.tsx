@@ -17,7 +17,7 @@ interface BlogPost {
 }
 
 interface PageProps {
-  params: { slug: string; };
+  params: { slug: string }; // Explicitly typed as { slug: string }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

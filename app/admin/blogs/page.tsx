@@ -6,6 +6,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import Link from "next/link";
 import Image from "next/image";
 import { useScrollAnimation } from "../../hooks/useScrollAnimation";
+import BlogItem from "../../components/admin/BlogItem";
 import {
   Dialog,
   DialogContent,
@@ -46,7 +47,7 @@ export default function AdminBlogManagement() {
   const [addModalOpen, setAddModalOpen] = useState(false);
   
   // Scroll animation refs
-  const [mainScrollRef, mainIsVisible] = useScrollAnimation();
+  const [mainScrollRef, _mainIsVisible] = useScrollAnimation();
 
   // Check if user is admin
   useEffect(() => {
@@ -314,48 +315,14 @@ export default function AdminBlogManagement() {
           <p className="text-center py-4">No blog posts found.</p>
         ) : (
           <div className="space-y-6">
-            {blogs.map((blog, index) => {
-              // Create ref for each blog item
-              const [blogItemRef, blogItemIsVisible] = useScrollAnimation(0.1, index * 0.1);
-              
-              return (
-              <div 
+            {blogs.map((blog, index) => (
+              <BlogItem 
                 key={blog.id} 
-                className="border-b pb-6 last:border-b-0 transition-all duration-500 hover:bg-green-50 hover:scale-[1.01] rounded-md p-3"
-                ref={blogItemRef}
-              >
-                <div className="flex flex-col md:flex-row gap-4">
-                  {blog.imageUrl && (
-                    <div className="w-full md:w-1/4">
-                      <div className="relative h-48 w-full">
-                        <Image
-                          src={blog.imageUrl}
-                          alt={blog.title}
-                          className="object-cover rounded-md"
-                        />
-                      </div>
-                    </div>
-                  )}
-                  
-                  <div className="w-full md:w-3/4">
-                    <h3 className="text-xl font-semibold text-green-800 mb-2 transition-all duration-300 hover:text-green-600">{blog.title}</h3>
-                    <p className="text-sm text-gray-500 mb-2">
-                      By {blog.author} • Published on {new Date(blog.publishedDate).toLocaleDateString()}
-                    </p>
-                    <p className="text-gray-700 mb-4">{blog.excerpt}</p>
-                    
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => handleDeleteBlog(blog.id)}
-                        className="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-700 transition-all duration-300 hover:scale-105 text-sm"
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )})}
+                blog={blog} 
+                index={index} 
+                onDelete={handleDeleteBlog} 
+              />
+            ))}
           </div>
         )}
       </div>

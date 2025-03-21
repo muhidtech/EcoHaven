@@ -103,8 +103,8 @@ const PopularProducts: React.FC = () => {
   }, [popularProducts]);
 
   // Debounced resize handler
-  const debouncedUpdateVisibleProducts = useCallback(
-    debounce(updateVisibleProducts, 250),
+  const debouncedUpdateVisibleProducts = useMemo(
+    () => debounce(updateVisibleProducts, 250),
     [updateVisibleProducts]
   );
 

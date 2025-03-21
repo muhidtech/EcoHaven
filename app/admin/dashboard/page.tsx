@@ -333,7 +333,14 @@ const Dashboard = () => {
 
         {/* Main Content Area */}
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">
-          <MainContent />
+          <MainContent 
+            productsCount={productsCount}
+            ordersCount={ordersCount}
+            usersCount={usersCount}
+            revenue={revenue}
+            activityData={activityData}
+            isActivityLoading={isActivityLoading}
+          />
         </main>
       </div>
     </div>
@@ -341,7 +348,23 @@ const Dashboard = () => {
 };
 
 // Main content component with animations
-const MainContent = () => {
+interface MainContentProps {
+  productsCount: number;
+  ordersCount: number;
+  usersCount: number;
+  revenue: number;
+  activityData: Activity[];
+  isActivityLoading: boolean;
+}
+
+const MainContent = ({
+  productsCount,
+  ordersCount,
+  usersCount,
+  revenue,
+  activityData,
+  isActivityLoading
+}: MainContentProps) => {
   const [mainRef, mainVisible] = useScrollAnimation(0.1);
   const [statsRef, statsVisible] = useScrollAnimation(0.2);
   const [quickAccessRef, quickAccessVisible] = useScrollAnimation(0.2);

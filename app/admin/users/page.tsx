@@ -63,6 +63,13 @@ interface FormData {
 export default function UsersPage() {
   const router = useRouter();
   const { isAdminLogin } = useAuth();
+  
+  // Check if user is admin at the top of the component
+  const admin = isAdminLogin();
+  if (!admin) {
+    return null;
+  }
+  
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -116,12 +123,12 @@ export default function UsersPage() {
     }
   };
 
-  // Check if user is admin, if not redirect to home
+  // Redirect to home if admin status changes
   useEffect(() => {
-    if (!isAdminLogin) {
+    if (!admin) {
       router.push("/");
     }
-  }, [isAdminLogin, router]);
+  }, [admin, router]);
 
   // Show notification
   const showNotification = (type: 'success' | 'error', message: string) => {
@@ -261,11 +268,6 @@ export default function UsersPage() {
       showNotification('error', 'Failed to add user. Please try again.');
     }
   };
-
-  // If not admin, don't render the page content
-  if (!isAdminLogin()) {
-    return null;
-  }
 
   // Animation hooks
   const [tableRef, tableVisible] = useScrollAnimation(0.1);

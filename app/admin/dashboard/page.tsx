@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useAuth } from "../../contexts/AuthContext";
@@ -52,6 +52,26 @@ export interface BlogActivity extends BaseActivity {
 
 export type Activity = OrderActivity | UserActivity | ProductActivity | BlogActivity;
 
+interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  publishedDate: string;
+}
+
+
+import { Order as LocalOrder } from "@/app/services/localDataService";
+
+interface Order extends LocalOrder {
+  customerName: string;
+}
+
+interface Product {
+  id: string;
+  name: string;
+  stock: number;
+}
+
 
 const Dashboard = () => {
   const router = useRouter();
@@ -93,15 +113,16 @@ const Dashboard = () => {
         throw new Error(`Failed to fetch blog posts: ${response.status} ${response.statusText}`);
       }
       const posts = await response.json();
-      
-      return Array.isArray(posts) ? posts.map((post: any, index: number) => ({
-        id: post.id || `blog-${index}`,
-        type: 'blog' as const,
-        date: new Date(post.publishedDate),
-        message: `"${post.title}" published`,
-        title: post.title,
-        slug: post.slug || ''
-      })) : [];
+      return Array.isArray(posts)
+        ? posts.map((post: BlogPost, index: number) => ({
+            id: post.id || `blog-${index}`,
+            type: 'blog' as const,
+            date: new Date(post.publishedDate),
+            message: `"${post.title}" published`,
+            title: post.title,
+            slug: post.slug || '',
+          }))
+        : [];
     } catch (error) {
       console.error('Error fetching blog posts:', error);
       return [];
@@ -109,32 +130,37 @@ const Dashboard = () => {
   };
 
   // Function to fetch all activity data
-  const fetchActivityData = async (): Promise<Activity[]> => {
+  const fetchActivityData = useCallback( async (): Promise<Activity[]> => {
     try {
       // Get orders and convert to activities
       const orders = getOrdersFromStorage();
-      const orderActivities: OrderActivity[] = orders.slice(0, 5).map((order: any) => ({
-        id: `order-${order.id}`,
-        type: 'order',
-        date: new Date(order.createdAt || Date.now()),
-        message: `${order.customerName || 'Customer'} placed an order for ${order.items?.[0]?.productName || 'products'}`,
-        orderId: order.id,
-        customerName: order.customerName || 'Customer',
-        productName: order.items?.[0]?.productName || 'products'
-      }));
+      const orderActivities: OrderActivity[] = orders.slice(0, 5).map((order) => {
+        const localOrder = order as Order; // Explicitly cast to local Order interface
+        return {
+          id: `order-${localOrder.id}`,
+          type: 'order',
+          date: new Date(localOrder.createdAt || Date.now()),
+          message: `${localOrder.customerName || 'Customer'} placed an order for ${
+            localOrder.items?.[0]?.productName || 'products'
+          }`,
+          orderId: localOrder.id,
+          customerName: localOrder.customerName || 'Customer',
+          productName: localOrder.items?.[0]?.productName || 'products',
+        };
+      });
 
       // Get blog posts and convert to activities
       const blogActivities = await fetchBlogPosts();
       
       // Get product updates (simulated for now)
       const products = await getProducts();
-      const productActivities: ProductActivity[] = products.slice(0, 3).map((product: any, index: number) => ({
+      const productActivities: ProductActivity[] = products.slice(0, 3).map((product: Product, index: number) => ({
         id: `product-${product.id || index}`,
         type: 'product',
         date: new Date(Date.now() - Math.random() * 86400000 * 3), // Random time in the last 3 days
         message: `${product.name} inventory updated to ${product.stock || 'new'} units`,
         productName: product.name,
-        action: 'updated'
+        action: 'updated',
       }));
 
       // Combine all activities
@@ -150,38 +176,51 @@ const Dashboard = () => {
       console.error('Error fetching activity data:', error);
       return [];
     }
-  };
+  }, []);
 
   // Fetch data for dashboard
   useEffect(() => {
-    const fetchDashboardData = async () => {
+    const fetchAllData = async () => {
       try {
         // Fetch products
         const products = await getProducts();
         setProductsCount(products.length);
-
+  
         // Fetch orders and calculate revenue
         const orders = getOrdersFromStorage();
         setOrdersCount(orders.length);
-        
+  
         // Calculate total revenue from orders
         const totalRevenue = orders.reduce((sum: number, order: { totalAmount: string | number }) => {
-          return sum + (parseFloat(order.totalAmount.toString()) || 0);
+          const amount =
+            typeof order.totalAmount === 'string'
+              ? parseFloat(order.totalAmount)
+              : typeof order.totalAmount === 'number'
+              ? order.totalAmount
+              : 0;
+          return sum + (amount || 0);
         }, 0);
         setRevenue(totalRevenue);
-
+  
         // Fetch users
         const users = await getUsers();
-        setUsersCount(Array.isArray(users) ? users.length : 0);
+        setUsersCount(users.length);
+  
+        // Fetch activity data
+        setIsActivityLoading(true);
+        const activities = await fetchActivityData();
+        setActivityData(activities);
+        setIsActivityLoading(false);
       } catch (error) {
-        console.error('Error in fetchDashboardData:', error);
+        console.error('Error fetching dashboard data:', error);
+        setIsActivityLoading(false);
       }
     };
-
+  
     if (!isLoading) {
-      fetchDashboardData();
+      fetchAllData();
     }
-  }, [isLoading]);
+  }, [isLoading, isAdminLogin, fetchActivityData]);
 
   useEffect(() => {
     // Check if user is admin, if not redirect to home page

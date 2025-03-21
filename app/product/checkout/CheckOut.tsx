@@ -7,6 +7,8 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CardContext';
 import { createOrder } from '../../services/localDataService';
 import { toast } from 'react-hot-toast';
+import Image from 'next/image';
+import NavBar from '@/app/components/common/NavBar';
 
 // Define shipping form field types
 type ShippingFormData = {
@@ -158,8 +160,9 @@ export default function CheckoutPage() {
   if (orderComplete) {
 
     return (
-      <div className="max-w-4xl mx-auto p-6 my-10">
-        <div className="bg-green-50 border border-green-200 rounded-lg p-8 text-center">
+      <div className="max-w-4xl mx-auto p-6  my-10">
+        <NavBar />
+        <div className="bg-green-50 pt-20 border border-green-200 rounded-lg p-8 text-center">
           <div className="flex justify-center mb-4">
             <div className="bg-green-100 rounded-full p-3">
               <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -448,7 +451,7 @@ export default function CheckoutPage() {
                 <div key={item.id} className="flex py-3 border-b border-gray-100">
                   <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                     {item.image && (
-                      <img
+                      <Image
                         src={item.image}
                         alt={item.name}
                         width={64}

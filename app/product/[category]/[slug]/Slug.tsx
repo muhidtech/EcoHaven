@@ -6,7 +6,7 @@ import { useParams, notFound } from 'next/navigation';
 import { Star, ShoppingCart, Heart, Share2 } from 'lucide-react';
 import { getProducts } from '@/app/services/localDataService';
 import { useCart } from '@/app/contexts/CardContext';
-import { useAuth } from '@/app/contexts/AuthContext';
+import Image from 'next/image';
 
 /**
  * Helper function to generate a URL-friendly slug from a product name
@@ -87,10 +87,7 @@ export default function ProductPage() {
   const [error, setError] = useState<string | null>(null);
   const { itemExists, updateQuantity, addItem, removeItem } = useCart()
   
-  // Fetch product data from local JSON file when component mounts or slug changes
-  if (!slug) {
-    return notFound();
-  }
+  
   useEffect(() => {
     /**
      * Fetches product data from the static JSON file in the public directory
@@ -155,6 +152,10 @@ export default function ProductPage() {
       }
     };
 
+    // Fetch product data from local JSON file when component mounts or slug changes
+    if (!slug) {
+      return notFound();
+    }
     /**
      * Fetches related products from the same category as the current product
      * @param category - The category to filter products by
@@ -295,7 +296,7 @@ export default function ProductPage() {
           {/* Product images */}
           <div className="space-y-4">
             <div className="relative h-96 w-full bg-gray-100 rounded-lg overflow-hidden">
-              <img 
+              <Image 
                 src={activeImage} 
                 alt={product.name}
                 className="object-contain bg-cover"
@@ -313,7 +314,7 @@ export default function ProductPage() {
                   }`}
                   onClick={() => setActiveImage(getValidImageUrl(product.imageUrl, product.image))}
                 >
-                  <img 
+                  <Image 
                     src={getValidImageUrl(product.imageUrl, product.image)} 
                     alt={`${product.name} thumbnail`}
                     className="object-cover"
@@ -331,7 +332,7 @@ export default function ProductPage() {
                     className={`relative h-20 w-20 rounded-md overflow-hidden cursor-pointer border-2 ${activeImage === img ? 'border-green-500' : 'border-transparent'}`}
                     onClick={() => setActiveImage(img)}
                   >
-                    <img 
+                    <Image 
                       src={img || '/images/placeholder.jpg'} 
                       alt={`${product.name} thumbnail ${index + 1}`}
                       className="object-cover"
@@ -525,7 +526,7 @@ export default function ProductPage() {
                 >
                   <div className="bg-white flex flex-col  rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow">
                     <div className="relative  bg-gray-100">
-                      <img
+                      <Image
                         src={getValidImageUrl(relatedProduct.imageUrl, relatedProduct.image)}
                         alt={relatedProduct.name}
 

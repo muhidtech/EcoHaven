@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { FC } from 'react';
 
@@ -32,7 +33,7 @@ const BlogCard: FC<BlogCardProps> = ({
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-transform duration-300 hover:shadow-lg hover:-translate-y-1 flex flex-col h-full">
       <div className="relative h-48 w-full flex justify-center">
         {image ? (
-          <img
+          <Image
             src={image}
             alt={title}
             loading="lazy"

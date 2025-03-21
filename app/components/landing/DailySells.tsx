@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 // Mock data for daily deals
 const dailyDeals = [
@@ -51,9 +52,9 @@ function DailySells() {
       <div className="container mx-auto">
         {/* Section Header */}
         <div className="text-center mb-10">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
-            Today's <span className="text-emerald-600">Eco Deals</span>
-          </h2>
+        <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-3">
+          Today&#39;s <span className="text-emerald-600">Eco Deals</span>
+        </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Discover our daily selection of sustainable products at special prices. 
             Every purchase contributes to a greener planet.
@@ -69,7 +70,7 @@ function DailySells() {
             >
               <div className="relative h-auto w-full bg-gray-200 p-10">
                 
-                <img className='' src={deal.image} alt={deal.name} />
+                <Image className='' src={deal.image} alt={deal.name} />
                 
                 {/* Discount Badge */}
                 <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">

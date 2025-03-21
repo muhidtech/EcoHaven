@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
+import Image from 'next/image';
 
 // Define Order type
 type OrderItem = {
@@ -112,7 +113,7 @@ export default function OrderConfirmationPage() {
           </div>
           <h1 className="text-3xl font-bold text-yellow-800 mb-4">Order Not Found</h1>
           <p className="text-lg text-gray-700 mb-6">
-            We couldn't find the order details you're looking for.
+            We couldn&#39;t find the order details you&#39;re looking for.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link href="/product" className="bg-green-600 text-white py-3 px-6 rounded-md hover:bg-green-700 transition-colors">
@@ -186,11 +187,12 @@ export default function OrderConfirmationPage() {
                 <div key={index} className="flex py-3 border-b border-gray-100 last:border-b-0">
                   {item.imageUrl && (
                     <div className="h-16 w-16 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                      <img
+                      <Image
                         src={item.imageUrl}
                         alt={item.name || `Product ${item.productId}`}
                         width={64}
                         height={64}
+                        fill
                         className="h-full w-full object-cover object-center"
                       />
                     </div>

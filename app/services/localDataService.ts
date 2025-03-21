@@ -32,6 +32,7 @@ export interface Product {
     id: string;
     userId: string;
     items: {
+      productName: string;
       productId: string;
       quantity: number;
       price: number;

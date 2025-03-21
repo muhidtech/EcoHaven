@@ -87,7 +87,7 @@ const CartPage = () => {
                       <td className="py-4 px-4">
                         <div className="flex items-center space-x-3">
                           <div className="relative h-16 w-16 flex-shrink-0">
-                            <img
+                            <Image
                               src={item.image || "/images/placeholder.png"}
                               alt={item.name}
                               className="object-cover rounded"

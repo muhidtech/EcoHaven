@@ -38,7 +38,13 @@ function Category() {
   const { addItem, updateQuantity } = useCart();
   const router = useRouter();
 
-  if (!category) return notFound();
+
+  // Ensure hooks are always called
+  useEffect(() => {
+    if (!category) {
+      notFound();
+    }
+  }, [category]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -75,7 +81,7 @@ function Category() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
-
+  
   const filteredProducts = products.filter((product) => product.category.trim().toLowerCase() === category.trim().toLowerCase());
 
   // Pagination calculation
@@ -124,7 +130,7 @@ function Category() {
             <div className="bg-gray-50 rounded-lg p-8 max-w-md mx-auto">
               <h3 className="text-xl font-medium text-gray-900 mb-2">No products found</h3>
               <p className="text-gray-600 mb-4">
-                We couldn't find any products in the "{category}" category.
+                We couldn&#39;t find any products in the &lsquo;{category}&rsquo; category.
               </p>
               <button
                 onClick={() => router.push('/product')}

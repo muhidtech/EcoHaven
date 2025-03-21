@@ -76,8 +76,8 @@ export default function BlogSearch({ blogPosts }: BlogSearchProps) {
   }, [currentPage, router, searchParams, searchTerm]);
 
   // Calculate pagination
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  // const indexOfLastPost = currentPage * postsPerPage;
+  // const indexOfFirstPost = indexOfLastPost - postsPerPage;
   // const currentPosts = filteredPosts.slice(indexOfFirstPost, indexOfLastPost);
   const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
 
@@ -114,7 +114,7 @@ export default function BlogSearch({ blogPosts }: BlogSearchProps) {
       {/* Search results info */}
       {searchTerm && (
         <div className="mb-6 text-gray-600">
-          Found {filteredPosts.length} results for "{searchTerm}"
+          Found {filteredPosts.length} results for &quot;{searchTerm}&quot;
         </div>
       )}
 

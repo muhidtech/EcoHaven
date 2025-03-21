@@ -466,13 +466,13 @@ export const AuthProvider = ({
       
       throw new AuthError('Failed to sign out. Please try again.');
     }
-  }, [customSessionDuration]);
+  }, []);
 
   /**
    * Refresh the user session by extending the expiration time
    * @returns Promise that resolves when the session is refreshed
    */
-  const refreshSession = async (): Promise<void> => {
+  const refreshSession = useCallback(async (): Promise<void> => {
     try {
       setAuthError(null);
       
@@ -523,7 +523,7 @@ export const AuthProvider = ({
       }
       throw new AuthError(errorMessage);
     }
-  };
+  }, []);
 
   /**
    * Check if the current user has admin role

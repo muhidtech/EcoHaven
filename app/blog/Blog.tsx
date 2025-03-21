@@ -55,7 +55,7 @@ export default async function BlogPage() {
         {blogPosts.length === 0 ? (
           <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 px-6 py-5 rounded-md shadow-sm my-8 max-w-3xl mx-auto">
             <h3 className="font-bold text-lg mb-2">No blog posts available</h3>
-            <p>We're working on adding new content. Please check back later.</p>
+            <p>We&#39;re working on adding new content. Please check back later.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 mt-10">

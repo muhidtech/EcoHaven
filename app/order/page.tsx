@@ -103,7 +103,7 @@ export default function OrderPage() {
         <CardContent>
           {orders.length === 0 ? (
             <div className="text-center py-8">
-              <p className="text-muted-foreground mb-4">You don't have any orders yet.</p>
+              <p className="text-muted-foreground mb-4">You don&#39;t have any orders yet.</p>
               <Link href="/product">
                 <a className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors">
                   Shop Now

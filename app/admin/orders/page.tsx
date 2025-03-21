@@ -3,8 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { getOrdersFromStorage, updateOrder } from '../../services/localDataService';
 import { Order } from "../../services/localDataService";
-import Link from 'next/link';
-import { FiEye, FiEdit } from 'react-icons/fi';
+import { FiEye } from 'react-icons/fi';
 import AdminHeader from '../../components/admin/AdminHeader';
 import { useAuth } from '../../contexts/AuthContext';
 import { useRouter } from 'next/navigation';

@@ -30,7 +30,7 @@ const SignUp = () => {
   const togglePasswordVisibility = () => setShowPassword(!showPassword);
 
   const validateForm = () => {
-    let newErrors: Record<string, string> = {};
+    const newErrors: Record<string, string> = {};
 
     if (!formData.firstName) newErrors.firstName = "First name is required";
     if (!formData.lastName) newErrors.lastName = "Last name is required";

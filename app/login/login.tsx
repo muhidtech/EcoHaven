@@ -44,7 +44,7 @@ const Login = () => {
     if(isAdminLogin()) {
       router.push('/')
     }
-  }, [isAdminLogin])
+  }, [isAdminLogin(), router])
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,7 +143,7 @@ const Login = () => {
 
             {/* Sign Up Link */}
             <p className="text-sm mt-4">
-              Don't have an account?{" "}
+              Don&#39;t have an account?{" "}
               <span
                 className="text-green-600 cursor-pointer"
                 onClick={() => router.push("/signup")}

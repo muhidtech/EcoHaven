@@ -6,6 +6,7 @@ import { useCart } from '../contexts/CardContext';
 import { FiShoppingCart } from 'react-icons/fi';
 import { getProducts } from '../services/localDataService';
 import Rating from '../components/common/Rating';
+import Image from 'next/image';
 
 interface Product {
   id: string;
@@ -89,7 +90,7 @@ export const ProductCard = ({ product, onAddToCart }: { product: Product, onAddT
             </span>
           </div>
         )}
-        <img
+        <Image
           src={product.image}
           alt={product.name}
           className={`w-full h-full object-cover transition-transform duration-500 ${isHovering ? 'scale-110' : 'scale-100'} ${product.stock <= 0 ? 'opacity-70' : ''}`}

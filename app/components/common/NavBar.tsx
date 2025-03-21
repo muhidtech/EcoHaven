@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, KeyboardEvent } from "react";
+import React, { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { FiMenu, FiX, FiSearch, FiShoppingCart, FiUser } from "react-icons/fi";
 import Link from "next/link";

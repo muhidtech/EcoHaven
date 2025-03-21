@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from 'next/image';
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/app/contexts/AuthContext";
 import AdminHeader from '../../components/admin/AdminHeader';
@@ -402,7 +403,7 @@ export default function ProductManagement() {
                 {products.map((product) => (
                   <tr key={product.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <img 
+                      <Image 
                         src={product.image} 
                         alt={product.name} 
                         className="h-16 w-16 object-cover rounded"

@@ -2,6 +2,7 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { Metadata } from 'next';
+import Image from 'next/image';
 
 interface BlogPost {
   id: number;
@@ -111,7 +112,7 @@ export default async function BlogPostPage({
       </header>
 
       <div className="relative w-full h-[400px] mb-8 rounded-lg overflow-hidden">
-        <img src={post.image} alt={post.title} className="object-cover" />
+        <Image src={post.image} alt={post.title} className="object-cover" />
       </div>
 
       <article className="prose prose-lg max-w-none">

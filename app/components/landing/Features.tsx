@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { getFeaturedProducts } from "../../services/localDataService";
 
@@ -45,9 +45,9 @@ const Features: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const nextSlide = () => {
+  const nextSlide = useCallback( () => {
     setIndex((prev) => (prev + 1) % totalItems);
-  };
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -97,11 +97,12 @@ const Features: React.FC = () => {
               key={i}
               className="w-[calc(100%/2)] md:w-[calc(100%/4)] lg:w-[calc(100%/6)] min-w-[150px] max-w-[300px] border transition-transform duration-500 ease-in-out p-5 shadow-lg rounded-lg bg-white"
             >
-              <img
-                src={item.imageUrl}
+              <Image
+                src={item.imageUrl || "/placeholder.png"}
                 alt={item.name}
                 width={300}
                 height={300}
+                fill
                 className="w-full h-auto object-contain"
               />
               <p className="text-center mt-2">{item.name}</p>

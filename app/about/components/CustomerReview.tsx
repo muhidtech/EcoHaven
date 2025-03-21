@@ -56,7 +56,7 @@ function CustomerReview() {
             {data.map((item, key) => (
                 <div key={key} className='p-2 flex flex-col gap-5 justify-center items-center bg-white rounded-2xl shadow-md shadow-black'>
                     <div className='flex w-full justify-start items-center gap-5'>
-                        <img 
+                        <Image 
                         className='rounded-full'
                         src={item.image} 
                         width={40} 

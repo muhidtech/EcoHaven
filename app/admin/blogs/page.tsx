@@ -283,7 +283,7 @@ export default function AdminBlogManagement() {
                   {blog.imageUrl && (
                     <div className="w-full md:w-1/4">
                       <div className="relative h-48 w-full">
-                        <img
+                        <Image
                           src={blog.imageUrl}
                           alt={blog.title}
                           className="object-cover rounded-md"

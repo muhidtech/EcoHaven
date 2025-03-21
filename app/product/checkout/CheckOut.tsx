@@ -119,6 +119,7 @@ export default function CheckoutPage() {
       const newOrder = createOrder(
         user?.uid || 'guest',
         items.map(item => ({
+          productName: item.name, // Assuming 'name' contains the product name
           productId: item.id,
           quantity: item.quantity,
           price: item.price,

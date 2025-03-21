@@ -8,9 +8,9 @@ import { FaBoxOpen, FaBlog, FaShoppingCart, FaUsers, FaBars, FaTimes, FaHome, Fa
 import { getProducts, getOrdersFromStorage } from "@/app/services/localDataService";
 
 // Custom hook for scroll animations
-const useScrollAnimation = (threshold = 0.1) => {
+const useScrollAnimation = (threshold = 0.1): [React.RefObject<HTMLDivElement | null>, boolean] => {
   const [isVisible, setIsVisible] = useState(false);
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const currentRef = ref.current; // Capture the current value of ref

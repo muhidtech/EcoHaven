@@ -4,9 +4,8 @@ import { useState, useEffect, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
 import Link from "next/link";
-import Image from "next/image";
 import { useScrollAnimation } from "../../hooks/useScrollAnimation";
-import BlogItem from "../../components/admin/BlogItem";
+import BlogItem from "./BlogItem";
 import {
   Dialog,
   DialogContent,

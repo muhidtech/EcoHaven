@@ -270,7 +270,7 @@ export default function UsersPage() {
   };
 
   // Animation hooks
-  const [tableRef, tableVisible] = useScrollAnimation(0.1);
+  const [tableRef, tableVisible] = useScrollAnimation({ threshold: 0.1 });
   
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">

@@ -16,11 +16,11 @@ interface BlogPost {
   date: string;
 }
 
-interface PageProps {
+type PageProps = {
   params: { slug: string };
-}
+};
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
   const post = await getBlogPost(params.slug);
 
   if (!post) {

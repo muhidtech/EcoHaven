@@ -375,8 +375,7 @@ export const AuthProvider = ({
         console.log("API Response:", data);
 
         if (!response.ok) {
-          const errorData = await response.json();
-          throw new ValidationError(errorData.error || 'Failed to create user account');
+          throw new ValidationError(data.error || 'Failed to create user account');
         }
         
         

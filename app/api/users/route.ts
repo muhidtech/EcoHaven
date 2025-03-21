@@ -45,16 +45,24 @@ async function saveUsers(users: User[]): Promise<void> {
   await fs.writeFile(usersFilePath, JSON.stringify(users, null, 2));
 }
 
-// Handle GET requests (Authenticate user)
+// Handle GET requests (Authenticate user or get all users)
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const identifier = searchParams.get('identifier');
     const inputPassword = searchParams.get('password');
 
+    // If both identifier and password are missing, return all users (admin context)
+    if (!identifier && !inputPassword) {
+      const users = await loadUsers();
+      const usersWithoutPasswords = users.map(user => omit(user, ['password']));
+      return NextResponse.json({ users: usersWithoutPasswords }, { status: 200 });
+    }
+
+    // If only one parameter is provided but not both
     if (!identifier || !inputPassword) {
       return NextResponse.json(
-        { error: 'Both identifier and password are required.' },
+        { error: 'Both identifier and password are required for authentication.' },
         { status: 400 }
       );
     }

@@ -8,15 +8,5 @@
     "role": "admin",
     "id": "admin",
     "createdAt": "2025-03-20T06:45:53.051Z"
-  },
-  {
-    "firstName": "Muhid",
-    "lastName": "Tech",
-    "username": "muhidTech911",
-    "email": "muhidTech@unknown.com",
-    "role": "user",
-    "password": "0279955429Aa$",
-    "id": "1742513923288",
-    "createdAt": "2025-03-20T23:38:43.288Z"
   }
 ]

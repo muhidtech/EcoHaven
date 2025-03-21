@@ -26,8 +26,7 @@ const nextConfig: NextConfig = {
   },
   // Enable experimental image optimization features
   experimental: {
-    // Enable modern image formats and optimizations
-    optimizeImages: true,
+    // Empty experimental section
   },
 };
 

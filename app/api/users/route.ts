@@ -14,6 +14,15 @@ interface User {
 
 const usersFilePath = path.join(process.cwd(), 'public', 'data', 'users.json');
 
+// Utility to omit specific keys from an object
+function omit<T extends Record<string, any>, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
+  const result = { ...obj };
+  for (const key of keys) {
+    delete result[key];
+  }
+  return result;
+}
+
 // Ensure the users file exists
 async function ensureUsersFile() {
   try {
@@ -36,7 +45,7 @@ async function saveUsers(users: User[]): Promise<void> {
   await fs.writeFile(usersFilePath, JSON.stringify(users, null, 2));
 }
 
-// Handle GET requests (Authenticate User)
+// Handle GET requests (Authenticate user)
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -52,7 +61,8 @@ export async function GET(request: NextRequest) {
 
     const users = await loadUsers();
     const isEmail = identifier.includes('@');
-    const matchedUser = users.find((user: User) =>
+
+    const matchedUser = users.find((user) =>
       isEmail
         ? user.email === identifier && user.password === inputPassword
         : user.username === identifier && user.password === inputPassword
@@ -62,8 +72,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid credentials.' }, { status: 401 });
     }
 
-    // Exclude the password when returning user data
-    const { password: _, ...userWithoutPassword } = matchedUser;
+    const userWithoutPassword = omit(matchedUser, ['password']);
     return NextResponse.json({ user: userWithoutPassword }, { status: 200 });
   } catch (error) {
     console.error('Error retrieving user accounts:', error);
@@ -88,7 +97,7 @@ export async function POST(request: NextRequest) {
 
     const users = await loadUsers();
     const userExists = users.some(
-      (user: User) => user.username === newUser.username || user.email === newUser.email
+      (user) => user.username === newUser.username || user.email === newUser.email
     );
 
     if (userExists) {
@@ -107,8 +116,7 @@ export async function POST(request: NextRequest) {
     users.push(userToAdd);
     await saveUsers(users);
 
-    // Exclude the password when returning user data
-    const { password: _, ...userWithoutPassword } = userToAdd;
+    const userWithoutPassword = omit(userToAdd, ['password']);
     return NextResponse.json(
       { message: 'User account created successfully.', user: userWithoutPassword },
       { status: 201 }
@@ -129,7 +137,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     const users = await loadUsers();
-    const userIndex = users.findIndex((user: User) => user.id === id);
+    const userIndex = users.findIndex((user) => user.id === id);
 
     if (userIndex === -1) {
       return NextResponse.json({ error: 'User not found.' }, { status: 404 });
@@ -138,8 +146,7 @@ export async function PATCH(request: NextRequest) {
     users[userIndex] = { ...users[userIndex], ...updates };
     await saveUsers(users);
 
-    // Exclude the password when returning user data
-    const { password: _, ...updatedUser } = users[userIndex];
+    const updatedUser = omit(users[userIndex], ['password']);
     return NextResponse.json(
       { message: 'User updated successfully.', user: updatedUser },
       { status: 200 }
@@ -160,7 +167,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     const users = await loadUsers();
-    const filteredUsers = users.filter((user: User) => user.id !== id);
+    const filteredUsers = users.filter((user) => user.id !== id);
 
     if (users.length === filteredUsers.length) {
       return NextResponse.json({ error: 'User not found.' }, { status: 404 });

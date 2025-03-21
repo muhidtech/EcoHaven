@@ -20,7 +20,7 @@ function Hero() {
   }, []);
 
   return (
-    <div className="w-full h-screen mt-15 flex items-center justify-center p-5 md:p-10">
+    <div className="w-full h-screen mt-10 flex items-center justify-center p-5 md:p-10">
       <div
         className={`relative shadow-2xl shadow-black h-[80vh] max-w-5xl w-full rounded-2xl flex flex-col justify-center items-center p-10 text-center transition-all duration-700 overflow-hidden ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
         style={{ 

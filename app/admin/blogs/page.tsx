@@ -46,7 +46,7 @@ export default function AdminBlogManagement() {
   const [addModalOpen, setAddModalOpen] = useState(false);
   
   // Scroll animation refs
-  const [mainScrollRef, _mainIsVisible] = useScrollAnimation();
+  const [mainScrollRef] = useScrollAnimation();
 
   // Check if user is admin
   useEffect(() => {

@@ -64,15 +64,12 @@ export default function UsersPage() {
   const router = useRouter();
   const { isAdminLogin } = useAuth();
   
-  // Check if user is admin at the top of the component
-  const admin = isAdminLogin();
-  if (!admin) {
-    return null;
-  }
-  
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  
+  // Check if user is admin after all hooks are declared
+  const admin = isAdminLogin();
   
   // Modal states
   const [viewModalOpen, setViewModalOpen] = useState<boolean>(false);
@@ -271,6 +268,24 @@ export default function UsersPage() {
 
   // Animation hooks
   const [tableRef, tableVisible] = useScrollAnimation({ threshold: 0.1 });
+  
+  // Return early with a message if user is not an admin
+  if (!admin) {
+    return (
+      <div className="flex flex-col min-h-screen bg-gray-50 items-center justify-center">
+        <div className="bg-white p-8 rounded-lg shadow-md">
+          <h2 className="text-2xl font-semibold text-red-600 mb-4">Unauthorized Access</h2>
+          <p className="text-gray-700">You are not authorized to view this page.</p>
+          <Button 
+            onClick={() => router.push("/")}
+            className="mt-6 bg-green-600 hover:bg-green-700"
+          >
+            Return to Home
+          </Button>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">

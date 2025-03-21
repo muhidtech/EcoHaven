@@ -526,7 +526,7 @@ export const AuthProvider = ({
   const isAdmin = useCallback((): boolean => {
     // Check if user exists and has the role 'admin' using the ref for up-to-date value
     return userRef.current?.role === 'admin';
-  }, [user?.role]);
+  }, []);
   
   const isAdminLogin = useCallback((): boolean => {
     // Alias for isAdmin function

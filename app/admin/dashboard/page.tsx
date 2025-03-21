@@ -281,7 +281,7 @@ const Dashboard = () => {
       <aside 
         className={`${
           sidebarOpen ? "translate-x-0 opacity-100" : "-translate-x-full opacity-0"
-        } fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-all transition-transform transition-opacity duration-300 ease-in-out md:relative md:translate-x-0 md:opacity-100`}
+        } fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lgn transition-all duration-300 ease-in-out md:relative md:translate-x-0 md:opacity-100`}
       >
         <div className="flex items-center justify-center h-16 border-b">
           <h2 className="text-xl font-bold text-green-600">EcoHaven Admin</h2>

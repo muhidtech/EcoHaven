@@ -107,7 +107,7 @@ export default function BlogItem({ blog, index, onDelete }: BlogItemProps) {
           <DialogHeader>
             <DialogTitle className="text-xl font-semibold text-red-600">Confirm Deletion</DialogTitle>
             <DialogDescription>
-              Are you sure you want to delete the blog post "{blog.title}"? This action cannot be undone.
+              Are you sure you want to delete the blog post &quot;{blog.title}&quot;? This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter className="mt-4">

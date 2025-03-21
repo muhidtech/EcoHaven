@@ -13,16 +13,8 @@ import { Order } from "../services/localDataService";
 import Link from "next/link";
 import Footer from "../components/common/Footer";
 import NavBar from "../components/common/NavBar";
+import { formatDate } from "@/lib/utils";
 
-
-export function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
 
 export default function OrderPage() {
   const { user, isAdminLogin } = useAuth();

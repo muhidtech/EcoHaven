@@ -371,7 +371,7 @@ export default function ProductManagement() {
               {formData.imageUrl && formData.imageUrl.startsWith('data:') && (
                 <div className="mt-2">
                   <p className="text-xs text-gray-500">Image preview:</p>
-                  <img src={formData.imageUrl} alt="Preview" className="h-16 w-16 object-cover mt-1 rounded" />
+                  <Image src={formData.imageUrl} alt="Preview" className="h-16 w-16 object-cover mt-1 rounded" />
                 </div>
               )}
             </div>

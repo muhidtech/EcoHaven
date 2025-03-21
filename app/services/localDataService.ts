@@ -52,17 +52,40 @@ export interface Product {
   }
   
   
-  export const saveProducts = (products: Product[]): void => {
+  export const saveProducts = async (products: Product[]): Promise<void> => {
     try {
+      // Save to localStorage
       if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
         localStorage.setItem('ecohaven_products', JSON.stringify(products));
+      }
+    
+      // Save to products.json file via API
+      try {
+        const response = await fetch('/api/products', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ products }),
+        });
+      
+        if (!response.ok) {
+          throw new Error(`API responded with status: ${response.status}`);
+        }
+      
+        const result = await response.json();
+        console.log('Products saved to file:', result.message);
+      } catch (apiError) {
+        console.error('Error saving products to file via API:', apiError);
+        // Continue execution even if API call fails
+        // This ensures localStorage is still updated even if the file update fails
       }
     } catch (error) {
       console.error('Error saving products to localStorage:', error);
     }
   };
   
-  export const updateProduct =async (id: string, updatedProduct: Product) => {
+  export const updateProduct = async (id: string, updatedProduct: Product) => {
     try {
       // Retrieve existing products
       const products = await getProducts();
@@ -78,8 +101,8 @@ export interface Product {
       // Update the product at the found index
       products[productIndex] = updatedProduct;
   
-      // Save the updated product list back to localStorage
-      saveProducts(products);
+      // Save the updated product list back to localStorage and file
+      await saveProducts(products);
   
       console.log(`Product with ID ${id} updated successfully.`);
     } catch (error) {
@@ -101,8 +124,8 @@ export interface Product {
         return;
       }
   
-      // Save the updated product list back to localStorage
-      saveProducts(updatedProducts);
+      // Save the updated product list back to localStorage and file
+      await saveProducts(updatedProducts);
   
       console.log(`Product with ID ${id} deleted successfully.`);
     } catch (error) {
@@ -143,7 +166,7 @@ export interface Product {
       const products: Product[] = await response.json();
   
       // Save products to localStorage
-      saveProducts(products);
+      await saveProducts(products);
   
       return products;
     } catch (error) {

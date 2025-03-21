@@ -15,7 +15,7 @@ function Hero() {
     
     // Preload the background image
     const img = new window.Image();
-    img.src = '/bg.webp';
+    img.src = '/bg.jfif';
     img.onload = () => setBgLoaded(true);
   }, []);
 
@@ -33,7 +33,7 @@ function Hero() {
         <div 
           className={`absolute inset-0 bg-cover bg-center transition-opacity duration-500 ${bgLoaded ? 'opacity-0' : 'opacity-100'}`}
           style={{ 
-            backgroundImage: `url('/bg.webp')`,
+            backgroundImage: `url('/bg.jfif')`,
             filter: 'blur(10px)',
             zIndex: 0
           }}
@@ -42,7 +42,7 @@ function Hero() {
         <div 
           className={`absolute inset-0 bg-cover bg-center transition-opacity duration-500 ${bgLoaded ? 'opacity-100' : 'opacity-0'}`}
           style={{ 
-            backgroundImage: `url('/bg.webp')`,
+            backgroundImage: `url('/bg.jfif')`,
             zIndex: 0
           }}
         />

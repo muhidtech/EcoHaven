@@ -5,6 +5,14 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "../../contexts/AuthContext";
 import Link from "next/link";
 import Image from "next/image";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface Blog {
   id: string;
@@ -34,6 +42,7 @@ export default function AdminBlogManagement() {
   const [imageUrl, setImageUrl] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
   const [formSuccess, setFormSuccess] = useState<string | null>(null);
+  const [addModalOpen, setAddModalOpen] = useState(false);
 
   // Check if user is admin
   useEffect(() => {
@@ -133,12 +142,20 @@ export default function AdminBlogManagement() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold text-green-800">Blog Management</h1>
-        <Link href="/admin" className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition">
-          Back to Dashboard
-        </Link>
+        <div className="flex space-x-4">
+          <button
+            onClick={() => setAddModalOpen(true)}
+            className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition flex items-center"
+          >
+            <span className="mr-1">+</span> Add New Blog
+          </button>
+          <Link href="/admin/dashboard" className="bg-green-700 text-white px-4 py-2 rounded hover:bg-green-800 transition">
+            Back to Dashboard
+          </Link>
+        </div>
       </div>
 
       {/* Success and Error Messages */}
@@ -154,121 +171,137 @@ export default function AdminBlogManagement() {
         </div>
       )}
 
-      {/* Add New Blog Form */}
-      <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-        <h2 className="text-2xl font-semibold mb-4 text-green-700">Add New Blog Post</h2>
-        
-        {formError && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-            {formError}
-          </div>
-        )}
-        
-        <form onSubmit={handleAddBlog} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
-                Title
-              </label>
-              <input
-                type="text"
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="slug" className="block text-sm font-medium text-gray-700 mb-1">
-                Slug
-              </label>
-              <input
-                type="text"
-                id="slug"
-                value={slug}
-                onChange={(e) => setSlug(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="author" className="block text-sm font-medium text-gray-700 mb-1">
-                Author
-              </label>
-              <input
-                type="text"
-                id="author"
-                value={author}
-                onChange={(e) => setAuthor(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="publishedDate" className="block text-sm font-medium text-gray-700 mb-1">
-                Published Date
-              </label>
-              <input
-                type="date"
-                id="publishedDate"
-                value={publishedDate}
-                onChange={(e) => setPublishedDate(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-1">
-                Image URL
-              </label>
-              <input
-                type="text"
-                id="imageUrl"
-                value={imageUrl}
-                onChange={(e) => setImageUrl(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-              />
-            </div>
-          </div>
+      {/* Add Blog Modal */}
+      <Dialog open={addModalOpen} onOpenChange={setAddModalOpen}>
+        <DialogContent className="sm:max-w-[800px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-semibold text-green-700">Add New Blog Post</DialogTitle>
+            <DialogDescription>
+              Fill in the details below to create a new blog post.
+            </DialogDescription>
+          </DialogHeader>
           
-          <div>
-            <label htmlFor="excerpt" className="block text-sm font-medium text-gray-700 mb-1">
-              Excerpt
-            </label>
-            <textarea
-              id="excerpt"
-              value={excerpt}
-              onChange={(e) => setExcerpt(e.target.value)}
-              rows={2}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-            ></textarea>
-          </div>
+          {formError && (
+            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              {formError}
+            </div>
+          )}
           
-          <div>
-            <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">
-              Content
-            </label>
-            <textarea
-              id="content"
-              value={content}
-              onChange={(e) => setContent(e.target.value)}
-              rows={6}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-            ></textarea>
-          </div>
-          
-          <button
-            type="submit"
-            className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition focus:outline-none focus:ring-2 focus:ring-green-500"
-          >
-            Add Blog Post
-          </button>
-        </form>
-      </div>
+          <form onSubmit={handleAddBlog} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-1">
+                  Title
+                </label>
+                <input
+                  type="text"
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="slug" className="block text-sm font-medium text-gray-700 mb-1">
+                  Slug
+                </label>
+                <input
+                  type="text"
+                  id="slug"
+                  value={slug}
+                  onChange={(e) => setSlug(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="author" className="block text-sm font-medium text-gray-700 mb-1">
+                  Author
+                </label>
+                <input
+                  type="text"
+                  id="author"
+                  value={author}
+                  onChange={(e) => setAuthor(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="publishedDate" className="block text-sm font-medium text-gray-700 mb-1">
+                  Published Date
+                </label>
+                <input
+                  type="date"
+                  id="publishedDate"
+                  value={publishedDate}
+                  onChange={(e) => setPublishedDate(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+              
+              <div>
+                <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 mb-1">
+                  Image URL
+                </label>
+                <input
+                  type="text"
+                  id="imageUrl"
+                  value={imageUrl}
+                  onChange={(e) => setImageUrl(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+                />
+              </div>
+            </div>
+            
+            <div>
+              <label htmlFor="excerpt" className="block text-sm font-medium text-gray-700 mb-1">
+                Excerpt
+              </label>
+              <textarea
+                id="excerpt"
+                value={excerpt}
+                onChange={(e) => setExcerpt(e.target.value)}
+                rows={2}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              ></textarea>
+            </div>
+            
+            <div>
+              <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-1">
+                Content
+              </label>
+              <textarea
+                id="content"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                rows={6}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+              ></textarea>
+            </div>
+            
+            <DialogFooter>
+              <button
+                type="button"
+                onClick={() => setAddModalOpen(false)}
+                className="bg-gray-300 text-gray-800 px-6 py-2 rounded-md hover:bg-gray-400 transition focus:outline-none focus:ring-2 focus:ring-gray-500 mr-2"
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                className="bg-green-600 text-white px-6 py-2 rounded-md hover:bg-green-700 transition focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                Add Blog Post
+              </button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       {/* Blog List */}
-      <div className="bg-white p-6 rounded-lg shadow-md">
+      <div className="bg-white p-6 rounded-lg shadow-md transition-all duration-300 hover:shadow-lg">
         <h2 className="text-2xl font-semibold mb-4 text-green-700">Blog Posts</h2>
         
         {loading ? (

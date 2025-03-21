@@ -19,8 +19,7 @@ interface BlogPost {
 // Server-side data fetching
 async function getBlogPosts(): Promise<BlogPost[]> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-    const response = await fetch(`${baseUrl}/blog.json`, {
+    const response = await fetch('/blog.json', {
       next: { revalidate: 3600 },
     });
 

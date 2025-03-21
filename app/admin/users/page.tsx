@@ -85,13 +85,20 @@ export default function UsersPage() {
   const [notification, setNotification] = useState<Notification | null>(null);
 
   useEffect(() => {
+    // Initial fetch
     fetchUsers();
+    
+    // Set up polling for real-time updates every 5 seconds
+    const interval = setInterval(fetchUsers, 5000);
+    
+    // Clean up interval on component unmount
+    return () => clearInterval(interval);
   }, []);
   
   const fetchUsers = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch("/data/users.json");
+      const response = await fetch("/api/users");
       
       if (!response.ok) {
         throw new Error(`Failed to fetch users: ${response.status}`);

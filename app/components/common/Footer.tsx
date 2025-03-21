@@ -2,13 +2,14 @@
 
 import { useCart } from "@/app/contexts/CardContext";
 import Link from "next/link";
-import { useRouter } from "next/navigation"; // Updated import for useRouter in App Router
+import { useRouter, usePathname } from "next/navigation"; // Added usePathname import
 import React, { useState, useEffect } from "react";
 import { BiUpArrowAlt } from "react-icons/bi";
 
 function Footer() {
   const [showButton, setShowButton] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
   const { getItemCount } = useCart();
 
   // Navigate to checkout page if cart is not empty
@@ -158,13 +159,15 @@ function Footer() {
             </button>
           )}
 
-          {/* View Cart Button */}
-          <button
-            onClick={handleViewCheck}
-            className="fixed top-20 right-10 w-40 cursor-pointer py-3 rounded-2xl text-center bg-green-300"
-          >
-            View Cart ({getItemCount()})
-          </button>
+          {/* View Cart Button - conditionally rendered */}
+          {!["/", "/contact", "/about", "/blog"].includes(pathname) && (
+            <button
+              onClick={handleViewCheck}
+              className="fixed top-20 right-10 w-40 cursor-pointer py-3 rounded-2xl text-center bg-green-300"
+            >
+              View Cart ({getItemCount()})
+            </button>
+          )}
         </div>
       </div>
     </footer>

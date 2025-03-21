@@ -146,7 +146,13 @@ const NavBar: React.FC = () => {
           />
 
           {/* Cart Icon */}
-          <Link href="/cart" aria-label="Shopping cart" className="relative">
+          <Link 
+            href="/cart" 
+            aria-label="Shopping cart" 
+            className={`relative ${
+              ['/', '/contact', '/about', '/blog'].includes(pathname) ? 'hidden' : ''
+            }`}
+          >
             <FiShoppingCart
               className="text-2xl text-green-500 hover:text-green-600 cursor-pointer"
             />

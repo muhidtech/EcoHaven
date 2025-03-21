@@ -92,6 +92,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const newUser = await request.json();
+    console.log('Received new user data:', newUser);
 
     const requiredFields = ['username', 'firstName', 'lastName', 'email', 'password'];
     const missingFields = requiredFields.filter((field) => !newUser[field]);
@@ -130,7 +131,7 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('Error creating user:', error);
+    console.error('Error creating user:', error, error.stack);
     return NextResponse.json({ error: 'Failed to create user account.' }, { status: 500 });
   }
 }

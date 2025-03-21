@@ -35,7 +35,7 @@ const SignUp = () => {
     if (!formData.firstName) newErrors.firstName = "First name is required";
     if (!formData.lastName) newErrors.lastName = "Last name is required";
     if (!formData.email) newErrors.email = "Email is required";
-    if (!formData.username) newErrors.usernamme = "Username is required";
+    if (!formData.username) newErrors.username = "Username is required";
     if (!formData.password) newErrors.password = "Password is required";
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";

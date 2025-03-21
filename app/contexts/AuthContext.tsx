@@ -288,6 +288,7 @@ export const AuthProvider = ({
   
       setAuthStatus('authenticated');
       setIsLoggedIn(true);
+      console.log(user?.role)
   
       return loggedUser;
     } catch (error) {

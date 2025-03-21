@@ -80,7 +80,6 @@ function Team() {
                             <p className='text-xs'>{member.secRole}</p>
                         </div>
                         </div>
-                    </div>
                     );
                 })}
             </div>

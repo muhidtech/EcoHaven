@@ -223,11 +223,9 @@ const Dashboard = () => {
   }, [isLoading, isAdminLogin, fetchActivityData]);
 
   useEffect(() => {
-    // Check if user is admin, if not redirect to home page
-    if (!isAdminLogin) {
-      router.push("/");
-    } else {
-      setIsLoading(false);
+    const checkAdminLogin = isAdminLogin(); // Extract the function call to a variable
+    if (checkAdminLogin) {
+      router.push('/');
     }
   }, [isAdminLogin, router]);
 
@@ -271,7 +269,7 @@ const Dashboard = () => {
     if (!isLoading) {
       fetchAllData();
     }
-  }, [isLoading, isAdminLogin]);
+  }, [isLoading, isAdminLogin(), fetchActivityData]);
 
   if (isLoading) {
     return (
@@ -474,7 +472,6 @@ const Dashboard = () => {
                     // Determine icon and styling based on activity type
                     let icon;
                     let bgColor;
-                    let textColor;
                     let title;
                     let linkHref;
                     let linkText;
@@ -483,7 +480,6 @@ const Dashboard = () => {
                       case 'order':
                         icon = <FaShoppingCart className="w-3 h-3 text-blue-600" />;
                         bgColor = 'bg-blue-100';
-                        textColor = 'text-blue-600';
                         title = `New Order #${(activity as OrderActivity).orderId}`;
                         linkHref = '/admin/orders';
                         linkText = 'View Order';
@@ -491,19 +487,16 @@ const Dashboard = () => {
                       case 'user':
                         icon = <FaUsers className="w-3 h-3 text-green-600" />;
                         bgColor = 'bg-green-100';
-                        textColor = 'text-green-600';
                         title = 'New User Registration';
                         break;
                       case 'product':
                         icon = <FaBoxOpen className="w-3 h-3 text-purple-600" />;
                         bgColor = 'bg-purple-100';
-                        textColor = 'text-purple-600';
                         title = 'Product Updated';
                         break;
                       case 'blog':
                         icon = <FaBlog className="w-3 h-3 text-yellow-600" />;
                         bgColor = 'bg-yellow-100';
-                        textColor = 'text-yellow-600';
                         title = 'New Blog Post';
                         linkHref = '/admin/blog';
                         linkText = 'View Post';

@@ -47,7 +47,7 @@ const Features: React.FC = () => {
 
   const nextSlide = useCallback( () => {
     setIndex((prev) => (prev + 1) % totalItems);
-  }, []);
+  }, [totalItems]);
 
   useEffect(() => {
     const fetchData = async () => {

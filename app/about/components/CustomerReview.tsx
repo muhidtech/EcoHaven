@@ -1,6 +1,7 @@
 "use client";
 
 import Rating from '@/app/components/common/Rating';
+import Image from 'next/image';
 import React from 'react'
 
 function CustomerReview() {

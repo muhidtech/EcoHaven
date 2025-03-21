@@ -14,6 +14,7 @@ interface User {
 
 const usersFilePath = path.join(process.cwd(), 'public', 'data', 'users.json');
 
+// Ensure the users file exists
 async function ensureUsersFile() {
   try {
     await fs.access(usersFilePath);
@@ -23,16 +24,19 @@ async function ensureUsersFile() {
   }
 }
 
+// Load users from the file
 async function loadUsers(): Promise<User[]> {
   await ensureUsersFile();
   const fileContent = await fs.readFile(usersFilePath, 'utf-8');
   return JSON.parse(fileContent) as User[];
 }
 
+// Save users to the file
 async function saveUsers(users: User[]): Promise<void> {
   await fs.writeFile(usersFilePath, JSON.stringify(users, null, 2));
 }
 
+// Handle GET requests
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -58,8 +62,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid credentials.' }, { status: 401 });
     }
 
-    const { password: userPassword, ...userWithoutPassword } = matchedUser;
-    
+    const { password: _, ...userWithoutPassword } = matchedUser; // Omit password
     return NextResponse.json({ user: userWithoutPassword }, { status: 200 });
   } catch (error) {
     console.error('Error retrieving user accounts:', error);
@@ -67,6 +70,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
+// Handle POST requests (Create a new user)
 export async function POST(request: NextRequest) {
   try {
     const newUser = await request.json();
@@ -102,7 +106,7 @@ export async function POST(request: NextRequest) {
     users.push(userToAdd);
     await saveUsers(users);
 
-    const { password, ...userWithoutPassword } = userToAdd;
+    const { password: _, ...userWithoutPassword } = userToAdd; // Omit password
     return NextResponse.json(
       { message: 'User account created successfully.', user: userWithoutPassword },
       { status: 201 }
@@ -113,6 +117,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
+// Handle PATCH requests (Update a user)
 export async function PATCH(request: NextRequest) {
   try {
     const { id, ...updates } = await request.json();
@@ -131,7 +136,7 @@ export async function PATCH(request: NextRequest) {
     users[userIndex] = { ...users[userIndex], ...updates };
     await saveUsers(users);
 
-    const { password, ...updatedUser } = users[userIndex];
+    const { password: _, ...updatedUser } = users[userIndex]; // Omit password
     return NextResponse.json(
       { message: 'User updated successfully.', user: updatedUser },
       { status: 200 }
@@ -142,6 +147,7 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
+// Handle DELETE requests (Delete a user)
 export async function DELETE(request: NextRequest) {
   try {
     const { id } = await request.json();

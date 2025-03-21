@@ -441,29 +441,23 @@ export const AuthProvider = ({
    * 
    * Removes the user data from localStorage and updates state.
    */
-  const signOut = useCallback( async (): Promise<void> => {
+  const signOut = useCallback(async (): Promise<void> => {
     try {
       setAuthStatus('authenticating');
       setAuthError(null);
-      
+
       // Simulate network delay
-      await new Promise(resolve => setTimeout(resolve, 300));
-      
-      // Remove from localStorage
+      await new Promise((resolve) => setTimeout(resolve, 300));
+
       localStorage.removeItem(LOCAL_STORAGE_KEY);
-      
-      // Update state
       setUser(null);
       userRef.current = null;
       setAuthStatus('idle');
-      setIsLoggedIn(false)
+      setIsLoggedIn(false);
     } catch (error) {
-      console.error('Error during sign out:', error instanceof Error ? error.message : 'Unknown error');
-      
+      console.error('Error during sign out:', error);
       setAuthStatus('error');
-      const errorMessage = error instanceof Error ? error.message : 'Failed to sign out';
-      setAuthError(errorMessage);
-      
+      setAuthError('Failed to sign out. Please try again.');
       throw new AuthError('Failed to sign out. Please try again.');
     }
   }, []);
@@ -523,7 +517,7 @@ export const AuthProvider = ({
       }
       throw new AuthError(errorMessage);
     }
-  }, []);
+  }, [user, signOut, customSessionDuration]);
 
   /**
    * Check if the current user has admin role

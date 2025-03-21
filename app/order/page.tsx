@@ -37,7 +37,8 @@ export default function OrderPage() {
         setLoading(true);
         setError(null);
 
-        if (!isAdminLogin()) {
+        const checkAdminLogin = isAdminLogin();
+        if (!checkAdminLogin) {
           setError("You must be logged in to view orders");
           setLoading(false);
           router.push("/login"); // Redirect to login page if not authenticated
@@ -58,7 +59,7 @@ export default function OrderPage() {
     }
 
     fetchOrders();
-  }, [user, router, isAdminLogin()]);
+  }, [user, router, isAdminLogin]);
 
   if (loading) {
     return (

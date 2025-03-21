@@ -221,7 +221,7 @@ const ProductGrid = ({
               <div className="bg-gray-50 rounded-lg p-8 max-w-md mx-auto">
                 <h3 className="text-xl font-medium text-gray-900 mb-2">No products found</h3>
                 <p className="text-gray-600 mb-4">
-                  We couldn't find any products in the "{selectedCategory}" category.
+                  We couldn&#34;t find any products in the &lsquo;{selectedCategory}&rdquo; category.
                 </p>
                 <button
                   onClick={() => setSelectedCategory("All")}

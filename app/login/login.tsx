@@ -40,11 +40,12 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  useEffect( () => {
-    if(isAdminLogin()) {
-      router.push('/')
+  useEffect(() => {
+    const checkAdminLogin = isAdminLogin(); // Extract the function call to a variable
+    if (checkAdminLogin) {
+      router.push('/');
     }
-  }, [isAdminLogin(), router])
+  }, [isAdminLogin, router]);
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

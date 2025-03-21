@@ -43,7 +43,17 @@ const Rate = ({ value }: { value: number }) => {
 
 
   
-export const ProductCard = ({ product, onAddToCart }: { product: Product, onAddToCart: (product : Product) => void }) =>  {
+export const ProductCard = ({ 
+  product, 
+  onAddToCart, 
+  loading, 
+  priority 
+}: { 
+  product: Product, 
+  onAddToCart: (product : Product) => void,
+  loading?: 'lazy' | 'eager',
+  priority?: boolean
+}) =>  {
   const [isAdding, setIsAdding] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const { itemExists } = useCart();
@@ -95,7 +105,8 @@ export const ProductCard = ({ product, onAddToCart }: { product: Product, onAddT
           src={product.image}
           alt={product.name}
           className={`w-full h-full object-cover transition-transform duration-500 ${isHovering ? 'scale-110' : 'scale-100'} ${product.stock <= 0 ? 'opacity-70' : ''}`}
-          loading="lazy"
+          loading={loading || 'lazy'}
+          priority={priority || false}
         />
         {product.stock > 0 && (
           <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">

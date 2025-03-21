@@ -5,6 +5,10 @@ import { Metadata } from 'next';
 import Image from 'next/image';
 import { formatDate } from '@/lib/utils';
 
+interface Params {
+  [key: string]: string;
+}
+
 interface BlogPost {
   id: number;
   slug: string;
@@ -16,12 +20,12 @@ interface BlogPost {
   date: string;
 }
 
+
 interface PageProps {
-  params: {
+  params: Params & {
     slug: string;
   };
 }
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const post = await getBlogPost(params.slug);
 

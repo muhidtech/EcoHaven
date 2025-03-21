@@ -90,11 +90,7 @@ const NavBar: React.FC = () => {
     }
   }, [menuOpen]);
 
-  const handleViewCheck = () => {
-    if (getItemCount() > 0) {
-      router.push("/cart");
-    }
-  };
+
 
   return (
     <>

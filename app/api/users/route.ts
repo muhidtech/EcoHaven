@@ -36,12 +36,12 @@ async function saveUsers(users: User[]): Promise<void> {
   await fs.writeFile(usersFilePath, JSON.stringify(users, null, 2));
 }
 
-// Handle GET requests
+// Handle GET requests (Authenticate User)
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const identifier = searchParams.get('identifier');
-    const inputPassword = searchParams.get('password'); // Renamed to avoid conflict
+    const inputPassword = searchParams.get('password');
 
     if (!identifier || !inputPassword) {
       return NextResponse.json(
@@ -62,7 +62,8 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid credentials.' }, { status: 401 });
     }
 
-    const { password, ...userWithoutPassword } = matchedUser; // Omit password
+    // Exclude the password when returning user data
+    const { password: _, ...userWithoutPassword } = matchedUser;
     return NextResponse.json({ user: userWithoutPassword }, { status: 200 });
   } catch (error) {
     console.error('Error retrieving user accounts:', error);
@@ -106,7 +107,8 @@ export async function POST(request: NextRequest) {
     users.push(userToAdd);
     await saveUsers(users);
 
-    const { password, ...userWithoutPassword } = userToAdd; // Omit password
+    // Exclude the password when returning user data
+    const { password: _, ...userWithoutPassword } = userToAdd;
     return NextResponse.json(
       { message: 'User account created successfully.', user: userWithoutPassword },
       { status: 201 }
@@ -136,7 +138,8 @@ export async function PATCH(request: NextRequest) {
     users[userIndex] = { ...users[userIndex], ...updates };
     await saveUsers(users);
 
-    const { password, ...updatedUser } = users[userIndex]; // Omit password
+    // Exclude the password when returning user data
+    const { password: _, ...updatedUser } = users[userIndex];
     return NextResponse.json(
       { message: 'User updated successfully.', user: updatedUser },
       { status: 200 }

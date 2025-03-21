@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { toast } from 'react-hot-toast';
@@ -35,24 +35,22 @@ type Order = {
   createdAt: string;
 };
 
-export default function OrderConfirmationPage() {
+function OrderDetails() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Try to get order ID from URL parameters
     const orderId = searchParams.get('orderId');
-    
+
     if (orderId) {
-      // Fetch order details from localStorage
       try {
         const ordersString = localStorage.getItem('ecohaven_orders');
         if (ordersString) {
           const orders: Order[] = JSON.parse(ordersString);
-          const foundOrder = orders.find(o => o.id === orderId);
-          
+          const foundOrder = orders.find((o) => o.id === orderId);
+
           if (foundOrder) {
             setOrder(foundOrder);
           } else {
@@ -68,7 +66,6 @@ export default function OrderConfirmationPage() {
         toast.error('Error retrieving order details');
       }
     } else {
-      // If no order ID in URL, check if there's a recent order in session storage
       try {
         const recentOrderString = sessionStorage.getItem('recentOrder');
         if (recentOrderString) {
@@ -83,31 +80,52 @@ export default function OrderConfirmationPage() {
         toast.error('Error retrieving order details');
       }
     }
-    
+
     setLoading(false);
   }, [router, searchParams]);
 
-  // Format date
   const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = { 
-      year: 'numeric', 
-      month: 'long', 
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'long',
       day: 'numeric',
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
     };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  // Handle case where order is not found
-  if (!loading && !order) {
+  if (loading) {
+    return (
+      <div className="max-w-4xl mx-auto p-6 my-10 text-center">
+        <div className="animate-pulse">
+          <div className="h-8 bg-gray-200 rounded w-3/4 mx-auto mb-4"></div>
+          <div className="h-64 bg-gray-200 rounded mb-4"></div>
+          <div className="h-8 bg-gray-200 rounded w-1/2 mx-auto"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (!order) {
     return (
       <div className="max-w-4xl mx-auto p-6 my-10">
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-8 text-center">
           <div className="flex justify-center mb-4">
             <div className="bg-yellow-100 rounded-full p-3">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-12 w-12 text-yellow-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                />
               </svg>
             </div>
           </div>
@@ -116,26 +134,19 @@ export default function OrderConfirmationPage() {
             We couldn&#39;t find the order details you&#39;re looking for.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link href="/product" className="bg-green-600 text-white py-3 px-6 rounded-md hover:bg-green-700 transition-colors">
+            <Link
+              href="/product"
+              className="bg-green-600 text-white py-3 px-6 rounded-md hover:bg-green-700 transition-colors"
+            >
               Browse Products
             </Link>
-            <Link href="/order" className="bg-white text-green-600 border border-green-600 py-3 px-6 rounded-md hover:bg-green-50 transition-colors">
+            <Link
+              href="/order"
+              className="bg-white text-green-600 border border-green-600 py-3 px-6 rounded-md hover:bg-green-50 transition-colors"
+            >
               View Order History
             </Link>
           </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Loading state
-  if (loading) {
-    return (
-      <div className="max-w-4xl mx-auto p-6 my-10 text-center">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-3/4 mx-auto mb-4"></div>
-          <div className="h-64 bg-gray-200 rounded mb-4"></div>
-          <div className="h-8 bg-gray-200 rounded w-1/2 mx-auto"></div>
         </div>
       </div>
     );
@@ -236,4 +247,12 @@ export default function OrderConfirmationPage() {
       </div>
     </div>
   );
+}
+
+export default function OrderConfirmationPage() {
+return (
+  <Suspense fallback={<div>Loading...</div>}>
+    <OrderDetails />
+  </Suspense>
+);
 }

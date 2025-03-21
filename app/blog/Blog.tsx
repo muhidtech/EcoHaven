@@ -18,9 +18,6 @@ interface BlogPost {
   tags: string[];
 }
 
-// Server-side data fetching function type
-type GetBlogPostsFunction = () => Promise<BlogPost[]>;
-
 // Client component that uses server data
 export default function BlogPage() {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);

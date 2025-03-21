@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import NextImage from "next/image";
 import "./homes.css";
 import { useRouter } from 'next/navigation'
 

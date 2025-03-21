@@ -535,13 +535,7 @@ export const AuthProvider = ({
   }, [isAdmin]);
 
 
-  useEffect(() => {
-    console.log('Current user:', user);
-  }, [user]);
-  
-  console.log('Is Admin:', isAdmin());
-  console.log('Is Admin Login:', isAdminLogin());
-  
+
   /**
    * Check if the current user has the required role
    * @param requiredRole - The role required for access

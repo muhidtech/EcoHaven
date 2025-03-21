@@ -34,7 +34,7 @@ function Hero() {
         <div 
           className={`absolute inset-0 bg-cover bg-center transition-opacity duration-500 ${bgLoaded ? 'opacity-0' : 'opacity-100'}`}
           style={{ 
-            backgroundImage: `url('/bg-placeholder.webp')`,
+            backgroundImage: `url('/bg.webp')`,
             filter: 'blur(10px)',
             zIndex: 0
           }}

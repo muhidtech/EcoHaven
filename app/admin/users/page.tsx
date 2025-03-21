@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/select";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { X, CheckCircle, AlertCircle } from "lucide-react";
+import { formatDate } from "@/lib/utils";
 
 interface User {
   id: string;
@@ -57,14 +58,6 @@ interface FormData {
   password?: string;
 }
 
-export function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
 
 export default function UsersPage() {
   const router = useRouter();

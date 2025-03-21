@@ -49,37 +49,45 @@ const NavBar: React.FC = () => {
 
   // Navbar visibility on scroll
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      setIsVisible(currentScrollY < lastScrollY || currentScrollY < 10);
-      setLastScrollY(currentScrollY);
-    };
+    if (typeof window !== 'undefined') {
+      const handleScroll = () => {
+        if (typeof window !== 'undefined') {
+          const currentScrollY = window.scrollY;
+          setIsVisible(currentScrollY < lastScrollY || currentScrollY < 10);
+          setLastScrollY(currentScrollY);
+        }
+      };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
   }, [lastScrollY]);
 
   // Close dropdowns when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      // Close desktop dropdown when clicking outside
-      if (dropdownOpen && !(event.target as Element).closest('.user-dropdown-container')) {
-        setDropdownOpen(false);
-      }
-      
-      // Close mobile dropdown when clicking outside
-      if (mobileDropdownOpen && !(event.target as Element).closest('.mobile-dropdown-container')) {
-        setMobileDropdownOpen(false);
-      }
-    };
+    if (typeof document !== 'undefined') {
+      const handleClickOutside = (event: MouseEvent) => {
+        // Close desktop dropdown when clicking outside
+        if (dropdownOpen && !(event.target as Element).closest('.user-dropdown-container')) {
+          setDropdownOpen(false);
+        }
+        
+        // Close mobile dropdown when clicking outside
+        if (mobileDropdownOpen && !(event.target as Element).closest('.mobile-dropdown-container')) {
+          setMobileDropdownOpen(false);
+        }
+      };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
   }, [dropdownOpen, mobileDropdownOpen]);
 
   // Prevent body scroll when mobile menu is open
   useEffect(() => {
-    document.body.style.overflow = menuOpen ? "hidden" : "auto";
+    if (typeof document !== 'undefined') {
+      document.body.style.overflow = menuOpen ? "hidden" : "auto";
+    }
   }, [menuOpen]);
 
   const handleViewCheck = () => {

@@ -42,18 +42,26 @@ const PopularProducts: React.FC = () => {
 
   useEffect(() => {
     const updateVisibleProducts = () => {
-      if (window.innerWidth < 640) {
-        setVisibleProducts(products.slice(0, 10));
-      } else if (window.innerWidth >= 640 && window.innerWidth < 1280) {
-        setVisibleProducts(products.slice(0, 16));
+      if (typeof window !== 'undefined') {
+        if (window.innerWidth < 640) {
+          setVisibleProducts(products.slice(0, 10));
+        } else if (window.innerWidth >= 640 && window.innerWidth < 1280) {
+          setVisibleProducts(products.slice(0, 16));
+        } else {
+          setVisibleProducts(products);
+        }
       } else {
-        setVisibleProducts(products);
+        // Default for server-side rendering
+        setVisibleProducts(products.slice(0, 16));
       }
     };
 
     updateVisibleProducts();
-    window.addEventListener("resize", updateVisibleProducts);
-    return () => window.removeEventListener("resize", updateVisibleProducts);
+    
+    if (typeof window !== 'undefined') {
+      window.addEventListener("resize", updateVisibleProducts);
+      return () => window.removeEventListener("resize", updateVisibleProducts);
+    }
   }, [products]);
 
   const handleAddToCart = (item: Product) => {

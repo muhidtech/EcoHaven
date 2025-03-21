@@ -20,14 +20,18 @@ function Footer() {
 
   // Show "Back to Top" button after scrolling 300px
   useEffect(() => {
-    const handleScroll = () => setShowButton(window.scrollY > 300);
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    if (typeof window !== "undefined") {
+      const handleScroll = () => setShowButton(window.scrollY > 300);
+      window.addEventListener("scroll", handleScroll);
+      return () => window.removeEventListener("scroll", handleScroll);
+    }
   }, []);
 
   // Smooth scroll to top of page
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
   };
 
   return (

@@ -54,7 +54,9 @@ export interface Product {
   
   export const saveProducts = (products: Product[]): void => {
     try {
-      localStorage.setItem('ecohaven_products', JSON.stringify(products));
+      if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+        localStorage.setItem('ecohaven_products', JSON.stringify(products));
+      }
     } catch (error) {
       console.error('Error saving products to localStorage:', error);
     }
@@ -113,8 +115,11 @@ export interface Product {
    */
   export const getProductsFromStorage = (): Product[] => {
     try {
-      const productsJson = localStorage.getItem('ecohaven_products');
-      return productsJson ? JSON.parse(productsJson) : [];
+      if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+        const productsJson = localStorage.getItem('ecohaven_products');
+        return productsJson ? JSON.parse(productsJson) : [];
+      }
+      return [];
     } catch (error) {
       console.error('Error retrieving products from localStorage:', error);
       return [];
@@ -204,8 +209,11 @@ export const saveOrders = (orders: Order[]): boolean => {
       console.error('Invalid orders data provided to saveOrders');
       return false;
     }
-    localStorage.setItem('ecohaven_orders', JSON.stringify(orders));
-    return true;
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      localStorage.setItem('ecohaven_orders', JSON.stringify(orders));
+      return true;
+    }
+    return false;
   } catch (error) {
     console.error('Error saving orders to localStorage:', error);
     return false;
@@ -218,18 +226,21 @@ export const saveOrders = (orders: Order[]): boolean => {
  */
 export const getOrdersFromStorage = (): Order[] => {
   try {
-    const ordersJson = localStorage.getItem('ecohaven_orders');
-    if (!ordersJson) {
-      return [];
+    if (typeof window !== 'undefined' && typeof localStorage !== 'undefined') {
+      const ordersJson = localStorage.getItem('ecohaven_orders');
+      if (!ordersJson) {
+        return [];
+      }
+      
+      const parsedOrders = JSON.parse(ordersJson);
+      if (!Array.isArray(parsedOrders)) {
+        console.error('Invalid orders data format in localStorage');
+        return [];
+      }
+      
+      return parsedOrders;
     }
-    
-    const parsedOrders = JSON.parse(ordersJson);
-    if (!Array.isArray(parsedOrders)) {
-      console.error('Invalid orders data format in localStorage');
-      return [];
-    }
-    
-    return parsedOrders;
+    return [];
   } catch (error) {
     console.error('Error retrieving orders from localStorage:', error);
     return [];
@@ -241,11 +252,14 @@ export const getOrdersFromStorage = (): Order[] => {
  * @returns A unique string for order identification
  */
 export const generateOrderId = (): string => {
-  // Use crypto.randomUUID if available (modern browsers)
-  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
-    return `order_${crypto.randomUUID()}`;
+  // Check if we're in a browser environment
+  if (typeof window !== 'undefined') {
+    // Use crypto.randomUUID if available (modern browsers)
+    if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") {
+      return `order_${crypto.randomUUID()}`;
+    }
   }
-  // Fallback to timestamp + random string for older browsers
+  // Fallback to timestamp + random string for older browsers or server environment
   return `order_${Date.now()}_${Math.random().toString(36).substring(2, 10)}`;
 };
 

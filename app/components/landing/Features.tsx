@@ -29,6 +29,7 @@ const Features: React.FC = () => {
   ];
 
   const getItemsPerView = () => {
+    if (typeof window === 'undefined') return 4; // Default for SSR
     if (window.innerWidth >= 1024) return 6; // Large screens
     if (window.innerWidth >= 768) return 4; // Medium screens
     return 2; // Small screens
@@ -41,8 +42,10 @@ const Features: React.FC = () => {
       setItemsPerView(getItemsPerView());
     };
 
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+    if (typeof window !== 'undefined') {
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
+    }
   }, []);
 
   const nextSlide = useCallback( () => {

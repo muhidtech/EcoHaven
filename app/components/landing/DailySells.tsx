@@ -1,3 +1,5 @@
+'use client'; // This marks DailySells as a client component for potential future client-side functionality
+
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';

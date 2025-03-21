@@ -30,7 +30,6 @@ function Hero() {
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Low-quality placeholder */}
         <div 
           className={`absolute inset-0 bg-cover bg-center transition-opacity duration-500 ${bgLoaded ? 'opacity-0' : 'opacity-100'}`}
           style={{ 
@@ -40,7 +39,6 @@ function Hero() {
           }}
         />
         
-        {/* High-quality background image */}
         <div 
           className={`absolute inset-0 bg-cover bg-center transition-opacity duration-500 ${bgLoaded ? 'opacity-100' : 'opacity-0'}`}
           style={{ 

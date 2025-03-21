@@ -2,9 +2,16 @@
 
 import Rating from '@/app/components/common/Rating';
 import Image from 'next/image';
-import React from 'react'
+import React from 'react';
+import useScrollAnimation from '@/app/hooks/useScrollAnimation';
 
 function CustomerReview() {
+    // Create refs for scroll animations
+    const [headerRef, isHeaderVisible] = useScrollAnimation({ threshold: 0.1 });
+    const [reviewsGridRef, isReviewsGridVisible] = useScrollAnimation({ 
+        threshold: 0.1,
+        animationDelay: 200 
+    });
 
     const data = [
         {
@@ -49,13 +56,28 @@ function CustomerReview() {
 
   return (
     <div className='flex flex-col gap-10 px-10 py-20 bg-green-300 w-full justify-center items-center'>
-        <h1 className='md:text-4xl text-2xl font-medium '>
+        <h1 
+            ref={headerRef} 
+            className={`md:text-4xl text-2xl font-medium scroll-animation-container ${
+                isHeaderVisible ? 'animate-fadeInDown' : ''
+            }`}
+        >
             Customer Reviews
         </h1>
 
-        <div className='grid xl:grid-cols-6 md:grid-cols-3 grid-cols-1 gap-5'>
+        <div 
+            ref={reviewsGridRef}
+            className={`grid xl:grid-cols-6 md:grid-cols-3 grid-cols-1 gap-5 scroll-animation-container ${
+                isReviewsGridVisible ? 'animate-fadeInUp' : ''
+            }`}
+        >
             {data.map((item, key) => (
-                <div key={key} className='p-2 flex flex-col gap-5 justify-center items-center bg-white rounded-2xl shadow-md shadow-black'>
+                <div 
+                    key={key} 
+                    className={`p-2 flex flex-col gap-5 justify-center items-center bg-white rounded-2xl shadow-md shadow-black scroll-animation-container ${
+                        isReviewsGridVisible ? `animate-fadeInUp delay-${(key % 10) * 100}` : ''
+                    }`}
+                >
                     <div className='flex w-full justify-start items-center gap-5'>
                         <Image 
                         className='rounded-full'

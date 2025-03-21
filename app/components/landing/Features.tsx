@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import Image from "next/image";
 import { getFeaturedProducts } from "../../services/localDataService";
+import useScrollAnimation from "../../hooks/useScrollAnimation";
 
 interface Product {
   name: string;
@@ -122,9 +123,19 @@ const Features: React.FC = () => {
       }));
   }, [featuresData, index, itemsPerView, totalItems]);
 
+  // Scroll animation hooks for different sections
+  const [headerRef, headerVisible] = useScrollAnimation<HTMLDivElement>({ threshold: 0.1 });
+  const [productsGridRef, productsGridVisible] = useScrollAnimation<HTMLDivElement>({ threshold: 0.1 });
+  const [discountSectionRef, discountSectionVisible] = useScrollAnimation<HTMLDivElement>({ threshold: 0.1 });
+
   return (
     <div className="relative flex flex-col px-10 md:pl-20 md:pr-15 mt-20 pb-20">
-      <h1 className="text-3xl pb-5 font-semibold text-text">Featured Products</h1>
+      <div 
+        ref={headerRef} 
+        className={`scroll-animation-container ${headerVisible ? 'animate-fadeInDown' : ''}`}
+      >
+        <h1 className="text-3xl pb-5 font-semibold text-text">Featured Products</h1>
+      </div>
 
       {/* Navigation Arrows */}
       <div className="absolute top-0 lg:right-20 md:right-15 right-5 max-md:top-2 flex gap-2">
@@ -145,14 +156,18 @@ const Features: React.FC = () => {
       </div>
 
       {/* Grid Container with Skeleton Loader */}
-      {isLoading ? (
-        <SkeletonLoader itemsPerView={itemsPerView} />
-      ) : (
-        <div className="flex gap-5 overflow-hidden w-full transition-transform duration-700 ease-in-out transform">
-          {visibleProducts.map((item, i) => (
-            <div
-              key={item.key || i}
-              className="w-[calc(100%/2)] md:w-[calc(100%/4)] lg:w-[calc(100%/6)] min-w-[150px] max-w-[300px] border transition-all duration-500 ease-in-out p-5 shadow-lg rounded-lg bg-white hover:shadow-xl hover:-translate-y-1 animate-fadeIn"
+      <div 
+        ref={productsGridRef} 
+        className={`scroll-animation-container ${productsGridVisible ? 'animate-fadeInUp' : ''}`}
+      >
+        {isLoading ? (
+          <SkeletonLoader itemsPerView={itemsPerView} />
+        ) : (
+          <div className="flex gap-5 overflow-hidden w-full transition-transform duration-700 ease-in-out transform">
+            {visibleProducts.map((item, i) => (
+              <div
+                key={item.key || i}
+                className={`w-[calc(100%/2)] md:w-[calc(100%/4)] lg:w-[calc(100%/6)] min-w-[150px] max-w-[300px] border transition-all duration-500 ease-in-out p-5 shadow-lg rounded-lg bg-white hover:shadow-xl hover:-translate-y-1 animate-fadeIn delay-${(i + 1) * 100}`}
             >
               <Image
                 src={item.imageUrl || item.image || "/placeholder.png"}
@@ -164,16 +179,21 @@ const Features: React.FC = () => {
               />
               <p className="text-center mt-2 transition-opacity duration-500 ease-in-out">{item.name}</p>
             </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Discount Products Section */}
-      <div className="grid lg:grid-cols-2 grid-cols-1 mt-10 w-full gap-5">
-        {discountProducts.map((item, key) => (
-          <div
-            className="relative hover:border-green-400 hover:border-1 bg-gray-300 shadow-md h-[220px] rounded-2xl flex flex-col items-start gap-4 p-10 overflow-hidden transition-all duration-300 ease-in-out hover:shadow-lg"
-            key={key}
+      <div 
+        ref={discountSectionRef} 
+        className={`scroll-animation-container ${discountSectionVisible ? 'animate-fadeInRight' : ''} mt-10`}
+      >
+        <div className="grid lg:grid-cols-2 grid-cols-1 w-full gap-5">
+          {discountProducts.map((item, key) => (
+            <div
+              className={`relative hover:border-green-400 hover:border-1 bg-gray-300 shadow-md h-[220px] rounded-2xl flex flex-col items-start gap-4 p-10 overflow-hidden transition-all duration-300 ease-in-out hover:shadow-lg ${discountSectionVisible ? `animate-slideInRight delay-${(key + 1) * 300}` : ''}`}
+              key={key}
           >
             <h1 className="md:text-2xl text-lg text-blue-500">{item.name}</h1>
             <p className="max-md:text-md">Get Upto <b>{item.dis}</b> Off</p>
@@ -191,7 +211,8 @@ const Features: React.FC = () => {
               }}
             />
           </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );

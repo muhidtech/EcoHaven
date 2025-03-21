@@ -7,6 +7,7 @@ import { FiShoppingCart } from 'react-icons/fi';
 import { getProducts } from '../services/localDataService';
 import Rating from '../components/common/Rating';
 import Image from 'next/image';
+import useScrollAnimation from '../hooks/useScrollAnimation';
 
 interface Product {
   id: string;
@@ -162,6 +163,7 @@ const ProductGrid = ({
     const [page, setPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(8);
     const { addItem, updateQuantity, itemExists, removeItem } = useCart();
+    const [ref, isVisible] = useScrollAnimation({ threshold: 0.1 });
   
     useEffect(() => {
       const handleResize = () => {
@@ -210,11 +212,16 @@ const ProductGrid = ({
     };
   
     return (
-      <div>
+      <div ref={ref} className={`scroll-animation-container ${isVisible ? 'animate-fadeIn' : ''}`}>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
           {paginatedProducts.length > 0 ? (
-            paginatedProducts.map((product) => (
-              <ProductCard key={product.slug || product.id} product={product} onAddToCart={() => handleAddToCart(product)} />
+            paginatedProducts.map((product, index) => (
+              <div 
+                key={product.slug || product.id} 
+                className={`scroll-animation-container ${isVisible ? `animate-fadeInUp delay-${(index % 8 + 1) * 100}` : ''}`}
+              >
+                <ProductCard product={product} onAddToCart={() => handleAddToCart(product)} />
+              </div>
             ))
           ) : (
             <div className="col-span-full py-20 text-center">
@@ -260,7 +267,8 @@ function Shop() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<string[]>(['All']);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  
+  const [titleRef, titleVisible] = useScrollAnimation({ threshold: 0.1 });
+  const [categoriesRef, categoriesVisible] = useScrollAnimation({ threshold: 0.1, animationDelay: 200 });
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -282,10 +290,18 @@ function Shop() {
     <>
       <main className="flex-grow pt-24 pb-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Shop Our Products</h1>
+          <div 
+            ref={titleRef} 
+            className={`scroll-animation-container ${titleVisible ? 'animate-fadeInDown' : ''}`}
+          >
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Shop Our Products</h1>
+          </div>
 
           {/* Category selector */}
-          <div className="mb-8 overflow-x-auto pb-2">
+          <div 
+            ref={categoriesRef} 
+            className={`mb-8 overflow-x-auto pb-2 scroll-animation-container ${categoriesVisible ? 'animate-fadeInUp' : ''}`}
+          >
             <div className="flex space-x-2">
               {categories.map((category) => (
                 <button

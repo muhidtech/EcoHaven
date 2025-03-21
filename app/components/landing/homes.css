@@ -45,9 +45,67 @@
   to { opacity: 1; transform: rotate(0); }
 }
 
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes flipIn {
+  from { opacity: 0; transform: perspective(400px) rotateY(90deg); }
+  to { opacity: 1; transform: perspective(400px) rotateY(0); }
+}
+
 /* Custom Animation Classes */
 .animate-fadeIn {
   animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+.animate-fadeInUp {
+  animation: fadeInUp 0.5s ease-in-out forwards;
+}
+
+.animate-fadeInDown {
+  animation: fadeInDown 0.5s ease-in-out forwards;
+}
+
+.animate-fadeInLeft {
+  animation: fadeInLeft 0.5s ease-in-out forwards;
+}
+
+.animate-fadeInRight {
+  animation: fadeInRight 0.5s ease-in-out forwards;
+}
+
+.animate-zoomIn {
+  animation: zoomIn 0.5s ease-in-out forwards;
+}
+
+.animate-flipIn {
+  animation: flipIn 0.6s ease-in-out forwards;
+}
+
+.scroll-animation-container {
+  opacity: 0;
 }
 
 .animate-scaleUp {
@@ -93,6 +151,26 @@
 
 .delay-500 {
   animation-delay: 500ms;
+}
+
+.delay-600 {
+  animation-delay: 600ms;
+}
+
+.delay-700 {
+  animation-delay: 700ms;
+}
+
+.delay-800 {
+  animation-delay: 800ms;
+}
+
+.delay-900 {
+  animation-delay: 900ms;
+}
+
+.delay-1000 {
+  animation-delay: 1000ms;
 }
 
 @layer components {

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useMemo, useCallback } from "react";
+import useScrollAnimation from "../../hooks/useScrollAnimation";
 import { useCart } from "../../contexts/CardContext";
 import { ProductCard } from "@/app/shop/Shop";
 import { getProducts } from "@/app/services/localDataService";
@@ -144,29 +145,50 @@ const PopularProducts: React.FC = () => {
   // Create skeleton array for loading state
   const skeletonArray = Array(10).fill(0);
 
+  // Use scroll animation hook for the container
+  const [containerRef, isVisible] = useScrollAnimation<HTMLDivElement>({
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px',
+    once: true
+  });
+
   return (
-    <div className="xl:px-20 px-10 max-md:px-5 pb-20">
-      <h1 className="text-2xl font-bold mb-5">Popular Products</h1>
+    <div 
+      ref={containerRef} 
+      className={`xl:px-20 px-10 max-md:px-5 pb-20 scroll-animation-container ${isVisible ? 'animate-fadeIn' : ''}`}
+    >
+      <h1 className={`text-2xl font-bold mb-5 ${isVisible ? 'animate-fadeInUp' : ''}`}>Popular Products</h1>
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-5">
         {isLoading ? (
-          // Show skeleton loaders while loading
+          // Show skeleton loaders while loading with staggered animation
           skeletonArray.map((_, index) => (
-            <ProductCardSkeleton key={`skeleton-${index}`} />
+            <div 
+              key={`skeleton-${index}`}
+              className={`${isVisible ? 'animate-fadeInUp' : ''}`}
+              style={{ animationDelay: `${100 + (index * 50)}ms` }}
+            >
+              <ProductCardSkeleton />
+            </div>
           ))
         ) : visibleProducts.length > 0 ? (
-          // Show products when loaded
-          visibleProducts.map((product) => (
-            <ProductCard
+          // Show products when loaded with staggered animation
+          visibleProducts.map((product, index) => (
+            <div 
               key={product.slug || product.id}
-              product={product}
-              onAddToCart={() => handleAddToCart(product)}
-              loading="lazy"
-              priority={false}
-            />
+              className={`${isVisible ? 'animate-fadeInUp' : ''}`}
+              style={{ animationDelay: `${100 + (index * 50)}ms` }}
+            >
+              <ProductCard
+                product={product}
+                onAddToCart={() => handleAddToCart(product)}
+                loading="lazy"
+                priority={false}
+              />
+            </div>
           ))
         ) : (
-          // Show message when no products found
-          <div className="col-span-full text-center py-10">
+          // Show message when no products found with animation
+          <div className={`col-span-full text-center py-10 ${isVisible ? 'animate-fadeInUp' : ''}`}>
             <p className="text-gray-500">No popular products found</p>
           </div>
         )}

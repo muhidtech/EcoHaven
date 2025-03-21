@@ -49,12 +49,12 @@ const Features: React.FC = () => {
     {
       name: "Organic Beeswax Wraps",
       dis: "%50",
-      img: "/product1.png"
+      img: "/placeholder.png"
     },
     {
       name: "Reusable Cotton Tote Bag",
       dis: "%30",
-      img: "/product2.png"
+      img: "/placeholder.png"
     }
   ], []);
 
@@ -159,6 +159,7 @@ const Features: React.FC = () => {
                 alt={item.name}
                 width={300}
                 height={300}
+                loading="lazy"
                 className="w-full h-auto object-contain transition-opacity duration-500 ease-in-out"
               />
               <p className="text-center mt-2 transition-opacity duration-500 ease-in-out">{item.name}</p>
@@ -180,9 +181,14 @@ const Features: React.FC = () => {
             <Image
               className="absolute top-20 right-0 w-40 h-30 sm:w-70 sm:h-50 sm:top-2 object-contain transition-transform duration-500 ease-in-out hover:scale-105"
               src={item.img}
-              alt={item.name}
+              alt={`${item.name} - ${item.dis} discount`}
               width={150}
               height={150}
+              loading="lazy"
+              onError={(e) => {
+                const target = e.target as HTMLImageElement;
+                target.src = "/placeholder.png";
+              }}
             />
           </div>
         ))}

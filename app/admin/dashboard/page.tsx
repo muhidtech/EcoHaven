@@ -128,11 +128,27 @@ const Dashboard = () => {
   const getUsers = async (): Promise<User[]> => {
     try {
       const response = await fetch('/data/users.json');
+  
       if (!response.ok) {
         throw new Error(`Failed to fetch users: ${response.status} ${response.statusText}`);
       }
-      const users: User[] = await response.json();
-      return Array.isArray(users) ? users : [];
+  
+      const users: unknown = await response.json();
+  
+      // Ensure users is an array
+      if (!Array.isArray(users)) return [];
+  
+      // Filter out duplicate admin users, keeping only the first one
+      let hasAdmin = false;
+      const filteredUsers = users.filter((user) => {
+        if (user.role === 'admin') {
+          if (hasAdmin) return false; // Skip if we already have an admin
+          hasAdmin = true; // Mark that we've found one
+        }
+        return true; // Keep all other users
+      });
+  
+      return filteredUsers;
     } catch (error) {
       console.error('Error fetching users:', error);
       return [];

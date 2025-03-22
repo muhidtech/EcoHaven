@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useAuth } from '../contexts/AuthContext';
 import { useRouter } from "next/navigation";
 import { FiArrowLeft, FiEye, FiEyeOff } from "react-icons/fi";
@@ -8,7 +8,7 @@ import Link from "next/link";
 
 
 const Login = () => {
-  const { signIn, isAdminLogin } = useAuth()
+  const { signIn } = useAuth()
   const router = useRouter();
   const [formData, setFormData] = useState({
     identifier: "",

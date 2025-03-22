@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
-import crypto from 'crypto';
 
 interface User extends Record<string, unknown> {
   id: string;
@@ -68,10 +67,6 @@ async function saveUsers(users: User[]): Promise<void> {
   }
 }
 
-// Return password as plain text (no hashing)
-function hashPassword(password: string): string {
-  return password;
-}
 
 // Handle GET requests (Authenticate user or get all users)
 export async function GET(request: NextRequest) {
@@ -99,13 +94,13 @@ export async function GET(request: NextRequest) {
     const isEmail = identifier.includes('@');
     
     // Use plain text password for comparison
-    const plainInputPassword = inputPassword;
+    const inputPasswordForAuth = inputPassword;
     console.log('Authenticating user with plain text password');
 
     const matchedUser = users.find((user) =>
       isEmail
-        ? user.email === identifier && user.password === plainInputPassword
-        : user.username === identifier && user.password === plainInputPassword
+        ? user.email === identifier && user.password === inputPasswordForAuth
+        : user.username === identifier && user.password === inputPasswordForAuth
     );
 
     if (!matchedUser) {
@@ -167,12 +162,12 @@ export async function POST(request: NextRequest) {
 
     // Store password as plain text
     console.log('Storing plain text password for new user');
-    const plainPassword = newUser.password;
+    const passwordForStorage = newUser.password;
     console.log('Password stored as plain text');
 
     const userToAdd: User = {
       ...newUser,
-      password: plainPassword,
+      password: passwordForStorage,
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
     };

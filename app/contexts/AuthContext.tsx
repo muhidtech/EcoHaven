@@ -596,7 +596,7 @@ export const AuthProvider = ({
     // Check if user exists and has the role 'admin' using the ref for up-to-date value
     console.log(userRef.current?.role)
     return userRef.current?.role === 'admin';
-  }, [user, userRef]);
+  }, [userRef]);
   
   const isAdminLogin = useCallback((): boolean => {
     // Alias for isAdmin function
@@ -620,7 +620,7 @@ export const AuthProvider = ({
     
     // For regular users, check if they have the specific required role
     return user.role === requiredRole;
-  }, [user]);
+  }, [user, user?.role]);
 
   // Value object to be provided to consumers of the context
   const value: AuthContextType = useMemo(() => {

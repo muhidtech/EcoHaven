@@ -107,7 +107,11 @@ export const ProductCard = ({
           className={`w-full h-full object-cover transition-transform duration-500 ${isHovering ? 'scale-110' : 'scale-100'} ${product.stock <= 0 ? 'opacity-70' : ''}`}
           loading={loading || 'lazy'}
           priority={priority || false}
-          onError={(e) => { e.currentTarget.src = 'https://placehold.co/400'; }}
+          unoptimized={product.image.includes('http')}
+          onError={(e) => { 
+            e.currentTarget.src = 'https://placehold.co/400';
+            e.currentTarget.onerror = null;
+          }}
         />
         {product.stock > 0 && (
           <div className="absolute inset-0 bg-black bg-opacity-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">

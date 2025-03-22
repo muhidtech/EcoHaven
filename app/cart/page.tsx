@@ -92,7 +92,13 @@ const CartPage = () => {
                               alt={item.name}
                               className="object-cover rounded"
                               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                              onError={(e) => { e.currentTarget.src = 'https://placehold.co/400'; }}
+                              onError={(e) => {
+                                e.currentTarget.src = 'https://placehold.co/400';
+                                e.currentTarget.onerror = null;
+                              }}
+                              unoptimized={!!item.image && item.image.includes('http')}
+                              width={64}
+                              height={64}
                             />
                           </div>
                           <div>

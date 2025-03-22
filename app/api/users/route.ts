@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { promises as fs } from 'fs';
 import path from 'path';
+import crypto from 'crypto';
 
 interface User extends Record<string, unknown> {
   id: string;
@@ -45,6 +46,16 @@ async function saveUsers(users: User[]): Promise<void> {
   await fs.writeFile(usersFilePath, JSON.stringify(users, null, 2));
 }
 
+// Hash password using Node.js crypto module
+function hashPassword(password: string): string {
+  try {
+    return crypto.createHash('sha256').update(password).digest('hex');
+  } catch (error) {
+    console.error('Error hashing password:', error);
+    throw new Error('Failed to hash password');
+  }
+}
+
 // Handle GET requests (Authenticate user or get all users)
 export async function GET(request: NextRequest) {
   try {
@@ -69,11 +80,15 @@ export async function GET(request: NextRequest) {
 
     const users = await loadUsers();
     const isEmail = identifier.includes('@');
+    
+    // Hash the input password for comparison
+    const hashedInputPassword = hashPassword(inputPassword);
+    console.log('Authenticating user with hashed password');
 
     const matchedUser = users.find((user) =>
       isEmail
-        ? user.email === identifier && user.password === inputPassword
-        : user.username === identifier && user.password === inputPassword
+        ? user.email === identifier && user.password === hashedInputPassword
+        : user.username === identifier && user.password === hashedInputPassword
     );
 
     if (!matchedUser) {
@@ -134,7 +149,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Hash the password before storing
-    const hashedPassword = await hashPassword(newUser.password);
+    console.log('Hashing password for new user');
+    const hashedPassword = hashPassword(newUser.password);
+    console.log('Password hashed successfully');
 
     const userToAdd: User = {
       ...newUser,
@@ -222,12 +239,3 @@ export async function DELETE(request: NextRequest) {
   }
 }
 
-// Simple password hashing function (for demonstration only)
-async function hashPassword(password: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  return hashHex;
-}

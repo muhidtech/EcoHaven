@@ -88,10 +88,11 @@ const CartPage = () => {
                         <div className="flex items-center space-x-3">
                           <div className="relative h-16 w-16 flex-shrink-0">
                             <Image
-                              src={item.image || "/images/placeholder.png"}
+                              src={item.image || "https://placehold.co/400"}
                               alt={item.name}
                               className="object-cover rounded"
                               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                              onError={(e) => { e.currentTarget.src = 'https://placehold.co/400'; }}
                             />
                           </div>
                           <div>

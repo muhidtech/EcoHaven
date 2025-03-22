@@ -50,12 +50,12 @@ const Features: React.FC = () => {
     {
       name: "Organic Beeswax Wraps",
       dis: "%50",
-      img: "/placeholder.png"
+      img: "/product1.png"
     },
     {
       name: "Reusable Cotton Tote Bag",
       dis: "%30",
-      img: "/placeholder.png"
+      img: "/product2.png"
     }
   ], []);
 
@@ -170,7 +170,7 @@ const Features: React.FC = () => {
                 className={`w-[calc(100%/2)] md:w-[calc(100%/4)] lg:w-[calc(100%/6)] min-w-[150px] max-w-[300px] border transition-all duration-500 ease-in-out p-5 shadow-lg rounded-lg bg-white hover:shadow-xl hover:-translate-y-1 animate-fadeIn delay-${(i + 1) * 100}`}
             >
               <Image
-                src={item.imageUrl || item.image || "/placeholder.png"}
+                src={item.imageUrl || item.image || "https://placehold.co/400"}
                 alt={item.name}
                 width={300}
                 height={300}

@@ -170,12 +170,21 @@ const Features: React.FC = () => {
                 className={`w-[calc(100%/2)] md:w-[calc(100%/4)] lg:w-[calc(100%/6)] min-w-[150px] max-w-[300px] border transition-all duration-500 ease-in-out p-5 shadow-lg rounded-lg bg-white hover:shadow-xl hover:-translate-y-1 animate-fadeIn delay-${(i + 1) * 100}`}
             >
               <Image
-                src={item.imageUrl || item.image || "https://placehold.co/400"}
-                alt={item.name}
+                src={
+                  item.imageUrl?.startsWith("http") ? item.imageUrl :
+                  item.image?.startsWith("http") ? item.image :
+                  "https://placehold.co/400"
+                }
+                alt={item.name || "Placeholder"}
                 width={300}
                 height={300}
                 loading="lazy"
                 className="w-full h-auto object-contain transition-opacity duration-500 ease-in-out"
+                onError={(e) => {
+                  console.error("Image failed to load:", e);
+                  const target = e.target as HTMLImageElement;
+                  target.src = "/placeholder.png"; // Local fallback image
+                }}
               />
               <p className="text-center mt-2 transition-opacity duration-500 ease-in-out">{item.name}</p>
             </div>

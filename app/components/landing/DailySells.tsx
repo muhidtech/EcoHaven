@@ -72,7 +72,20 @@ function DailySells() {
             >
               <div className="relative h-auto w-full bg-gray-200 p-10">
                 
-                <Image className='' src={deal.image} alt={deal.name} />
+                <Image
+                  src={
+                    deal.image?.startsWith("http") ? deal.image :
+                    "https://placehold.co/400"
+                  }
+                  alt={deal.name || "Placeholder"}
+                  loading="lazy"
+                  className="w-full h-auto object-contain transition-opacity duration-500 ease-in-out"
+                  onError={(e) => { 
+                    e.currentTarget.src = 'https://placehold.co/400';
+                    e.currentTarget.onerror = null;
+                  
+                  }}
+                />
                 
                 {/* Discount Badge */}
                 <div className="absolute top-2 right-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full">

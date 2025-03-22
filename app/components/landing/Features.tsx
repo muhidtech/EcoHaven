@@ -171,8 +171,8 @@ const Features: React.FC = () => {
             >
               <Image
                 src={
-                  item.imageUrl?.startsWith("http") ? item.imageUrl :
                   item.image?.startsWith("http") ? item.image :
+                  item.imageUrl?.startsWith("http") ? item.imageUrl :
                   "https://placehold.co/400"
                 }
                 alt={item.name || "Placeholder"}
@@ -180,10 +180,9 @@ const Features: React.FC = () => {
                 height={300}
                 loading="lazy"
                 className="w-full h-auto object-contain transition-opacity duration-500 ease-in-out"
-                onError={(e) => {
-                  console.error("Image failed to load:", e);
-                  const target = e.target as HTMLImageElement;
-                  target.src = "/placeholder.png"; // Local fallback image
+                onError={(e) => { 
+                  e.currentTarget.src = 'https://placehold.co/400';
+                  e.currentTarget.onerror = null;
                 }}
               />
               <p className="text-center mt-2 transition-opacity duration-500 ease-in-out">{item.name}</p>

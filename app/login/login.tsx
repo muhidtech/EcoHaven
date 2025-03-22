@@ -40,12 +40,8 @@ const Login = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  useEffect(() => {
-    const checkAdminLogin = isAdminLogin(); // Extract the function call to a variable
-    if (checkAdminLogin) {
-      router.push('/');
-    }
-  }, [isAdminLogin, router]);
+  // Removed automatic redirection to allow handleSubmit to control navigation
+  // based on user role after successful login
   // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

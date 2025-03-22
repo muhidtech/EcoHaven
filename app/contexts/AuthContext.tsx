@@ -308,6 +308,7 @@ export const AuthProvider = ({
       setAuthStatus('authenticated');
       setIsLoggedIn(true);
       console.log(user?.role === 'admin')
+      
   
       return loggedUser;
     } catch (error) {
@@ -593,6 +594,7 @@ export const AuthProvider = ({
    */
   const isAdmin = useCallback((): boolean => {
     // Check if user exists and has the role 'admin' using the ref for up-to-date value
+    console.log(userRef.current?.role)
     return userRef.current?.role === 'admin';
   }, [user, userRef]);
   
@@ -600,6 +602,8 @@ export const AuthProvider = ({
     // Alias for isAdmin function
     return isAdmin();
   }, [isAdmin]);
+
+  console.log(user?.role)
 
 
 

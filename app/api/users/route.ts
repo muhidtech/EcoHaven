@@ -68,14 +68,9 @@ async function saveUsers(users: User[]): Promise<void> {
   }
 }
 
-// Hash password using Node.js crypto module
+// Return password as plain text (no hashing)
 function hashPassword(password: string): string {
-  try {
-    return crypto.createHash('sha256').update(password).digest('hex');
-  } catch (error) {
-    console.error('Error hashing password:', error);
-    throw new Error('Failed to hash password');
-  }
+  return password;
 }
 
 // Handle GET requests (Authenticate user or get all users)
@@ -103,14 +98,14 @@ export async function GET(request: NextRequest) {
     const users = await loadUsers();
     const isEmail = identifier.includes('@');
     
-    // Hash the input password for comparison
-    const hashedInputPassword = hashPassword(inputPassword);
-    console.log('Authenticating user with hashed password');
+    // Use plain text password for comparison
+    const plainInputPassword = inputPassword;
+    console.log('Authenticating user with plain text password');
 
     const matchedUser = users.find((user) =>
       isEmail
-        ? user.email === identifier && user.password === hashedInputPassword
-        : user.username === identifier && user.password === hashedInputPassword
+        ? user.email === identifier && user.password === plainInputPassword
+        : user.username === identifier && user.password === plainInputPassword
     );
 
     if (!matchedUser) {
@@ -170,14 +165,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Hash the password before storing
-    console.log('Hashing password for new user');
-    const hashedPassword = hashPassword(newUser.password);
-    console.log('Password hashed successfully');
+    // Store password as plain text
+    console.log('Storing plain text password for new user');
+    const plainPassword = newUser.password;
+    console.log('Password stored as plain text');
 
     const userToAdd: User = {
       ...newUser,
-      password: hashedPassword,
+      password: plainPassword,
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
     };

@@ -13,7 +13,12 @@ interface User extends Record<string, unknown> {
   createdAt: string;
 }
 
-const usersFilePath = path.join(process.cwd(), 'public', 'data', 'users.json');
+// Use /tmp directory in production to ensure write access
+const usersFilePath = process.env.NODE_ENV === 'production'
+  ? path.join('/tmp', 'users.json')
+  : path.join(process.cwd(), 'public', 'data', 'users.json');
+
+console.log(`Using users file path: ${usersFilePath}`);
 
 // Utility to omit specific keys from an object
 function omit<T extends Record<string, unknown>, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
@@ -27,23 +32,39 @@ function omit<T extends Record<string, unknown>, K extends keyof T>(obj: T, keys
 // Ensure the users file exists
 async function ensureUsersFile() {
   try {
+    console.log(`Checking if users file exists at: ${usersFilePath}`);
     await fs.access(usersFilePath);
-  } catch {
+    console.log('Users file exists');
+  } catch (error) {
+    console.log(`Users file not found, creating directory: ${path.dirname(usersFilePath)}`);
     await fs.mkdir(path.dirname(usersFilePath), { recursive: true });
+    console.log(`Creating empty users file at: ${usersFilePath}`);
     await fs.writeFile(usersFilePath, JSON.stringify([]));
+    console.log('Empty users file created successfully');
   }
 }
 
 // Load users from the file
 async function loadUsers(): Promise<User[]> {
+  console.log('Loading users from file');
   await ensureUsersFile();
+  console.log(`Reading users file from: ${usersFilePath}`);
   const fileContent = await fs.readFile(usersFilePath, 'utf-8');
-  return JSON.parse(fileContent) as User[];
+  const users = JSON.parse(fileContent) as User[];
+  console.log(`Loaded ${users.length} users from file`);
+  return users;
 }
 
 // Save users to the file
 async function saveUsers(users: User[]): Promise<void> {
-  await fs.writeFile(usersFilePath, JSON.stringify(users, null, 2));
+  console.log(`Saving ${users.length} users to file: ${usersFilePath}`);
+  try {
+    await fs.writeFile(usersFilePath, JSON.stringify(users, null, 2));
+    console.log('Users saved successfully');
+  } catch (error) {
+    console.error(`Error saving users to file: ${error instanceof Error ? error.message : error}`);
+    throw error; // Re-throw to be handled by the calling function
+  }
 }
 
 // Hash password using Node.js crypto module

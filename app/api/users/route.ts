@@ -36,7 +36,8 @@ async function ensureUsersFile() {
     await fs.access(usersFilePath);
     console.log('Users file exists');
   } catch (error) {
-    console.log(`Users file not found, creating directory: ${path.dirname(usersFilePath)}`);
+    console.log(`Uses file not found: ${error}`)
+    console.log(`Creating directory: ${path.dirname(usersFilePath)}`);
     await fs.mkdir(path.dirname(usersFilePath), { recursive: true });
     console.log(`Creating empty users file at: ${usersFilePath}`);
     await fs.writeFile(usersFilePath, JSON.stringify([]));

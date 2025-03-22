@@ -112,6 +112,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newUser.email)) {
+      return NextResponse.json(
+        { error: 'Invalid email format' },
+        { status: 400 }
+      );
+    }
+
     const users = await loadUsers();
     const userExists = users.some(
       (user) => user.username === newUser.username || user.email === newUser.email
@@ -124,8 +133,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Hash the password before storing
+    const hashedPassword = await hashPassword(newUser.password);
+
     const userToAdd: User = {
       ...newUser,
+      password: hashedPassword,
       id: Date.now().toString(),
       createdAt: new Date().toISOString(),
     };
@@ -207,4 +220,14 @@ export async function DELETE(request: NextRequest) {
     console.error('Error deleting user:', error);
     return NextResponse.json({ error: 'Failed to delete user.' }, { status: 500 });
   }
+}
+
+// Simple password hashing function (for demonstration only)
+async function hashPassword(password: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
 }

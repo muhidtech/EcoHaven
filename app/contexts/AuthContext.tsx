@@ -391,11 +391,25 @@ export const AuthProvider = ({
         });
 
         const data = await response.json();
-        console.log("API Response:", data);
-
+        
+        // Enhanced error handling and logging
         if (!response.ok) {
-          throw new ValidationError(data.error || 'Failed to create user account');
+          const errorMessage = data.error || 'Failed to create user account';
+          console.error('API signup error:', {
+            status: response.status,
+            statusText: response.statusText,
+            errorMessage,
+            responseData: data
+          });
+          throw new ValidationError(errorMessage);
         }
+        
+        // Log success response for debugging
+        console.log("API Signup Success:", {
+          status: response.status,
+          userData: data.user,
+          message: data.message || 'User created successfully'
+        });
         
         
         // Generate a unique ID with more entropy if not provided by API

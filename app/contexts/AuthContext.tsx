@@ -41,6 +41,25 @@ export class ExpiredSessionError extends AuthError {
   }
 }
 
+// Custom error interfaces for better type safety
+interface ErrorWithCode extends Error {
+  code: string | number;
+}
+
+interface ErrorWithResponse {
+  response: {
+    status?: number;
+    data?: any;
+  };
+}
+
+interface ErrorWithData extends Error {
+  data: {
+    message?: string;
+    [key: string]: any;
+  };
+}
+
 // Define the shape of our user data
 interface User {
     uid: string;
@@ -429,12 +448,13 @@ export const AuthProvider = ({
         console.error('Authentication error during signup process');
       } else if (error instanceof Error && 'code' in error) {
         // Log any error codes that might be present
-        console.error('Error code:', (error as any).code);
+        const errorWithCode = error as ErrorWithCode;
+        console.error('Error code:', errorWithCode.code);
       }
       
       // Check if the error has a response property (like from fetch)
       if (error && typeof error === 'object' && 'response' in error) {
-        const errorResponse = (error as any).response;
+        const errorResponse = (error as ErrorWithResponse).response;
         console.error('API Response status:', errorResponse?.status);
         console.error('API Response data:', errorResponse?.data);
       }
@@ -446,8 +466,9 @@ export const AuthProvider = ({
       if (error instanceof Error) {
         errorMessage = error.message;
         // If there's additional data in the error, include it
-        if ('data' in error && (error as any).data) {
-          const errorData = (error as any).data;
+        if ('data' in error) {
+          const errorWithData = error as ErrorWithData;
+          const errorData = errorWithData.data;
           if (typeof errorData === 'object' && errorData.message) {
             errorMessage = errorData.message;
           }
@@ -556,11 +577,10 @@ export const AuthProvider = ({
    * Check if the current user has admin role
    * @returns boolean indicating whether the user is an admin
    */
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const isAdmin = useCallback((): boolean => {
     // Check if user exists and has the role 'admin' using the ref for up-to-date value
     return userRef.current?.role === 'admin';
-  }, []);
+  }, [userRef]);
   
   const isAdminLogin = useCallback((): boolean => {
     // Alias for isAdmin function

@@ -90,9 +90,17 @@ export async function GET(request: NextRequest) {
 
 // Handle POST requests (Create a new user)
 export async function POST(request: NextRequest) {
+  console.log('Starting user creation process');
   try {
     const newUser = await request.json();
     console.log('Received new user data:', newUser);
+    console.log('Required fields check:', {
+      username: !!newUser.username,
+      firstName: !!newUser.firstName,
+      lastName: !!newUser.lastName,
+      email: !!newUser.email,
+      password: !!newUser.password
+    });
 
     const requiredFields = ['username', 'firstName', 'lastName', 'email', 'password'];
     const missingFields = requiredFields.filter((field) => !newUser[field]);
@@ -131,8 +139,16 @@ export async function POST(request: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error('Error creating user:', error instanceof Error ? error.message : error, error instanceof Error ? error.stack : '');
-    return NextResponse.json({ error: 'Failed to create user account.' }, { status: 500 });
+    console.error('Error creating user:', error instanceof Error ? error.message : error);
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace available');
+    
+    // Provide more detailed error in development mode
+    const isDev = process.env.NODE_ENV === 'development';
+    const errorMessage = isDev && error instanceof Error 
+      ? `Failed to create user account: ${error.message}` 
+      : 'Failed to create user account.';
+    
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
 

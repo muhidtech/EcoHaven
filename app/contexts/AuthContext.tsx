@@ -418,10 +418,43 @@ export const AuthProvider = ({
           : new AuthError('Failed to create user account. Please try again.');
       }
     } catch (error) {
-      console.error('Error during sign up:', error instanceof Error ? error.message : 'Unknown error');
+      // Enhanced error logging with detailed information
+      console.error('Detailed signUp error:', error instanceof Error ? 
+        `${error.message}\n${error.stack}` : error);
+      
+      // Log additional context about the error
+      if (error instanceof ValidationError) {
+        console.error('Validation failed during signup process');
+      } else if (error instanceof AuthError) {
+        console.error('Authentication error during signup process');
+      } else if (error instanceof Error && 'code' in error) {
+        // Log any error codes that might be present
+        console.error('Error code:', (error as any).code);
+      }
+      
+      // Check if the error has a response property (like from fetch)
+      if (error && typeof error === 'object' && 'response' in error) {
+        const errorResponse = (error as any).response;
+        console.error('API Response status:', errorResponse?.status);
+        console.error('API Response data:', errorResponse?.data);
+      }
       
       setAuthStatus('error');
-      const errorMessage = error instanceof Error ? error.message : 'Failed to sign up';
+      
+      // Extract more detailed error message if available
+      let errorMessage = 'Failed to sign up';
+      if (error instanceof Error) {
+        errorMessage = error.message;
+        // If there's additional data in the error, include it
+        if ('data' in error && (error as any).data) {
+          const errorData = (error as any).data;
+          if (typeof errorData === 'object' && errorData.message) {
+            errorMessage = errorData.message;
+          }
+        }
+      }
+      
+      // Set the error message for the UI
       setAuthError(errorMessage);
       
       // Rethrow the error if it's already one of our custom types

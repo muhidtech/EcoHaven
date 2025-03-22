@@ -34,9 +34,27 @@ const SignUp = () => {
 
     if (!formData.firstName) newErrors.firstName = "First name is required";
     if (!formData.lastName) newErrors.lastName = "Last name is required";
-    if (!formData.email) newErrors.email = "Email is required";
-    if (!formData.username) newErrors.username = "Username is required";
-    if (!formData.password) newErrors.password = "Password is required";
+    
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(formData.email)) {
+      newErrors.email = "Please enter a valid email address";
+    }
+    
+    if (!formData.username) {
+      newErrors.username = "Username is required";
+    } else if (formData.username.trim().length < 2) {
+      newErrors.username = "Username must be at least 2 characters";
+    }
+    
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    } else if (!/\d/.test(formData.password) || !/[a-zA-Z]/.test(formData.password)) {
+      newErrors.password = "Password must contain at least one letter and one number";
+    }
+    
     if (formData.password !== formData.confirmPassword) {
       newErrors.confirmPassword = "Passwords do not match";
     }
@@ -51,10 +69,37 @@ const SignUp = () => {
     if (!validateForm()) {
       return;
     }
+    
+    // Log form data for debugging
+    console.log('Submitting signup form with data:', {
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      email: formData.email,
+      username: formData.username,
+      password: formData.password.length > 0 ? '********' : '<empty>', // Don't log actual password
+      confirmPassword: formData.confirmPassword.length > 0 ? '********' : '<empty>', // Don't log actual password
+      passwordsMatch: formData.password === formData.confirmPassword
+    });
+    
     setIsLoading(true);
     setErrors((prevErrors) => ({ ...prevErrors, general: "" }));
 
     try {
+      // Verify all required fields are present and properly formatted
+      if (!formData.firstName.trim() || !formData.lastName.trim() || 
+          !formData.email.trim() || !formData.username.trim() || 
+          !formData.password) {
+        throw new Error("All fields must be filled out properly");
+      }
+      
+      console.log('Calling signUp with:', {
+        email: formData.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        username: formData.username,
+        passwordProvided: !!formData.password
+      });
+      
       await signUp(
         formData.email,
         formData.password,
@@ -63,6 +108,7 @@ const SignUp = () => {
         formData.username
       );
 
+      console.log('Signup successful, redirecting to login page');
       // Redirect to login page after successful signup
       router.push('/login');
     } catch (error) {
@@ -194,23 +240,32 @@ const SignUp = () => {
             </div>
           </div>
   
-          <div className="flex justify-between items-center mt-8">
-            <p className="text-sm">
-              Already have an account?{' '}
-              <span
-                className="text-green-600 cursor-pointer"
-                onClick={() => router.push("/login")}
+          <div className="flex flex-col mt-8">
+            {errors.general && (
+              <div className="text-red-500 text-sm mb-4 p-2 bg-red-50 rounded border border-red-200">
+                {errors.general}
+              </div>
+            )}
+            
+            <div className="flex justify-between items-center">
+              <p className="text-sm">
+                Already have an account?{' '}
+                <span
+                  className="text-green-600 cursor-pointer"
+                  onClick={() => router.push("/login")}
+                >
+                  Login
+                </span>
+              </p>
+    
+              <button
+                onClick={handleSubmit}
+                className="px-4 py-2 cursor-pointer bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300 text-sm"
+                disabled={isLoading}
               >
-                Login
-              </span>
-            </p>
-  
-            <button
-              onClick={handleSubmit}
-              className="px-4 py-2 cursor-pointer bg-green-600 text-white rounded-lg hover:bg-green-700 transition duration-300 text-sm"
-            >
-              {isLoading ? "Submiting..." : "Submit"}
-            </button>
+                {isLoading ? "Submitting..." : "Submit"}
+              </button>
+            </div>
           </div>
         </div>
       </div>
